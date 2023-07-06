@@ -1,14 +1,16 @@
-import { React, useContext, useEffect } from "react";
+import { React,  useEffect } from "react";
 import "./App.scss";
 import { Header } from "./Components/Header/Header";
 import { Outlet } from "react-router-dom";
-import { UserContext } from "./Context/UseContext";
+import { useDispatch } from "react-redux";
+import { handleRefresh } from "./redux/actions/userAction";
 
 function App() {
-  const { user, loginContext, loginContextUser } = useContext(UserContext);
+
+  const dispatch = useDispatch()
   useEffect(() => {
     if (localStorage.getItem("email")) {
-      loginContextUser(localStorage.getItem("email"));
+      dispatch(handleRefresh())
     }
   }, []);
 

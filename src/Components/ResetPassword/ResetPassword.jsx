@@ -24,7 +24,9 @@ const ResetPassword = () => {
 
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+  // handle reset password
   const handleLogin = async () => {
+    // check validate
     if (!confirmPassword || !password || !oldPassword) {
       setIsValidation("OldPassword/Password is required!");
       setIsValidationPassword("");
@@ -121,7 +123,7 @@ const ResetPassword = () => {
               </div>
               <div className="div input-pass">
                 <input
-                  type={isShowConfirmPassword === true ? "text" : "password"}
+                  type="password"
                   className="input"
                   placeholder="Confirm Password"
                   value={confirmPassword}

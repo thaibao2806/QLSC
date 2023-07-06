@@ -13,6 +13,7 @@ const ModalUpdatePo = (props) => {
   const [quantity, setQuantity] = useState("");
   const [isValidate, setIsValidate] = useState("");
 
+  // check if show then get data po
   useEffect(() => {
     if (show) {
       setPo(dataPo.poNumber);
@@ -23,14 +24,17 @@ const ModalUpdatePo = (props) => {
     }
   }, [dataPo]);
 
+  // handle change date start
   const handleDateChangeStart = (date) => {
     setSelectedDateStart(date);
   };
 
+  // handle change date end
   const handleDateChangeEnd = (date) => {
     setSelectedDateEnd(date);
   };
 
+  // custom icon calendar input
   const CustomInput = React.forwardRef(({ value, onClick }, ref) => (
     <div className="custom-input">
       <input
@@ -47,9 +51,12 @@ const ModalUpdatePo = (props) => {
     </div>
   ));
 
+  // handle update po
   const handleUpdatePo = async () => {
+    // convert start and end dates to long
     const endDate = new Date(selectedDateEnd).getTime();
     const startDate = new Date(selectedDateStart).getTime();
+    // call api
     let res = await updatePo(po, quantity, startDate, endDate);
     if (res && res.statusCode === 200) {
       handleClose();

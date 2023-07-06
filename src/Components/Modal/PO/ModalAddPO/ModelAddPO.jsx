@@ -7,22 +7,25 @@ import { toast } from "react-toastify";
 import { createPo } from "../../../../service/service";
 
 const ModelAddPO = (props) => {
-  const { show, handleClose, getAllPo } = props;
 
+  const { show, handleClose, getAllPo } = props;
   const [selectedDateStart, setSelectedDateStart] = useState(null);
   const [selectedDateEnd, setSelectedDateEnd] = useState(null);
   const [po, setPo] = useState("");
   const [quantity, setQuantity] = useState("");
   const [isValidate, setIsValidate] = useState("");
 
+  //handle change date start
   const handleDateChangeStart = (date) => {
     setSelectedDateStart(date);
   };
 
+  // handle change date end
   const handleDateChangeEnd = (date) => {
     setSelectedDateEnd(date);
   };
 
+  // custom input icon calendar
   const CustomInput = ({ value, onClick }) => (
     <div className="custom-input">
       <input
@@ -38,7 +41,9 @@ const ModelAddPO = (props) => {
     </div>
   );
 
+  // handle add po
   const handleAddPO = async () => {
+    // validate
     if (!po || !quantity || !selectedDateStart || !selectedDateStart) {
       setIsValidate("Cần nhập đầy đủ thông tin");
     } else if (quantity <= 0) {
@@ -46,13 +51,14 @@ const ModelAddPO = (props) => {
     } else {
       setIsValidate("");
     }
-
     let res = await createPo(
       po,
       quantity,
       selectedDateStart.getTime(),
       selectedDateEnd.getTime()
     );
+
+    // call api
     if (res && res.statusCode === 200) {
       toast.success("Thêm thành công!!");
       toast.warning("Bạn chỉ có thể chỉnh sửa trong 15 phút đầu!!");

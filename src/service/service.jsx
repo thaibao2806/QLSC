@@ -1,5 +1,6 @@
 import axioss from "./axios";
 
+// api get product by page
 const fecthAll = (page, size) => {
   const config = {
     headers: {
@@ -15,7 +16,7 @@ const fecthAll = (page, size) => {
 const notify = () => {
   // return axioss.post('/api/v1/order/import')
 };
-
+// api add user
 const postCreateUser = (
   fullName,
   email,
@@ -42,6 +43,7 @@ const postCreateUser = (
   );
 };
 
+// api get user
 const getUserAdmin = () => {
   const config = {
     headers: {
@@ -51,10 +53,12 @@ const getUserAdmin = () => {
   return axioss.get("/user/get-all", config);
 };
 
+// api login
 const loginApi = (email, password) => {
   return axiosss.post("/api/login", { email, password });
 };
 
+// api login
 const loginAdmin = (email, password) => {
   return axioss.post(
     "/user/login",
@@ -63,6 +67,7 @@ const loginAdmin = (email, password) => {
   );
 };
 
+// api get role
 const role = () => {
   const config = {
     headers: {
@@ -72,16 +77,19 @@ const role = () => {
   return axioss.get("/role/get-all", config);
 };
 
+// api send otp
 const sendOTP = (email) => {
   return axioss.post(`/user/forgot-password/sent-otp?email=${email}`);
 };
 
+// api verify otp
 const verifyAPI = (opt, email, password, rePassword) => {
   return axioss.post(
     `/user/forgot-password/verify?OTP=${opt}&email=${email}&newPassword=${password}&rePassword=${rePassword}`
   );
 };
 
+// api delete user
 const deleteUser = (email) => {
   return axioss.put(`/user/delete/${email}`, null, {
     headers: {
@@ -90,6 +98,7 @@ const deleteUser = (email) => {
   });
 };
 
+// api update user
 const updateUser = (email, fullName, phoneNumber, roles) => {
   return axioss.put(
     `/user/update?email=${localStorage.getItem("emailEdit")}`,
@@ -107,6 +116,7 @@ const updateUser = (email, fullName, phoneNumber, roles) => {
   );
 };
 
+// api resetpassword
 const resetPassword = (oldPassword, newPassword) => {
   return axioss.post(
     `/user/reset-password?oldPassword=${oldPassword}&newPassword=${newPassword}`,
@@ -119,6 +129,7 @@ const resetPassword = (oldPassword, newPassword) => {
   );
 };
 
+// api get user by email
 const getUserByEmail = () => {
   const config = {
     headers: {
@@ -131,6 +142,8 @@ const getUserByEmail = () => {
   );
 };
 
+
+// api get all product
 const getAllProduct = () => {
   const config = {
     headers: {
@@ -140,6 +153,8 @@ const getAllProduct = () => {
   return axioss.get("/product/get-all", config);
 };
 
+
+// api search product
 const searchProduct = (keyword, property, pageIndex, pageSize) => {
   return axioss.post(
     "/product/search-by-keyword",
@@ -157,6 +172,7 @@ const searchProduct = (keyword, property, pageIndex, pageSize) => {
   );
 };
 
+// api add po
 const createPo = (poNumber, quantity, beginAt, endAt) => {
   return axioss.post(
     "/po/add",
@@ -169,6 +185,7 @@ const createPo = (poNumber, quantity, beginAt, endAt) => {
   );
 };
 
+// api get po
 const getPo = () => {
   const config = {
     headers: {
@@ -178,6 +195,7 @@ const getPo = () => {
   return axioss.get("/po/get-all", config);
 };
 
+// api update po
 const updatePo = (poNumber, quantity, beginAt, endAt) => {
   return axioss.put(
     `/po/update/${localStorage.getItem("po")}`,
@@ -190,6 +208,7 @@ const updatePo = (poNumber, quantity, beginAt, endAt) => {
   );
 };
 
+// api get po detail by page
 const fecthAllPoDetail = (page, size) => {
   const config = {
     headers: {
@@ -202,6 +221,7 @@ const fecthAllPoDetail = (page, size) => {
   );
 };
 
+// api get all po detail
 const getAllPoDetail = () => {
   const config = {
     headers: {
@@ -211,6 +231,7 @@ const getAllPoDetail = () => {
   return axioss.get("/po-detail/get-all", config);
 };
 
+// api update product
 const updateProduct = (productId, productName) => {
   return axioss.put(
     `/product/update/${productId}`,
@@ -223,6 +244,7 @@ const updateProduct = (productId, productName) => {
   );
 };
 
+// api add product
 const addProduct = (productId, productName) => {
   return axioss.post(
     "/product/add",
@@ -235,6 +257,7 @@ const addProduct = (productId, productName) => {
   );
 };
 
+// api search po detail
 const searchPODetail = (keyword, property, pageIndex, pageSize) => {
   return axioss.post(
     "/po-detail/search-by-keyword",
@@ -252,6 +275,7 @@ const searchPODetail = (keyword, property, pageIndex, pageSize) => {
   );
 };
 
+// api update po detail
 const updatePoDetail = (
   poDetailId,
   bbbgNumber,
@@ -282,6 +306,7 @@ const updatePoDetail = (
   );
 };
 
+// apo show statistical
 const showStatistical = (poNumber) => {
   const config = {
     headers: {

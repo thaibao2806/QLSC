@@ -8,6 +8,7 @@ import { sendOTP } from "../../service/service";
 import { useNavigate } from "react-router-dom";
 
 export const CheckEmail = () => {
+
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [validation, setVadilation] = useState("");
@@ -15,10 +16,13 @@ export const CheckEmail = () => {
   const [loadingOTP, setLoadingOTP] = useState(false);
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+  // handle check mail send OTP
   const handleOTP = async () => {
-    const emailRegex = /^[A-Za-z0-9._%+-]+@gmail.com$/;
+    // check format mail
+    const emailRegex = /^[A-Za-z0-9._%+-]+@(gmail|daiduongtelecom)\.com$/;
+    // validate email
     if (!email) {
-      setVadilationEmail("Email is required!");
+      setVadilationEmail("Email is required!"); 
       return;
     } else if (!emailRegex.test(email)) {
       setVadilationEmail("Email không đúng định dạng");

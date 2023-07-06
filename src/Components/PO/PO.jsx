@@ -7,15 +7,15 @@ import ModalUpdatePo from "../Modal/PO/ModalUpdate/ModalUpdatePo";
 import { getPo } from "../../service/service";
 import moment from "moment";
 import { Link } from "react-router-dom";
-import { useContext } from "react";
-import { UserContext } from "../../Context/UseContext";
 import ModalShowPO from "../Modal/PO/ModalShow/ModalShowPO";
 import ModalShowPOStatistical from "../Modal/PO/ModalShow/ModalShowPOStatistical";
 import logo from "../../assets/logo_28-06-2017_LogoOceanTelecomtailieupng-removebg-preview.png";
+import { useSelector } from "react-redux";
 
 const PO = () => {
+
   const [isShowAddPO, setIsShowAddPO] = useState(false);
-  const {  user } = useContext(UserContext);
+  const user = useSelector((state) => state.user.account);
   const [isShowUpdate, setIsShowUpdate] = useState(false);
   const [isShowPODetail, setIsShowPODetail] = useState(false);
   const [listPo, setListPo] = useState("");
@@ -25,11 +25,14 @@ const PO = () => {
   const [sortBy, setSortBy] = useState("poNumber");
   const [statistical, setStatistical] = useState(false);
   const [dataStatistical, setDataStatistical] = useState("");
+  const [isLoaded, setIsLoaded] = useState(false);
 
+  // call get all po when load page
   useEffect(() => {
     getAllPo();
   }, []);
 
+// handle close modal
   const handleClose = () => {
     setIsShowAddPO(false);
     setIsShowUpdate(false);
@@ -37,6 +40,7 @@ const PO = () => {
     setStatistical(false);
   };
 
+  // call api get all po
   const getAllPo = async () => {
     let res = await getPo();
     if (res && res.data) {
@@ -44,12 +48,13 @@ const PO = () => {
     }
   };
 
+  // handle update po
   const handleUpdatePO = (po) => {
     setDataPo(po);
     setIsShowUpdate(true);
-    getAllPo();
   };
 
+  // handle sort po
   const handleSort = (order, sortBy) => {
     setSortOrder(order);
     setSortBy(sortBy);
@@ -75,11 +80,13 @@ const PO = () => {
     setSortedListPo(sortedList);
   }, [listPo, sortOrder, sortBy]);
 
+  // handle show modal po
   const handleShowPo = (item) => {
     setIsShowPODetail(true);
     setDataPo(item);
   };
 
+  // handle show modal statistical
   const handleViewPo = (item) => {
     setStatistical(true);
     setDataStatistical(item);
@@ -177,6 +184,7 @@ const PO = () => {
         </>
       )}
 
+        {/* Modal  */}
       <ModelAddPO
         show={isShowAddPO}
         handleClose={handleClose}

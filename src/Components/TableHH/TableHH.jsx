@@ -60,16 +60,19 @@ export const TableHH = () => {
   const [exportPartner, setExportPartner] = useState(null);
   const [kcsVt, setKcsVt] = useState(null);
 
+  // call api when load page
   useEffect(() => {
     getProducts(0);
     getPoDetail();
-    handleSearch(0);
+    // handleSearch(0);
   }, [selectedOption]);
 
+  // handle change date start
   const handleDateChangeStart = (date) => {
     setSelectedDateStart(date);
   };
 
+  // custom input icon calendar
   const CustomInput = React.forwardRef(({ value, onClick }, ref) => (
     <div className="custom-input">
       <input
@@ -86,6 +89,7 @@ export const TableHH = () => {
     </div>
   ));
 
+  // call api get product by page
   const getProducts = async (page) => {
     try {
       let res = await fecthAllPoDetail(page, selectedOption);
@@ -100,6 +104,7 @@ export const TableHH = () => {
     }
   };
 
+  // call api get all
   const getPoDetail = async () => {
     let res = await getAllPoDetail();
     if (res && res.data) {
@@ -107,7 +112,7 @@ export const TableHH = () => {
     }
   };
 
-  // Upload file
+  // import po detail
 
   const handleFileUpload = async (event) => {
     try {
@@ -150,6 +155,7 @@ export const TableHH = () => {
     }
   };
 
+  // handle import status po detail
   const handleUploadSC = async (event) => {
     try {
       const selectedState = event.target.id;
@@ -305,6 +311,7 @@ export const TableHH = () => {
     }
   };
 
+  // export notify error when import
   const handleExportNotify = () => {
     const columnHeader = ["Loại lỗi", "Số hàng", "Mô tả lỗi"];
     const dataArray = [columnHeader, ...data.map((obj) => Object.values(obj))];
@@ -315,6 +322,7 @@ export const TableHH = () => {
     writeFile(workbook, "mo_ta_po_detail.xlsx");
   };
 
+  // handle close modal
   const handleCloses = () => {
     setIsShowNotify(false);
     setIsShowNotifyUpdateSC(false);
@@ -356,12 +364,14 @@ export const TableHH = () => {
     }
   };
 
+  // handle edit po detail
   const handleEditPoDetail = (item) => {
     setisShowEditPoDetail(true);
     setDataEditPoDetail(item);
     console.log("tui check", item);
   };
 
+  // hanle show po detail
   const handleShowPoDetail = (item) => {
     setIsShowPoDetail(true);
     setDataShowPoDetail(item);

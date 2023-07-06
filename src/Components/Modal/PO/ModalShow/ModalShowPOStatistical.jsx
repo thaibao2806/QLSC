@@ -16,12 +16,14 @@ const ModalShowPOStatistical = (props) => {
   let myChartKCS = null;
   let myChartBH = null;
 
+  // check show
   useEffect(() => {
     if (show) {
       handleShow();
     }
   }, [dataStatistical]);
 
+  // check if there is a listpo then turn on the chart
   useEffect(() => {
     if (listPo) {
       createOrUpdateChartSC();
@@ -31,6 +33,7 @@ const ModalShowPOStatistical = (props) => {
     }
   }, [listPo]);
 
+  // chart repair status
   const createOrUpdateChartSC = () => {
     if (chartRef.current) {
       const ctx = chartRef.current.getContext("2d");
@@ -72,6 +75,7 @@ const ModalShowPOStatistical = (props) => {
     }
   };
 
+  // chart export partner
   const createOrUpdateChartXK = () => {
     if (chartRefXK.current) {
       const ctx = chartRefXK.current.getContext("2d");
@@ -112,6 +116,7 @@ const ModalShowPOStatistical = (props) => {
     }
   };
 
+  // chart kcs
   const createOrUpdateChartKCS = () => {
     if (chartRefKCS.current) {
       const ctx = chartRefKCS.current.getContext("2d");
@@ -151,6 +156,7 @@ const ModalShowPOStatistical = (props) => {
     }
   };
 
+  // chart warranty
   const createOrUpdateChartBH = () => {
     if (chartRefBH.current) {
       const ctx = chartRefBH.current.getContext("2d");
@@ -188,6 +194,8 @@ const ModalShowPOStatistical = (props) => {
       });
     }
   };
+
+  // handle show po and get po number
   const handleShow = async () => {
     let res = await showStatistical(dataStatistical.poNumber);
     if (res && res.statusCode === 200) {
@@ -202,6 +210,7 @@ const ModalShowPOStatistical = (props) => {
           <Modal.Title>Thống kê PO</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          {/* table and chart repair status */}
           <div>
             <h5 className="table-sum">Trạng thái sửa chữa</h5>
             <div className="statistical-sc">
@@ -232,6 +241,7 @@ const ModalShowPOStatistical = (props) => {
               </div>
             </div>
           </div>
+          {/* table and chart export partner */}
           <div>
             <h5 className="table-sum">Xuất kho</h5>
             <div className="statistical-sc">
@@ -260,6 +270,7 @@ const ModalShowPOStatistical = (props) => {
               </div>
             </div>
           </div>
+          {/* table and chart kcs */}
           <div>
             <h5 className="table-sum">KCS</h5>
             <div className="statistical-sc">
@@ -272,14 +283,13 @@ const ModalShowPOStatistical = (props) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {listPo &&
-                    Object.keys(listPo).length > 0 && ( 
-                      <tr>
-                        <td>{listPo.KSC_VT.PASS}</td>
-                        <td>{listPo.KSC_VT.FAIL}</td>
-                        <td>{listPo.KSC_VT.CHUA_CAP_NHAT}</td>
-                      </tr>
-                    )}
+                  {listPo && Object.keys(listPo).length > 0 && (
+                    <tr>
+                      <td>{listPo.KSC_VT.PASS}</td>
+                      <td>{listPo.KSC_VT.FAIL}</td>
+                      <td>{listPo.KSC_VT.CHUA_CAP_NHAT}</td>
+                    </tr>
+                  )}
                 </tbody>
               </Table>
               <div className="card">
@@ -288,6 +298,7 @@ const ModalShowPOStatistical = (props) => {
                 </div>
               </div>
             </div>
+            {/* table and chart warranty */}
             <div>
               <h5 className="table-sum">Bảo hành</h5>
               <div className="statistical-sc">
@@ -299,13 +310,12 @@ const ModalShowPOStatistical = (props) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {listPo &&
-                      Object.keys(listPo).length > 0 && ( 
-                        <tr>
-                          <td>{listPo.BAO_HANH.DA_CAP_NHAT}</td>
-                          <td>{listPo.BAO_HANH.CHUA_CAP_NHAT}</td>
-                        </tr>
-                      )}
+                    {listPo && Object.keys(listPo).length > 0 && (
+                      <tr>
+                        <td>{listPo.BAO_HANH.DA_CAP_NHAT}</td>
+                        <td>{listPo.BAO_HANH.CHUA_CAP_NHAT}</td>
+                      </tr>
+                    )}
                   </tbody>
                 </Table>
                 <div className="card">
@@ -316,6 +326,7 @@ const ModalShowPOStatistical = (props) => {
               </div>
             </div>
           </div>
+          {/* table sum */}
           <div>
             <h5 className="table-sum header-tb">Tổng số lượng</h5>
 
@@ -327,13 +338,12 @@ const ModalShowPOStatistical = (props) => {
                 </tr>
               </thead>
               <tbody>
-                {listPo &&
-                  Object.keys(listPo).length > 0 && ( 
-                    <tr>
-                      <td>{listPo.TONG_SO_LUONG.TONG}</td>
-                      <td>{listPo.TONG_SO_LUONG.SO_LUONG_IMPORT}</td>
-                    </tr>
-                  )}
+                {listPo && Object.keys(listPo).length > 0 && (
+                  <tr>
+                    <td>{listPo.TONG_SO_LUONG.TONG}</td>
+                    <td>{listPo.TONG_SO_LUONG.SO_LUONG_IMPORT}</td>
+                  </tr>
+                )}
               </tbody>
             </Table>
           </div>

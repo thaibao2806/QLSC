@@ -26,7 +26,9 @@ const Product = () => {
   const [dataDetail, setDataDetail] = useState("");
   const [selectedOption, setSelectedOption] = useState("10");
   const [isShowAddProduct, setIsShowAddProduct] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
+  // call api when load page
   useEffect(() => {
     if (search) {
       handleSearch(0);
@@ -36,6 +38,7 @@ const Product = () => {
     }
   }, [selectedOption]);
 
+  // call api get all product by page
   const getProducts = async (page) => {
     try {
       let res = await fecthAll(page, selectedOption);
@@ -48,7 +51,7 @@ const Product = () => {
       setLoadingMessage("Lỗi khi tải dữ liệu.");
     }
   };
-
+  // call api get all product
   const getAllProducts = async () => {
     let res = await getAllProduct();
     if (res && res.data) {
@@ -59,7 +62,6 @@ const Product = () => {
   // Page
   const itemsPerPage = selectedOption;
   const handlePageClick = async (event) => {
-    handleSearch(+event.selected);
     const selectedPage = event.selected;
     const newStartIndex = selectedPage * itemsPerPage;
     setStartIndex(newStartIndex);
@@ -70,7 +72,7 @@ const Product = () => {
     }
   };
 
-  // Export
+  // Export notify error when import
   const handleExportNotify = () => {
     const columnHeader = ["Loại lỗi", "Số hàng", "Mô tả lỗi"];
     const dataArray = [columnHeader, ...data.map((obj) => Object.values(obj))];
@@ -82,6 +84,7 @@ const Product = () => {
     writeFile(workbook, "mo_ta_san_pham.xlsx");
   };
 
+  // Export
   const handleExport = () => {
     const columnHeader = ["Mã hàng hóa", "Tên thiết bị"];
     const dataArray = [

@@ -9,6 +9,7 @@ import Row from "react-bootstrap/Row";
 import moment from "moment";
 
 const ModalShowPoDetail = (props) => {
+
   const { show, handleCloses, dateShowPoDetail } = props;
   const [po, setPo] = useState("");
   const [productId, setProductId] = useState("");
@@ -23,7 +24,9 @@ const ModalShowPoDetail = (props) => {
   const [warrantyPeriod, setWarrantyPeriod] = useState("");
   const [productName, setProductName] = useState("");
 
+  // check if show then get data po detail
   useEffect(() => {
+    // convert date import and warranty, format date dd/mm/yy
     const time = dateShowPoDetail.importDate;
     const data = moment(time).format("DD/MM/YYYY");
     const timeWarranty = dateShowPoDetail.warrantyPeriod;
@@ -42,22 +45,6 @@ const ModalShowPoDetail = (props) => {
       setWarrantyPeriod(dataWarranty);
     }
   }, [dateShowPoDetail]);
-
-  const CustomInput = React.forwardRef(({ value, onClick }, ref) => (
-    <div className="custom-input">
-      <input
-        ref={ref}
-        type="text"
-        className="form-control"
-        value={value}
-        onClick={onClick}
-        readOnly
-      />
-      <div className="icon-container" onClick={onClick}>
-        <FaCalendarAlt className="calendar-icon" />
-      </div>
-    </div>
-  ));
 
   return (
     <div

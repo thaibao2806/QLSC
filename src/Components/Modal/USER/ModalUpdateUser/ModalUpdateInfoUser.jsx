@@ -7,6 +7,7 @@ import { updateUser } from "../../../../service/service";
 import { toast } from "react-toastify";
 
 const ModalUpdateInforUser = (props) => {
+
   const { show, handleClose, dataGetUser } = props;
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -14,6 +15,7 @@ const ModalUpdateInforUser = (props) => {
   const [roleId, setRoleID] = useState("");
   const [validate, setValidate] = useState("");
 
+  // check if show then get data user
   useEffect(() => {
     if (show) {
       setFullName(dataGetUser.fullName);
@@ -22,6 +24,7 @@ const ModalUpdateInforUser = (props) => {
     }
   }, [dataGetUser]);
 
+  // handle update user
   const handleUpdateUser = async () => {
     let res = await updateUser(
       localStorage.getItem("emailEdit"),

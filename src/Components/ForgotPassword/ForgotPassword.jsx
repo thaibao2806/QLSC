@@ -25,8 +25,11 @@ export const ForgotPassword = () => {
 
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+  // handle verify email and otp
   const handleVerify = async () => {
+    // check format email
     const emailRegex = /^[A-Za-z0-9._%+-]+@gmail.com$/;
+    // validate email, otp, password, confirmPassword
     if (!email || !otp || !password || !confirmPassword) {
       setIsValidation("Email/OTP/Password is required!");
       setIsValidationEmail("");
@@ -85,6 +88,7 @@ export const ForgotPassword = () => {
           <div className="form">
             <img src={avatar} />
             <h2 className="title">Xác thực và đặt mật khẩu</h2>
+            {/* check validate */}
             <div className="validation-otp">{isValidation}</div>
             <div className="validation-otp-success">{isValidateSuccess}</div>
             <div className="input-div one">
@@ -101,6 +105,7 @@ export const ForgotPassword = () => {
                 />
               </div>
             </div>
+            {/* check validate */}
             <span className="otp-email">{isValidationEmail}</span>
             <div className="input-div one">
               <div className="i">
@@ -137,6 +142,7 @@ export const ForgotPassword = () => {
                 </div>
               </div>
             </div>
+            {/* check validate */}
             <span className="otp-password">{isValidationPassword}</span>
             <div className="input-div pass">
               <div className="i">
@@ -152,6 +158,7 @@ export const ForgotPassword = () => {
                 />
               </div>
             </div>
+            {/* check validate */}
             <span className="otp-repassword">{isValidationRePassword}</span>
             <button className="btn btn-login" onClick={() => handleVerify()}>
               {" "}

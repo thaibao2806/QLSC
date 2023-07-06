@@ -4,12 +4,13 @@ import DatePicker from "react-datepicker";
 import { FaCalendarAlt } from "react-icons/fa";
 
 const ModalShowPO = (props) => {
-  const { show, handleClose, dataPo, getAllPo } = props;
+  const { show, handleClose, dataPo } = props;
   const [selectedDateStart, setSelectedDateStart] = useState(null);
   const [selectedDateEnd, setSelectedDateEnd] = useState(null);
   const [po, setPo] = useState("");
   const [quantity, setQuantity] = useState("");
 
+  // check if show modal then get the data passed
   useEffect(() => {
     if (show) {
       setPo(dataPo.poNumber);
@@ -19,14 +20,17 @@ const ModalShowPO = (props) => {
     }
   }, [dataPo]);
 
+  // handle change date start
   const handleDateChangeStart = (date) => {
     setSelectedDateStart(date);
   };
 
+  // handle change date end
   const handleDateChangeEnd = (date) => {
     setSelectedDateEnd(date);
   };
 
+  // custom calender icon input
   const CustomInput = React.forwardRef(({ value, onClick }, ref) => (
     <div className="custom-input">
       <input

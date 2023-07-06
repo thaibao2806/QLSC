@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./signin.scss";
 import avatar from "../../assets/avatar.svg";
@@ -11,11 +11,13 @@ import { RiLockPasswordLine } from "react-icons/ri";
 import { loginAdmin } from "../../service/service";
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../../Context/UseContext";
 import ModalBlogLogin from "../Modal/ModalBlogLogin/ModalBlogLogin";
+import { handleLoginRedux } from "../../redux/actions/userAction";
+import { useDispatch, useSelector } from "react-redux";
 
 const Signin = () => {
-  const { loginContext, loginContextUser } = useContext(UserContext);
+  const dispatch = useDispatch();
+  const account = useSelector((state) => state.user.account);
 
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -28,6 +30,7 @@ const Signin = () => {
   const [dataSignIn, setDataSignIn] = useState("");
   const [rememberPassword, setRememberPassword] = useState(false);
 
+  // check remember password
   useEffect(() => {
     const rememberedUser = localStorage.getItem("rememberedUser");
     if (rememberedUser) {
@@ -40,12 +43,33 @@ const Signin = () => {
     }
   }, []);
 
+  // display permissions
+  useEffect(() => {
+    if (account && account.auth === true && account.status === 2) {
+      navigate("/");
+    } else if (account && account.auth === true && account.status === 1) {
+      navigate("/admin");
+    } else if (account && account.auth === true && account.status === 3) {
+      setIsValidation("Email/Password không đúng !!");
+    } else if (account && account.auth === true && account.status === 4) {
+      console.log("lock 132");
+      setIsShowBlog(true);
+      setDataSignIn(localStorage.getItem("timelock"));
+    } else if (account && account.auth === false && account.status === 0) {
+      navigate("/reset-password");
+      account.status = 2;
+    }
+  }, [account]);
+
+  // handle close lock account
   const handleClose = () => {
     setIsShowBlog(false);
   };
 
+  // handle login api
   const handleLogin = async () => {
-    const emailRegex = /^[A-Za-z0-9._%+-]+@gmail.com$/;
+    // check validate
+    const emailRegex = /^[A-Za-z0-9._%+-]+@(gmail|daiduongtelecom)\.com$/;
     if (!email || !password) {
       setIsValidation("Email/Password is required!");
       return;
@@ -67,8 +91,7 @@ const Signin = () => {
       setIsValidationPassword("");
     }
 
-    let res = await loginAdmin(email, password);
-    setDataSignIn(res.data);
+    dispatch(handleLoginRedux(email, password));
     if (rememberPassword) {
       localStorage.setItem(
         "rememberedUser",
@@ -76,38 +99,6 @@ const Signin = () => {
       );
     } else {
       localStorage.removeItem("rememberedUser");
-    }
-    if (res && res.statusCode === 200 && res.data.status === 0) {
-      loginContextUser(email);
-      navigate("/reset-password");
-    } else if (res && res.statusCode === 200 && res.data.status === 2) {
-      setIsValidation("Email/Password không đúng!!");
-    } else if (res && res.statusCode === 200) {
-      if (res.data.roles[0].roleName === "ROLE_ADMIN") {
-        loginContextUser(email);
-        localStorage.setItem("role", res.data.roles[0].roleName);
-        navigate("/admin");
-      } else if (res.data.roles[0].roleName === "ROLE_MANAGER") {
-        loginContextUser(email);
-        localStorage.setItem("role", res.data.roles[0].roleName);
-        navigate("/");
-      } else if (res.data.roles[0].roleName === "ROLE_USER") {
-        loginContextUser(email);
-        localStorage.setItem("role", res.data.roles[0].roleName);
-        navigate("/");
-      }
-    } else {
-      if (res && res.statusCode === 204) {
-        setIsValidation("Email/Password không đúng");
-      }
-      if (
-        res &&
-        res.statusCode === 204 &&
-        res.statusMessage === "YOUR ACCOUNT IS TEMPORARILY LOCKED"
-      ) {
-        setIsShowBlog(true);
-        setDataSignIn(res.data);
-      }
     }
   };
 

@@ -16,3 +16,31 @@
   align-items: center;
   justify-content: center;
 }
+
+.logo-ocean-admin {
+  margin-top: 75px;
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -0%);
+  width: 50%;
+}
+
+.title {
+  margin-top: 20px;
+  text-align: center;
+  color: #444444;
+  .title-welcom {
+    font-size: 400;
+  }
+
+  .title-sign {
+    .sign-account {
+      display: inline-block;
+      color: #444444;
+      font-size: 24px;
+      text-decoration: underline;
+      color: #3434c3;
+    }
+  }
+}

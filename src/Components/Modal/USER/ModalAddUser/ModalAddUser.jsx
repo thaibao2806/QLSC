@@ -25,10 +25,11 @@ const ModalAddUser = (props) => {
   const [validatePhone, setValidatePhone] = useState("");
   const [validatePassword, setValidatePassword] = useState("");
 
+  // get role when call handleRole
   useEffect(() => {
-    handleRole();
-    handleRole2();
-    handleRole3();
+    // handleRole();
+    // handleRole2();
+    // handleRole3();
   }, []);
 
   const handleItemClick = (itemName, itemRoleID) => {
@@ -36,6 +37,7 @@ const ModalAddUser = (props) => {
     setRoleID(itemRoleID);
   };
 
+  // handle role admin
   const handleRole = async () => {
     let res = await role();
     console.log(res);
@@ -45,6 +47,7 @@ const ModalAddUser = (props) => {
     }
   };
 
+  // handle role manager
   const handleRole2 = async () => {
     let res = await role();
     console.log(res.data[1]);
@@ -53,6 +56,8 @@ const ModalAddUser = (props) => {
       setRoleName(res.data[1].roleName);
     }
   };
+
+  // handle role user
   const handleRole3 = async () => {
     let res = await role();
     console.log(res.data[2]);
@@ -62,7 +67,9 @@ const ModalAddUser = (props) => {
     }
   };
 
+  // handle add user
   const handleSubmit = async () => {
+    // check validate
     if (!fullName || !email || !phone || !password) {
       setValidate("Cần điền đầy đủ thông tin để thêm user");
       return;
@@ -92,6 +99,7 @@ const ModalAddUser = (props) => {
     } else {
       setValidatePassword("");
     }
+    // call api
     let res = await postCreateUser(fullName, email, phone, password, 0, [
       roleID,
     ]);

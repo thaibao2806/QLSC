@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
@@ -7,31 +7,39 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { GiEarthAsiaOceania } from "react-icons/gi";
 import "./header.scss";
 import { ToastContainer, toast } from "react-toastify";
-import { useContext } from "react";
-import { UserContext } from "../../Context/UseContext";
 import { RxAvatar } from "react-icons/rx";
 import { AiOutlineSetting } from "react-icons/ai";
 import Dropdown from "react-bootstrap/Dropdown";
 import ModalUpdateInforUser from "../Modal/USER/ModalUpdateUser/ModalUpdateInfoUser";
 import { getUserByEmail } from "../../service/service";
+import { useDispatch, useSelector } from "react-redux";
+import { handleLogoutRedux } from "../../redux/actions/userAction";
 
 export const Header = () => {
-  const { logoutContext, user } = useContext(UserContext);
 
+  const user = useSelector(state => state.user.account)
+  const dispatch = useDispatch()
   const navigate = useNavigate();
   const [isShowModalUpdate, SetIsShowModalUpdate] = useState(false);
   const [dataGetUser, setDataGetUser] = useState("");
 
+  useEffect(() => {
+    if(user && user.auth === false && window.location.pathname !== "/signin") {
+      navigate("/");
+    }
+  }, [user])
+
+  // handle logout
   const handleLogout = () => {
-    logoutContext();
-    navigate("/");
-    toast.success("Đăng xuất thành công!");
+    dispatch(handleLogoutRedux());
   };
 
+  // handle close modal update user
   const handleCloses = () => {
     SetIsShowModalUpdate(false);
   };
 
+  // get user by email
   const handleGetUser = async () => {
     SetIsShowModalUpdate(true);
     let res = await getUserByEmail();
@@ -110,6 +118,7 @@ export const Header = () => {
           </Navbar.Collapse>
         </Navbar>
 
+        {/* toast notify */}
         <div>
           <ToastContainer
             position="top-right"
@@ -125,6 +134,7 @@ export const Header = () => {
           />
         </div>
 
+        {/* modal update info user */}
         <ModalUpdateInforUser
           show={isShowModalUpdate}
           handleClose={handleCloses}

@@ -12,6 +12,7 @@ import Row from "react-bootstrap/Row";
 import moment from "moment";
 
 const ModalUpdatePoDetail = (props) => {
+
   const { show, handleCloses, dateEditPoDetail, getProducts } = props;
   const [selectedDateStart, setSelectedDateStart] = useState(null);
   const [selectedDateWarrity, setSelectedDateWarrity] = useState(null);
@@ -28,7 +29,9 @@ const ModalUpdatePoDetail = (props) => {
   const [warrantyPeriod, setWarrantyPeriod] = useState("");
   const [poDetailId, setPoDetailId] = useState("");
 
+  // check if show then get data po detail
   useEffect(() => {
+    // convert date import and warranty, format date dd/mm/yy
     const time = dateEditPoDetail.importDate;
     const data = moment(time).format("DD/MM/YYYY");
     const timeWarranty = dateEditPoDetail.warrantyPeriod;
@@ -50,12 +53,17 @@ const ModalUpdatePoDetail = (props) => {
     }
   }, [dateEditPoDetail]);
 
+  // handle change state date
   const handleDateChangeStart = (date) => {
     setSelectedDateStart(date);
   };
+
+  // handle change end date
   const handleDateChangeWarranty = (date) => {
     setSelectedDateWarrity(date);
   };
+
+  // custom icon calendar input
   const CustomInput = React.forwardRef(({ value, onClick }, ref) => (
     <div className="custom-input">
       <input
@@ -72,9 +80,12 @@ const ModalUpdatePoDetail = (props) => {
     </div>
   ));
 
+  // handle update po detail
   const handleUpdatePoDetail = async () => {
+    // convert date warranty and start date to long
     const WarrantyDate = new Date(selectedDateWarrity).getTime();
     const startDate = new Date(selectedDateStart).getTime();
+    // call api update po detail
     let res = await updatePoDetail(
       poDetailId,
       bbbg,

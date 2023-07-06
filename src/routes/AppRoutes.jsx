@@ -38,9 +38,7 @@ const AppRoutes = () => {
         <Route
           path="admin"
           element={
-            <PrivateRoutes>
               <Admin />
-            </PrivateRoutes>
           }
         />
         <Route path="reset-password" element={<ResetPassword />} />

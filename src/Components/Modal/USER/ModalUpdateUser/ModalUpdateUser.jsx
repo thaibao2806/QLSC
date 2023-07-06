@@ -19,6 +19,7 @@ const ModalUpdateUser = (props) => {
   const [phone, setPhone] = useState("");
   const [validate, setValidate] = useState("");
 
+  // check if show then get data user
   useEffect(() => {
     if (show) {
       setFullName(dataEditUser.fullName);
@@ -27,11 +28,10 @@ const ModalUpdateUser = (props) => {
       setPhone(dataEditUser.phoneNumber);
       setRoleName(dataEditUser.roles[0].roleName);
       setRoleID(dataEditUser.roles[0]);
-      // handleRole()
-      // handleRole2()
     }
   }, [dataEditUser]);
 
+  // handle get role admin
   const handleRole = async () => {
     let res = await role();
     console.log(res.data[0]);
@@ -41,6 +41,7 @@ const ModalUpdateUser = (props) => {
     }
   };
 
+  // handle get role manager
   const handleRole2 = async () => {
     let res = await role();
     console.log(res.data[1]);
@@ -49,6 +50,8 @@ const ModalUpdateUser = (props) => {
       setRoleName(res.data[1].roleName);
     }
   };
+
+  // handle get role user
   const handleRole3 = async () => {
     let res = await role();
     console.log(res.data[2]);
@@ -58,6 +61,7 @@ const ModalUpdateUser = (props) => {
     }
   };
 
+  // handle update user
   const handleUpdateUser = async () => {
     let res = await updateUser(email, fullName, phone, [roleID]);
     if (res && res.statusCode === 200) {

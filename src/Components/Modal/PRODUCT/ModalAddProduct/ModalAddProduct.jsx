@@ -12,6 +12,7 @@ const ModalAddProduct = (props) => {
   const [productName, setProductName] = useState("");
   const [validate, setValidate] = useState("");
 
+  // check if show then get data product
   useEffect(() => {
     if (show) {
       setProductId(dataDetail.productId);
@@ -19,12 +20,15 @@ const ModalAddProduct = (props) => {
     }
   }, [dataDetail]);
 
+  // handle add product
   const handleAddProduct = async () => {
+    //validate 
     if (!productId || !productName) {
       setValidate("Cần điền đầy đủ thông tin");
     } else {
       setValidate("");
     }
+    // call api
     let res = await addProduct(productId, productName);
     if (res && res.statusCode === 200) {
       setProductId("");

@@ -5,8 +5,10 @@ import { deleteUser } from "../../../../service/service";
 import { ToastContainer, toast } from "react-toastify";
 
 const ModalDeleteUser = (props) => {
+
   const { show, handleClose, dataDeleteUser } = props;
 
+  // hande delete user
   const confirmDelete = async () => {
     try {
       let res = await deleteUser(dataDeleteUser.email);

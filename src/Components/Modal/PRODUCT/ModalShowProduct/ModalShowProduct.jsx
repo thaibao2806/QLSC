@@ -11,6 +11,7 @@ const ModalShowProduct = (props) => {
   const [productId, setProductId] = useState("");
   const [productName, setProductName] = useState("");
 
+  // check if show then get data product
   useEffect(() => {
     if (show) {
       setProductId(dataDetail.productId);
@@ -18,6 +19,7 @@ const ModalShowProduct = (props) => {
     }
   }, [dataDetail]);
 
+  // handle update product
   const handleUpdateProduct = async () => {
     let res = await updateProduct(productId, productName);
     if (res && res.statusCode === 200) {
