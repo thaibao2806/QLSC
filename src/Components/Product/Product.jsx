@@ -106,7 +106,6 @@ const Product = () => {
 
   // Search
   const handleSearch = async (page) => {
-    console.log(search);
     if (search) {
       try {
         const res = await searchProduct([search], "ALL", page, itemsPerPage);
@@ -115,7 +114,7 @@ const Product = () => {
           setListHH(res.data);
           setTotalProducts(res.totalPages);
           setTotalPages(res.totalPages);
-          setStartIndex(0);
+          // setStartIndex(page * itemsPerPage);
         }
       } catch (error) {
         console.error(error);
