@@ -165,6 +165,7 @@ export const TableHH = () => {
       toast.error("Dữ liệu đã được tải không thành công!");
     } finally {
       setIsLoading(false);
+      event.target.value = null; // Reset giá trị của input file
     }
   };
 
@@ -223,6 +224,7 @@ export const TableHH = () => {
       toast.error("Dữ liệu đã được tải không thành công!");
     } finally {
       setIsLoading(false);
+      event.target.value = null;
     }
   };
 
