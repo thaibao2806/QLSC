@@ -326,6 +326,28 @@ const exportByPO = (poNumber) => {
   return axioss.get(`/po-detail/getByPo/${poNumber}`, config);
 }
 
+// api import po-detail
+const importPODetail = (file) => {
+  const config = {
+    headers: {
+      "Content-Type": "multipart/form-data",
+      email: localStorage.getItem("email"),
+    },
+  };
+  return axioss.post("/po-detail/import", file, config);
+}
+
+// api update status po-detail
+const updateStatusPoDetail = (file) => {
+  const config = {
+    headers: {
+      "Content-Type": "multipart/form-data",
+      email: localStorage.getItem("email"),
+    },
+  };
+  return axioss.post("/po-detail/update", file, config);
+}
+
 export {
   fecthAll,
   notify,
@@ -353,4 +375,6 @@ export {
   updatePoDetail,
   showStatistical,
   exportByPO,
+  importPODetail,
+  updateStatusPoDetail,
 };

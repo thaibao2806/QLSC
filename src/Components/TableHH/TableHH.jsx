@@ -16,7 +16,9 @@ import {
   fecthAllPoDetail,
   getAllPoDetail,
   getPo,
+  importPODetail,
   searchPODetail,
+  updateStatusPoDetail,
 } from "../../service/service";
 import DatePicker from "react-datepicker";
 import { FaCalendarAlt } from "react-icons/fa";
@@ -140,25 +142,15 @@ export const TableHH = () => {
       const formData = new FormData();
       formData.append("file", file);
       setIsLoading(true);
-      let response = await axios.post(
-        "http://localhost:8080/po-detail/import",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            email: localStorage.getItem("email"),
-          },
-        }
-      );
-      console.log(response);
-      if (response.data.statusCode === 200) {
+      let response = await importPODetail(formData);
+      if (response && response.statusCode === 200) {
         toast.success("Dữ liệu đã được tải thành công!");
         setIsShowNotify(true);
-        setData(response.data.data);
+        setData(response.data);
         getProducts(0);
       } else {
         toast.error("Dữ liệu đã được tải không thành công!");
-        setData(response.data.data);
+        setData(response.data);
         setIsShowNotify(true);
       }
     } catch (error) {
@@ -199,25 +191,15 @@ export const TableHH = () => {
       formData.append("file", file);
       formData.append("attribute", selectUpdateValue);
       setIsLoading(true);
-      let response = await axios.post(
-        "http://localhost:8080/po-detail/update",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            email: localStorage.getItem("email"),
-          },
-        }
-      );
-
-      if (response.data.statusCode === 200) {
+      let response = await updateStatusPoDetail(formData)
+      if (response && response.statusCode === 200) {
         toast.success("Dữ liệu đã được tải thành công!");
         setIsShowNotify(true);
-        setData(response.data.data);
+        setData(response.data);
         getProducts(0);
       } else {
         toast.error("Dữ liệu đã được tải không thành công!");
-        setData(response.data.data);
+        setData(response.data);
         setIsShowNotify(true);
       }
     } catch (error) {
@@ -823,51 +805,55 @@ export const TableHH = () => {
               listPoDetail.map((item, index) => {
                 const currentIndex = startIndex + index;
                 const time = item.importDate;
+                
                 const timeWarranty = item.warrantyPeriod;
-                const dataWarranty = moment(timeWarranty).format("DD/MM/YYYY");
+                let dataWarranty
+                if (timeWarranty !== null) {
+                  dataWarranty = moment(timeWarranty).format("DD/MM/YYYY");
+                }
                 const data = moment(time).format("DD/MM/YYYY");
-                return (
-                  <tr
-                    key={`sc-${currentIndex}`}
-                    onDoubleClick={() => handleShowPoDetail(item)}
-                  >
-                    <td>{currentIndex + 1}</td>
-                    <td>{item.product.productId}</td>
-                    <td>{item.serialNumber}</td>
-                    <td>{item.po.poNumber}</td>
-                    <td>{item.bbbgNumber}</td>
-                    <td>{data}</td>
-                    <td>
-                      {item.repairCategory === 0 && "Nhập kho SC"}
-                      {item.repairCategory === 1 && "Nhập kho BH"}
-                    </td>
-                    <td>
-                      {item.repairStatus === 0 && "Sửa chữa không được"}
-                      {item.repairStatus === 1 && "Sửa chữa xong"}
-                      {item.repairStatus === 2 && "Cháy nổ"}
-                    </td>
-                    <td>
-                      {item.exportPartner === 0 && "Chưa xuất kho"}
-                      {item.exportPartner === 1 && "Xuất kho"}
-                    </td>
-                    <td>
-                      {item.kcsVT === 0 && "FAIL"}
-                      {item.kcsVT === 1 && "PASS"}
-                    </td>
-                    <td>{dataWarranty}</td>
-                    <td>
-                      {localStorage.getItem("role") === "ROLE_MANAGER" ||
-                      localStorage.getItem("role") === "ROLE_ADMIN" ? (
-                        <button
-                          className="btn btn-warning"
-                          onClick={() => handleEditPoDetail(item)}
-                        >
-                          Edit
-                        </button>
-                      ) : null}
-                    </td>
-                  </tr>
-                );
+                  return (
+                    <tr
+                      key={`sc-${currentIndex}`}
+                      onDoubleClick={() => handleShowPoDetail(item)}
+                    >
+                      <td>{currentIndex + 1}</td>
+                      <td>{item.product.productId}</td>
+                      <td>{item.serialNumber}</td>
+                      <td>{item.po.poNumber}</td>
+                      <td>{item.bbbgNumber}</td>
+                      <td>{data}</td>
+                      <td>
+                        {item.repairCategory === 0 && "Nhập kho SC"}
+                        {item.repairCategory === 1 && "Nhập kho BH"}
+                      </td>
+                      <td>
+                        {item.repairStatus === 0 && "Sửa chữa không được"}
+                        {item.repairStatus === 1 && "Sửa chữa xong"}
+                        {item.repairStatus === 2 && "Cháy nổ"}
+                      </td>
+                      <td>
+                        {item.exportPartner === 0 && "Chưa xuất kho"}
+                        {item.exportPartner === 1 && "Xuất kho"}
+                      </td>
+                      <td>
+                        {item.kcsVT === 0 && "FAIL"}
+                        {item.kcsVT === 1 && "PASS"}
+                      </td>
+                      <td>{dataWarranty}</td>
+                      <td>
+                        {localStorage.getItem("role") === "ROLE_MANAGER" ||
+                        localStorage.getItem("role") === "ROLE_ADMIN" ? (
+                          <button
+                            className="btn btn-warning"
+                            onClick={() => handleEditPoDetail(item)}
+                          >
+                            Edit
+                          </button>
+                        ) : null}
+                      </td>
+                    </tr>
+                  );
               })}
           </tbody>
         </Table>
