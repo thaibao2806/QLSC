@@ -210,99 +210,127 @@ const ModalShowPOStatistical = (props) => {
           <Modal.Title>Thống kê PO</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {/* table and chart repair status */}
-          <div>
-            <h5 className="table-sum">Trạng thái sửa chữa</h5>
-            <div className="statistical-sc">
-              <Table striped bordered hover size="sm" className="table-sc">
-                <thead>
-                  <tr>
-                    <th>Sửa chữa xong</th>
-                    <th>Sữa chữa không được</th>
-                    <th>Chưa cập nhật</th>
-                    <th>Cháy nổ</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {listPo && Object.keys(listPo).length > 0 && (
-                    <tr>
-                      <td>{listPo.TRANG_THAI_SC.SC_XONG}</td>
-                      <td>{listPo.TRANG_THAI_SC.SC_KHONG_DUOC}</td>
-                      <td>{listPo.TRANG_THAI_SC.CHUA_CAP_NHAT}</td>
-                      <td>{listPo.TRANG_THAI_SC.CHAY_NO}</td>
-                    </tr>
-                  )}
-                </tbody>
-              </Table>
-              <div className="card">
-                <div className="card-body" style={{ height: "200px" }}>
-                  <canvas ref={chartRef} />
-                </div>
+          <div className="chart-statistical">
+            <div className="card">
+              <div className="card-body" style={{ height: "200px" }}>
+                <canvas ref={chartRef} style={{ border: "none" }} />
+              </div>
+            </div>
+
+            <div className="card">
+              <div className="card-body" style={{ height: "200px" }}>
+                <canvas ref={chartRefXK} />
+              </div>
+            </div>
+
+            <div className="card">
+              <div className="card-body" style={{ height: "200px" }}>
+                <canvas ref={chartRefKCS} />
+              </div>
+            </div>
+
+            <div className="card">
+              <div className="card-body" style={{ height: "200px" }}>
+                <canvas ref={chartRefBH} />
               </div>
             </div>
           </div>
-          {/* table and chart export partner */}
-          <div>
-            <h5 className="table-sum">Xuất kho</h5>
-            <div className="statistical-sc">
-              <Table striped bordered hover size="sm" className="table-sc">
-                <thead>
-                  <tr>
-                    <th>Không xuất kho</th>
-                    <th>Đã xuất kho</th>
-                    <th>Chưa cập nhật</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {listPo && Object.keys(listPo).length > 0 && (
-                    <tr>
-                      <td>{listPo.XUAT_KHO.KHONG_XUAT_KHO}</td>
-                      <td>{listPo.XUAT_KHO.DA_XUAT_KHO}</td>
-                      <td>{listPo.XUAT_KHO.CHUA_CAP_NHAT}</td>
-                    </tr>
-                  )}
-                </tbody>
-              </Table>
-              <div className="card">
-                <div className="card-body" style={{ height: "200px" }}>
-                  <canvas ref={chartRefXK} />
+          <div className="total-po">
+            {listPo && Object.keys(listPo).length > 0 && (
+              <>
+                <div className="total border-0">
+                  <h4>Tổng số lượng</h4>
+                  <h1>{listPo.TONG_SO_LUONG.TONG}</h1>
                 </div>
+                <div className="total-import">
+                  <h4>Số lượng import</h4>
+                  <h1>{listPo.TONG_SO_LUONG.SO_LUONG_IMPORT}</h1>
+                </div>
+              </>
+            )}
+          </div>
+          {/* table and chart repair status */}
+          <div className="table-status">
+            <div className="table-sc">
+              <h5 className="table-sum">Trạng thái sửa chữa</h5>
+              <div className="statistical-sc">
+                <Table striped bordered hover size="lg" className="table-sc">
+                  <thead>
+                    <tr>
+                      <th>Sửa chữa xong</th>
+                      <th>Sữa chữa không được</th>
+                      <th>Chưa cập nhật</th>
+                      <th>Cháy nổ</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {listPo && Object.keys(listPo).length > 0 && (
+                      <tr>
+                        <td>{listPo.TRANG_THAI_SC.SC_XONG}</td>
+                        <td>{listPo.TRANG_THAI_SC.SC_KHONG_DUOC}</td>
+                        <td>{listPo.TRANG_THAI_SC.CHUA_CAP_NHAT}</td>
+                        <td>{listPo.TRANG_THAI_SC.CHAY_NO}</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </Table>
+              </div>
+            </div>
+            {/* table and chart export partner */}
+            <div className="table-xk">
+              <h5 className="table-sum">Xuất kho</h5>
+              <div className="statistical-sc">
+                <Table striped bordered hover size="lg" className="table-sc">
+                  <thead>
+                    <tr>
+                      <th>Không xuất kho</th>
+                      <th>Đã xuất kho</th>
+                      <th>Chưa cập nhật</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {listPo && Object.keys(listPo).length > 0 && (
+                      <tr>
+                        <td>{listPo.XUAT_KHO.KHONG_XUAT_KHO}</td>
+                        <td>{listPo.XUAT_KHO.DA_XUAT_KHO}</td>
+                        <td>{listPo.XUAT_KHO.CHUA_CAP_NHAT}</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </Table>
               </div>
             </div>
           </div>
           {/* table and chart kcs */}
-          <div>
-            <h5 className="table-sum">KCS</h5>
-            <div className="statistical-sc">
-              <Table striped bordered hover size="sm" className="table-sc">
-                <thead>
-                  <tr>
-                    <th>PASS</th>
-                    <th>FAIL</th>
-                    <th>Chưa cập nhật</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {listPo && Object.keys(listPo).length > 0 && (
+          <div className="table-kcs-bh">
+            <div className="table-kcs">
+              <h5 className="table-sum">KCS</h5>
+              <div className="statistical-sc">
+                <Table striped bordered hover size="lg" className="table-sc">
+                  <thead>
                     <tr>
-                      <td>{listPo.KSC_VT.PASS}</td>
-                      <td>{listPo.KSC_VT.FAIL}</td>
-                      <td>{listPo.KSC_VT.CHUA_CAP_NHAT}</td>
+                      <th>PASS</th>
+                      <th>FAIL</th>
+                      <th>Chưa cập nhật</th>
                     </tr>
-                  )}
-                </tbody>
-              </Table>
-              <div className="card">
-                <div className="card-body" style={{ height: "200px" }}>
-                  <canvas ref={chartRefKCS} />
-                </div>
+                  </thead>
+                  <tbody>
+                    {listPo && Object.keys(listPo).length > 0 && (
+                      <tr>
+                        <td>{listPo.KSC_VT.PASS}</td>
+                        <td>{listPo.KSC_VT.FAIL}</td>
+                        <td>{listPo.KSC_VT.CHUA_CAP_NHAT}</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </Table>
               </div>
             </div>
             {/* table and chart warranty */}
-            <div>
+            <div className="table-bh">
               <h5 className="table-sum">Bảo hành</h5>
               <div className="statistical-sc">
-                <Table striped bordered hover size="sm" className="table-sc">
+                <Table striped bordered hover size="lg" className="table-sc">
                   <thead>
                     <tr>
                       <th>Đã cập nhật</th>
@@ -318,34 +346,8 @@ const ModalShowPOStatistical = (props) => {
                     )}
                   </tbody>
                 </Table>
-                <div className="card">
-                  <div className="card-body" style={{ height: "200px" }}>
-                    <canvas ref={chartRefBH} />
-                  </div>
-                </div>
               </div>
             </div>
-          </div>
-          {/* table sum */}
-          <div>
-            <h5 className="table-sum header-tb">Tổng số lượng</h5>
-
-            <Table striped bordered hover size="sm" className="table-sum">
-              <thead>
-                <tr>
-                  <th>Tổng</th>
-                  <th>Số lượng import</th>
-                </tr>
-              </thead>
-              <tbody>
-                {listPo && Object.keys(listPo).length > 0 && (
-                  <tr>
-                    <td>{listPo.TONG_SO_LUONG.TONG}</td>
-                    <td>{listPo.TONG_SO_LUONG.SO_LUONG_IMPORT}</td>
-                  </tr>
-                )}
-              </tbody>
-            </Table>
           </div>
         </Modal.Body>
       </Modal>

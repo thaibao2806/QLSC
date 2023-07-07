@@ -12,8 +12,10 @@ import moment from "moment";
 import { Modal, Button, Row, InputGroup } from "react-bootstrap";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import {
+  exportByPO,
   fecthAllPoDetail,
   getAllPoDetail,
+  getPo,
   searchPODetail,
 } from "../../service/service";
 import DatePicker from "react-datepicker";
@@ -59,12 +61,26 @@ export const TableHH = () => {
   const [repairStatus, setRepairStatus] = useState(null);
   const [exportPartner, setExportPartner] = useState(null);
   const [kcsVt, setKcsVt] = useState(null);
+  const [po, setPo] = useState("getAll")
+  const [listPo, setListPo] = useState("")
 
   // call api when load page
   useEffect(() => {
-    getProducts(0);
-    getPoDetail();
-    // handleSearch(0);
+    if(productId ||
+        serialNumber ||
+        poNumber ||
+        bbbg ||
+        selectedDateStart ||
+        repairCategory ||
+        repairStatus ||
+        exportPartner ||
+        kcsVt) {
+        handleSearch(0);
+        } else {
+          getProducts(0);
+          getAllPO()
+        }
+    
   }, [selectedOption]);
 
   // handle change date start
@@ -93,7 +109,6 @@ export const TableHH = () => {
   const getProducts = async (page) => {
     try {
       let res = await fecthAllPoDetail(page, selectedOption);
-      console.log("checkkkk", res);
       if (res && res.data) {
         setListPoDetail(res.data);
         setTotalProducts(res.totalPages);
@@ -104,16 +119,14 @@ export const TableHH = () => {
     }
   };
 
-  // call api get all
-  const getPoDetail = async () => {
-    let res = await getAllPoDetail();
-    if (res && res.data) {
-      setListAllPoDetail(res.data);
+  // call api get all po
+  const getAllPO = async() => {
+    let res = await getPo()
+    if(res && res.statusCode === 200) {
+      setListPo(res.data)
     }
-  };
-
+  }
   // import po detail
-
   const handleFileUpload = async (event) => {
     try {
       const file = event.target.files[0];
@@ -216,16 +229,29 @@ export const TableHH = () => {
   // Page
   const itemsPerPage = selectedOption;
   const handlePageClick = (event) => {
-    getProducts(+event.selected);
     const selectedPage = event.selected;
     const newStartIndex = selectedPage * itemsPerPage;
     setStartIndex(newStartIndex);
-    handleSearch(+event.selected);
+    if (
+      productId ||
+      serialNumber ||
+      poNumber ||
+      bbbg ||
+      selectedDateStart ||
+      repairCategory ||
+      repairStatus ||
+      exportPartner ||
+      kcsVt
+    ) {
+        handleSearch(+event.selected);
+    } else {
+      getProducts(+event.selected);
+    }
   };
 
   // Export
 
-  const handleExport = () => {
+  const handleExport = async() => {
     let selectedData = [];
     let selectedColumns = [
       "Mã HH",
@@ -260,8 +286,13 @@ export const TableHH = () => {
       checkboxes.defaultCheck3 ||
       checkboxes.defaultCheck4
     ) {
-      selectedData = listAllPoDetail.filter((item) => item.serialNumber);
-
+    
+      let res = await exportByPO(po)
+      if(res && res.statusCode === 200) {
+        selectedData = res.data;
+      }
+      
+      // selectedData = data.filter((item) => item.serialNumber);
       const exportData = [
         selectedColumns,
         ...selectedData.map((item, index) => {
@@ -411,19 +442,24 @@ export const TableHH = () => {
               </Form.Group>
               <Form.Group as={Col} md="2" controlId="validationCustomUsername1">
                 <Form.Label>Số PO</Form.Label>
-                <InputGroup hasValidation>
-                  <Form.Control
-                    type="text"
-                    placeholder="Số PO"
-                    value={poNumber !== null ? poNumber : ""}
-                    onChange={(event) => {
-                      const value = event.target.value;
-                      setPoNumber(value !== "" ? value : null);
-                    }}
-                    aria-describedby="inputGroupPrepend"
-                    required
-                  />
-                </InputGroup>
+                <Form.Select
+                  aria-label="Default select example"
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    setPoNumber(value === "Tất cả PO" ? null : value);
+                  }}
+                >
+                  <option>Tất cả PO</option>
+                  {listPo &&
+                    listPo.length > 0 &&
+                    listPo.map((item, index) => {
+                      return (
+                        <option key={index} value={item.poNumber}>
+                          {item.poNumber}
+                        </option>
+                      );
+                    })}
+                </Form.Select>
               </Form.Group>
               <Form.Group as={Col} md="2" controlId="validationCustomUsername2">
                 <Form.Label>Số BBBG</Form.Label>
@@ -511,9 +547,34 @@ export const TableHH = () => {
                 </Form.Select>
               </Form.Group>
             </Row>
-            <Row className="mb-3">
+            <Row className="mb-3 d-flex justify-content-center align-items-center">
               <Form.Group as={Col} md="2" controlId="validationCustomUsername7">
                 <Form.Label>Trạng thái xuất: </Form.Label>
+              </Form.Group>
+              <Form.Group
+                as={Col}
+                md="2"
+                controlId="validationCustomUsername99"
+              >
+                {/* <Form.Label>Xuất theo PO</Form.Label> */}
+                <Form.Select
+                  aria-label="Default select example"
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    setPo(value === "Tất cả PO" ? "getAll" : value);
+                  }}
+                >
+                  <option>Tất cả PO</option>
+                  {listPo &&
+                    listPo.length > 0 &&
+                    listPo.map((item, index) => {
+                      return (
+                        <option key={index} value={item.poNumber}>
+                          {item.poNumber}
+                        </option>
+                      );
+                    })}
+                </Form.Select>
               </Form.Group>
               <Form.Group as={Col} md="2" controlId="validationCustomUsername8">
                 <div className="form-check   label">

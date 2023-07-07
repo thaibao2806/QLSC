@@ -316,6 +316,16 @@ const showStatistical = (poNumber) => {
   return axioss.get(`/po/${poNumber}`, config);
 };
 
+// api export by po
+const exportByPO = (poNumber) => {
+  const config = {
+    headers: {
+      email: localStorage.getItem("email"),
+    },
+  };
+  return axioss.get(`/po-detail/getByPo/${poNumber}`, config);
+}
+
 export {
   fecthAll,
   notify,
@@ -342,4 +352,5 @@ export {
   searchPODetail,
   updatePoDetail,
   showStatistical,
+  exportByPO,
 };

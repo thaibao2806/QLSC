@@ -24,7 +24,7 @@
     align-items: center;
 
     .table-sc {
-        width: 50%;
+        // width: 50%;
     }
     .card {
         
@@ -32,10 +32,89 @@
 }
 
 .table-sum {
-    width: 50%;
-    margin-left: 100px;
+    // width: 50%;
+    // margin-left: 100px;
 }
 
 .header-tb {
     margin-bottom: 73px;
+}
+
+.chart-statistical {
+    display: flex;
+    align-items: center;
+    // justify-content: space-between;
+}
+
+.total-po {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0 10px 0;
+    .total {
+        width: 46%;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        h4 {
+            padding-left: 50px;
+            color: rgb(45, 45, 51);
+        }
+        h1 {
+            text-align: center;
+            color: rgb(1, 1, 88);
+        }
+    }
+
+    .total-import {
+        width: 46%;
+        padding: 20px;
+        margin-right: 15px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        h4 {
+            padding-left: 50px;
+            color: rgb(45, 45, 51);
+        }
+        h1 {
+            text-align: center;
+            color: rgb(1, 1, 88);
+        }
+    }
+}
+
+.table-status {
+    display: flex;
+    margin-top: 20px;
+    align-items: center;
+    justify-content: space-around;
+    .table-sc {
+        margin-right: 15px;
+        border-radius: 5px;
+    }
+    .table-xk {
+        padding: 20px;
+        margin-right: 15px;
+        border-radius: 5px;
+        padding-left: 14%;
+    }
+}
+
+.table-kcs-bh {
+    display: flex;
+    margin-top: -10px;
+    align-items: center;
+    justify-content: space-around;
+    margin-right: 11%;
+    .table-kcs {
+        margin-right: 15px;
+        border-radius: 5px;
+    }
+    .table-bh {
+        padding: 20px;
+        margin-right: 15px;
+        border-radius: 5px;
+        margin-left: 25%;
+        padding-left: 14%;
+    }
 }
