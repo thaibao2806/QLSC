@@ -23,6 +23,7 @@ const ModalShowPoDetail = (props) => {
   const [kcsVT, setKcsVT] = useState("");
   const [warrantyPeriod, setWarrantyPeriod] = useState("");
   const [productName, setProductName] = useState("");
+  const [prioritize, setPrioritize] = useState("")
 
   // check if show then get data po detail
   useEffect(() => {
@@ -43,6 +44,7 @@ const ModalShowPoDetail = (props) => {
       setExportPartner(dateShowPoDetail.exportPartner);
       setKcsVT(dateShowPoDetail.kcsVT);
       setWarrantyPeriod(dataWarranty);
+      setPrioritize(dateShowPoDetail.priority);
     }
   }, [dateShowPoDetail]);
 
@@ -144,11 +146,11 @@ const ModalShowPoDetail = (props) => {
                     md="4"
                     controlId="validationCustomUsername"
                   >
-                    <Form.Label>Hạng mục</Form.Label>
+                    <Form.Label>Hạng mục SC</Form.Label>
                     <InputGroup hasValidation>
                       <Form.Control
                         type="text"
-                        placeholder="Hạng mục"
+                        placeholder="Hạng mục SC"
                         required
                         readOnly
                         value={
@@ -160,13 +162,25 @@ const ModalShowPoDetail = (props) => {
                   </Form.Group>
                 </Row>
                 <Row className="mb-3 ">
-                  <Form.Group as={Col} md="6" controlId="validationCustom01">
-                    <Form.Label>Trạng thái SC</Form.Label>
+                  <Form.Group as={Col} md="4" controlId="validationCustom01">
+                    <Form.Label>Ưu tiên SC</Form.Label>
                     <Form.Control
                       required
                       readOnly
                       type="text"
-                      placeholder="Trạng thái SC"
+                      placeholder="Ưu tiên SC"
+                      value={prioritize === 0 ? "Không ưu tiên" : "Ưu tiên"}
+                      onChange={(e) => setPrioritize(e.target.value)}
+                    />
+                    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                  </Form.Group>
+                  <Form.Group as={Col} md="4" controlId="validationCustom01">
+                    <Form.Label>Cập nhật SC</Form.Label>
+                    <Form.Control
+                      required
+                      readOnly
+                      type="text"
+                      placeholder="Cập nhật SC"
                       value={
                         repairStatus === 0
                           ? "Sửa chữa không được"
@@ -180,13 +194,13 @@ const ModalShowPoDetail = (props) => {
                     />
                     <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                   </Form.Group>
-                  <Form.Group as={Col} md="6" controlId="validationCustom02">
-                    <Form.Label>Xuất kho trả KH</Form.Label>
+                  <Form.Group as={Col} md="4" controlId="validationCustom02">
+                    <Form.Label>Cập nhật XK</Form.Label>
                     <Form.Control
                       required
                       readOnly
                       type="text"
-                      placeholder="Xuất kho trả KH"
+                      placeholder="Cập nhật XK"
                       value={exportPartner === 0 ? "Chưa xuất kho" : "Xuất kho"}
                       onChange={(e) => setExportPartner(e.target.value)}
                     />
@@ -194,24 +208,23 @@ const ModalShowPoDetail = (props) => {
                 </Row>
                 <Row className="mb-3 ">
                   <Form.Group as={Col} md="6" controlId="validationCustom01">
-                    <Form.Label>KCS VT</Form.Label>
+                    <Form.Label>Cập nhật KCS</Form.Label>
                     <Form.Control
                       required
                       readOnly
                       type="text"
-                      placeholder="KCS VT"
+                      placeholder="Cập nhật KCS"
                       value={kcsVT === 0 ? "FAIL" : "PASS"}
                       onChange={(e) => setKcsVT(e.target.value)}
                     />
-                    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group as={Col} md="6" controlId="validationCustom02">
-                    <Form.Label>Bảo hành</Form.Label>
+                    <Form.Label>Cập nhật BH</Form.Label>
                     <Form.Control
                       required
                       readOnly
                       type="text"
-                      placeholder="Bảo hành"
+                      placeholder="Cập nhật BH"
                       value={warrantyPeriod}
                       onChange={(e) => setWarrantyPeriod(e.target.value)}
                     />

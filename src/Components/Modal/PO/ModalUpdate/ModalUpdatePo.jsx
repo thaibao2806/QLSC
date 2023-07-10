@@ -12,6 +12,7 @@ const ModalUpdatePo = (props) => {
   const [po, setPo] = useState("");
   const [quantity, setQuantity] = useState("");
   const [isValidate, setIsValidate] = useState("");
+  const [contractNumber, setContractNumber] = useState("")
 
   // check if show then get data po
   useEffect(() => {
@@ -21,6 +22,7 @@ const ModalUpdatePo = (props) => {
       setQuantity(dataPo.quantity);
       setSelectedDateStart(dataPo.beginAt);
       setSelectedDateEnd(dataPo.endAt);
+      setContractNumber(dataPo.contractNumber)
     }
   }, [dataPo]);
 
@@ -53,11 +55,23 @@ const ModalUpdatePo = (props) => {
 
   // handle update po
   const handleUpdatePo = async () => {
+    if(selectedDateStart >= selectedDateEnd) {
+      setIsValidate("Ngày bắt đầu phải nhỏ hơn ngày kết thúc");
+      return;
+    } else {
+      setIsValidate("")
+    }
+    if(quantity <=0 ) {
+      setIsValidate("Số lượng phải lớn hơn 0");
+      return;
+    } else {
+      setIsValidate("")
+    }
     // convert start and end dates to long
     const endDate = new Date(selectedDateEnd).getTime();
     const startDate = new Date(selectedDateStart).getTime();
     // call api
-    let res = await updatePo(po, quantity, startDate, endDate);
+    let res = await updatePo(contractNumber, po, quantity, startDate, endDate);
     if (res && res.statusCode === 200) {
       handleClose();
       toast.success("Cập nhật thông tin thành công !!");
@@ -70,12 +84,11 @@ const ModalUpdatePo = (props) => {
         res.statusMessage === "YOU CAN ONLY UPDATE WITHIN THE FIRST 15 MINUTES"
       ) {
         setIsValidate(
-          "Bạn chỉ có thể cập nhật trong 15 phút đầu sau khi tạo mới!!"
+          "Bạn chỉ được phép chỉnh sửa số lượng!!"
         );
       } else if (
         res &&
-        res.statusCode === 205 &&
-        res.statusMessage === "PO NUMBER ALREADY EXISTS"
+        res.statusCode === 205
       ) {
         setIsValidate("Số PO đã tồn tại");
       } else {
@@ -100,6 +113,18 @@ const ModalUpdatePo = (props) => {
             <div>
               <div className="validate-add-po">{isValidate}</div>
               <form>
+                <div className="form-group mb-3">
+                  <label htmlFor="exampleInputEmail9">Số hợp đồng</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="exampleInputEmail9"
+                    aria-describedby="emailHelp"
+                    placeholder="Nhập số PO"
+                    value={contractNumber}
+                    onChange={(event) => setContractNumber(event.target.value)}
+                  />
+                </div>
                 <div className="form-group mb-3">
                   <label htmlFor="exampleInputEmail1">Số PO</label>
                   <input
@@ -129,6 +154,8 @@ const ModalUpdatePo = (props) => {
                     selected={selectedDateStart}
                     onChange={handleDateChangeStart}
                     dateFormat="dd/MM/yyyy"
+                    showYearDropdown
+                    showMonthDropdown
                     customInput={<CustomInput />}
                   />
                 </div>
@@ -138,6 +165,8 @@ const ModalUpdatePo = (props) => {
                     selected={selectedDateEnd}
                     onChange={handleDateChangeEnd}
                     dateFormat="dd/MM/yyyy"
+                    showYearDropdown
+                    showMonthDropdown
                     customInput={<CustomInput />}
                   />
                 </div>

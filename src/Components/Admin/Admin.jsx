@@ -216,6 +216,16 @@ const Admin = () => {
                     >
                       manager
                     </NavDropdown.Item>
+                    <NavDropdown.Item
+                      onClick={() => handleRoleSelect("ROLE_MANAGER")}
+                    >
+                      repair
+                    </NavDropdown.Item>
+                    <NavDropdown.Item
+                      onClick={() => handleRoleSelect("ROLE_MANAGER")}
+                    >
+                      kcs
+                    </NavDropdown.Item>
                     <NavDropdown.Item onClick={() => handleRoleSelect("all")}>
                       Tất cả
                     </NavDropdown.Item>
@@ -249,14 +259,14 @@ const Admin = () => {
                         {item.status !== 2 && (
                           <>
                             <button
-                              className="btn btn-warning mx-1"
+                              className="btn btn-warning mx-1 btn-sm"
                               onClick={() => hanldeEditUser(item)}
                             >
                               Edit
                             </button>
                             {item.email !== localStorage.getItem("email") && (
                               <button
-                                className="btn btn-danger"
+                                className="btn btn-danger btn-sm"
                                 onClick={() => handleDeleteUser(item)}
                               >
                                 Delete

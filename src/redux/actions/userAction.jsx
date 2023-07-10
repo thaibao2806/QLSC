@@ -51,14 +51,28 @@ export const handleLoginRedux = (email, password) => {
               data: { email },
             });
             localStorage.setItem("role", res.data.roles[0].roleName);
-          }
-        } else {
-          if (res && res.statusCode === 204) {
+          } else if (res.data.roles[0].roleName === "ROLE_REPAIRMAN") {
+            localStorage.setItem("email", email);
             dispatch({
-              type: FETCH_USER_ERROR_MESSAGE,
+              type: FETCH_USER_SUCCESS_USER,
               data: { email },
             });
-          }
+            localStorage.setItem("role", res.data.roles[0].roleName);
+          } else if (res.data.roles[0].roleName === "ROLE_KCSANALYST") {
+            localStorage.setItem("email", email);
+            dispatch({
+              type: FETCH_USER_SUCCESS_USER,
+              data: { email },
+            });
+            localStorage.setItem("role", res.data.roles[0].roleName);
+          } 
+          } else {
+            if (res && res.statusCode === 204) {
+              dispatch({
+                type: FETCH_USER_ERROR_MESSAGE,
+                data: { email },
+              });
+            }
           if (
             res &&
             res.statusCode === 204 &&

@@ -27,6 +27,7 @@ import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import ModalUpdatePoDetail from "../Modal/PO_DETAIL/ModalUpdate/ModalUpdatePoDetail";
 import ModalShowPoDetail from "../Modal/PO_DETAIL/ModalShow/ModalShowPoDetail";
+import { saveAs } from "file-saver";
 
 export const TableHH = () => {
   const [listPoDetail, setListPoDetail] = useState([]);
@@ -63,26 +64,28 @@ export const TableHH = () => {
   const [repairStatus, setRepairStatus] = useState(null);
   const [exportPartner, setExportPartner] = useState(null);
   const [kcsVt, setKcsVt] = useState(null);
-  const [po, setPo] = useState("getAll")
-  const [listPo, setListPo] = useState("")
+  const [po, setPo] = useState("getAll");
+  const [listPo, setListPo] = useState("");
+  const [priority, setPriority] = useState(null);
 
   // call api when load page
   useEffect(() => {
-    if(productId ||
-        serialNumber ||
-        poNumber ||
-        bbbg ||
-        selectedDateStart ||
-        repairCategory ||
-        repairStatus ||
-        exportPartner ||
-        kcsVt) {
-        handleSearch(0);
-        } else {
-          getProducts(0);
-          getAllPO()
-        }
-    
+    if (
+      productId ||
+      serialNumber ||
+      poNumber ||
+      bbbg ||
+      selectedDateStart ||
+      repairCategory ||
+      repairStatus ||
+      exportPartner ||
+      kcsVt
+    ) {
+      handleSearch(0);
+    } else {
+      getProducts(0);
+      getAllPO();
+    }
   }, [selectedOption]);
 
   // handle change date start
@@ -122,12 +125,12 @@ export const TableHH = () => {
   };
 
   // call api get all po
-  const getAllPO = async() => {
-    let res = await getPo()
-    if(res && res.statusCode === 200) {
-      setListPo(res.data)
+  const getAllPO = async () => {
+    let res = await getPo();
+    if (res && res.statusCode === 200) {
+      setListPo(res.data);
     }
-  }
+  };
   // import po detail
   const handleFileUpload = async (event) => {
     try {
@@ -145,7 +148,7 @@ export const TableHH = () => {
       let response = await importPODetail(formData);
       if (response && response.statusCode === 200) {
         toast.success("Dữ liệu đã được tải thành công!");
-        setIsShowNotify(true);
+        // setIsShowNotify(true);
         setData(response.data);
         getProducts(0);
       } else {
@@ -175,6 +178,14 @@ export const TableHH = () => {
         selectUpdateValue = "kcsVT";
       } else if (selectedState === "test4") {
         selectUpdateValue = "warrantyPeriod";
+      } else if (selectedState === "test5") {
+        selectUpdateValue = "repairCategory";
+      } else if (selectedState === "test6") {
+        selectUpdateValue = "priority";
+      } else if (selectedState === "test7") {
+        selectUpdateValue = "importDate";
+      } else if (selectedState === "test8") {
+        selectUpdateValue = "bbbgNumber";
       }
 
       const file = event.target.files[0];
@@ -191,10 +202,10 @@ export const TableHH = () => {
       formData.append("file", file);
       formData.append("attribute", selectUpdateValue);
       setIsLoading(true);
-      let response = await updateStatusPoDetail(formData)
+      let response = await updateStatusPoDetail(formData);
       if (response && response.statusCode === 200) {
         toast.success("Dữ liệu đã được tải thành công!");
-        setIsShowNotify(true);
+        // setIsShowNotify(true);
         setData(response.data);
         getProducts(0);
       } else {
@@ -227,7 +238,7 @@ export const TableHH = () => {
       exportPartner ||
       kcsVt
     ) {
-        handleSearch(+event.selected);
+      handleSearch(+event.selected);
     } else {
       getProducts(+event.selected);
     }
@@ -235,31 +246,33 @@ export const TableHH = () => {
 
   // Export
 
-  const handleExport = async() => {
+  const handleExport = async () => {
     let selectedData = [];
     let selectedColumns = [
-      "Mã HH",
-      "Số serial hỏng",
+      "Tên sản phẩm",
+      "Mã hàng hóa",
+      "Số serial",
       "Số PO",
       "Số BBBG",
       "Ngày nhập",
-      "Hạng mục",
+      "Hạng mục SC",
+      "Ưu Tiên SC",
     ];
 
     if (checkboxes.defaultCheck1) {
-      selectedColumns.push("Trạng thái SC");
+      selectedColumns.push("Cập nhật SC");
     }
 
     if (checkboxes.defaultCheck2) {
-      selectedColumns.push("Xuất kho trả KH");
+      selectedColumns.push("Cập nhật XK");
     }
 
     if (checkboxes.defaultCheck3) {
-      selectedColumns.push("KCS VT");
+      selectedColumns.push("Cập nhật KCS");
     }
 
     if (checkboxes.defaultCheck4) {
-      selectedColumns.push("Bảo Hành");
+      selectedColumns.push("Cập nhật BH");
     }
 
     selectedColumns.unshift("STT");
@@ -270,12 +283,11 @@ export const TableHH = () => {
       checkboxes.defaultCheck3 ||
       checkboxes.defaultCheck4
     ) {
-    
-      let res = await exportByPO(po)
-      if(res && res.statusCode === 200) {
+      let res = await exportByPO(po);
+      if (res && res.statusCode === 200) {
         selectedData = res.data;
       }
-      
+
       // selectedData = data.filter((item) => item.serialNumber);
       const exportData = [
         selectedColumns,
@@ -283,10 +295,13 @@ export const TableHH = () => {
           return [
             index + 1,
             ...selectedColumns.slice(1).map((column) => {
-              if (column === "Mã HH") {
+              if (column === "Tên sản phẩm") {
+                return item.product.productName;
+              }
+              if (column === "Mã hàng hóa") {
                 return item.product.productId;
               }
-              if (column === "Số serial hỏng") {
+              if (column === "Số serial") {
                 return item.serialNumber;
               }
               if (column === "Số PO") {
@@ -298,19 +313,44 @@ export const TableHH = () => {
               if (column === "Ngày nhập") {
                 return moment(item.importDate).format("DD/MM/YYYY");
               }
-              if (column === "Hạng mục") {
-                return item.repairCategory;
+              if (column === "Hạng mục SC") {
+                if (item.repairCategory === 0) {
+                  return "Nhập kho SC";
+                } else {
+                  return "Nhập kho BH";
+                }
               }
-              if (column === "Trạng thái SC") {
-                return item.repairStatus;
+              if (column === "Ưu tiên SC") {
+                if (item.priority === 0) {
+                  return "Không ưu tiên";
+                } else {
+                  return "Ưu tiên";
+                }
               }
-              if (column === "Xuất kho trả KH") {
-                return item.exportPartner;
+              if (column === "Cập nhật SC") {
+                if (item.repairStatus === 1) {
+                  return "Sửa chữa xong";
+                } else if (item.repairStatus === 0) {
+                  return "Sửa chữa không được";
+                } else {
+                  return "Cháy nổ";
+                }
               }
-              if (column === "KCS VT") {
-                return item.kcsVT;
+              if (column === "Cập nhật XK") {
+                if (item.exportPartner === 0) {
+                  return "Chưa xuất kho";
+                } else {
+                  return "Xuất kho";
+                }
               }
-              if (column === "Bảo Hành") {
+              if (column === "Cập nhật KCS") {
+                if (item.kcsVT === 0) {
+                  return "FAIL";
+                } else {
+                  return "PASS";
+                }
+              }
+              if (column === "Cập nhật BH") {
                 return moment(item.warrantyPeriod).format("DD/MM/YYYY");
               }
             }),
@@ -367,6 +407,7 @@ export const TableHH = () => {
         repairStatus,
         exportPartner,
         kcsVt,
+        priority,
       ],
       "ALL",
       page,
@@ -386,10 +427,58 @@ export const TableHH = () => {
     console.log("tui check", item);
   };
 
-  // hanle show po detail
+  // handle show po detail
   const handleShowPoDetail = (item) => {
     setIsShowPoDetail(true);
     setDataShowPoDetail(item);
+  };
+
+  // handle download file sample
+  const handleDownloadSampleFileImport = () => {
+    const columnHeader = [
+      "STT",
+      "Mã hàng hóa",
+      "Số serial",
+      "Số PO",
+      "Số BBBG",
+      "Ngày nhập",
+      "Hạng mục SC",
+    ];
+    const dataArray = [["Nhập khẩu dữ liệu ban đầu"], columnHeader];
+    const workbook = utils.book_new();
+    const worksheet = utils.aoa_to_sheet(dataArray);
+    utils.book_append_sheet(workbook, worksheet, "Sheet1");
+
+    writeFile(workbook, "importHH.xlsx");
+  };
+
+  const handleDownloadSampleFile = (index) => {
+    const columnHeader = ["STT", "Mã hàng hóa", "Số serial", "Số PO"];
+
+    if (index === 1) {
+      columnHeader.push("Cập nhật SC");
+    } else if (index === 2) {
+      columnHeader.push("Cập nhật XK");
+    } else if (index === 3) {
+      columnHeader.push("Cập nhật KCS");
+    } else if (index === 4) {
+      columnHeader.push("Cập nhật BH");
+    } else if (index === 5) {
+      columnHeader.push("Ưu Tiên SC");
+    } else if (index === 6) {
+      columnHeader.push("Ngày nhập");
+    } else if (index === 7) {
+      columnHeader.push("Hạng mục SC");
+    } else if (index === 8) {
+      columnHeader.push("Số BBBG");
+    }
+    const dataArray = [["Nhập khẩu dữ liệu ban đầu"], columnHeader];
+
+    const workbook = utils.book_new();
+    const worksheet = utils.aoa_to_sheet(dataArray);
+    utils.book_append_sheet(workbook, worksheet, "Sheet1");
+
+    writeFile(workbook, "update.xlsx");
   };
 
   return (
@@ -397,6 +486,7 @@ export const TableHH = () => {
       <div className="tables">
         <div className="table-action">
           <div>
+            {/* search po-detail */}
             <Row className="mb-3">
               <Form.Group as={Col} md="2" controlId="validationCustom01">
                 <Form.Label>Mã hàng hóa</Form.Label>
@@ -468,11 +558,13 @@ export const TableHH = () => {
                     selected={selectedDateStart}
                     onChange={handleDateChangeStart}
                     customInput={<CustomInput />}
+                    showYearDropdown
+                    showMonthDropdown
                   />
                 </div>
               </Form.Group>
               <Form.Group as={Col} md="2" controlId="validationCustomUsername4">
-                <Form.Label>Hạng mục</Form.Label>
+                <Form.Label>Hạng mục SC</Form.Label>
                 <Form.Select
                   aria-label="Default select example"
                   onChange={(event) => {
@@ -488,7 +580,7 @@ export const TableHH = () => {
             </Row>
             <Row className="mb-3">
               <Form.Group as={Col} md="2" controlId="validationCustom03">
-                <Form.Label>Trạng thái SC</Form.Label>
+                <Form.Label>Cập nhật SC</Form.Label>
                 <Form.Select
                   aria-label="Default select example"
                   onChange={(event) => {
@@ -503,7 +595,7 @@ export const TableHH = () => {
                 </Form.Select>
               </Form.Group>
               <Form.Group as={Col} md="2" controlId="validationCustom04">
-                <Form.Label>Xuất kho trả KH</Form.Label>
+                <Form.Label>Cập nhật XK</Form.Label>
                 <Form.Select
                   aria-label="Default select example"
                   onChange={(event) => {
@@ -517,7 +609,7 @@ export const TableHH = () => {
                 </Form.Select>
               </Form.Group>
               <Form.Group as={Col} md="2" controlId="validationCustom05">
-                <Form.Label>KCS VT</Form.Label>
+                <Form.Label>Cập nhật KCS</Form.Label>
                 <Form.Select
                   aria-label="Default select example"
                   onChange={(event) => {
@@ -530,142 +622,299 @@ export const TableHH = () => {
                   <option value="1">PASS</option>
                 </Form.Select>
               </Form.Group>
-            </Row>
-            <Row className="mb-3 d-flex justify-content-center align-items-center">
-              <Form.Group as={Col} md="2" controlId="validationCustomUsername7">
-                <Form.Label>Trạng thái xuất: </Form.Label>
-              </Form.Group>
-              <Form.Group
-                as={Col}
-                md="2"
-                controlId="validationCustomUsername99"
-              >
-                {/* <Form.Label>Xuất theo PO</Form.Label> */}
+              <Form.Group as={Col} md="2" controlId="validationCustom05">
+                <Form.Label>Ưu tiên SC</Form.Label>
                 <Form.Select
                   aria-label="Default select example"
                   onChange={(event) => {
                     const value = event.target.value;
-                    setPo(value === "Tất cả PO" ? "getAll" : value);
+                    setPriority(value === "Tất cả" ? null : value);
                   }}
                 >
-                  <option>Tất cả PO</option>
-                  {listPo &&
-                    listPo.length > 0 &&
-                    listPo.map((item, index) => {
-                      return (
-                        <option key={index} value={item.poNumber}>
-                          {item.poNumber}
-                        </option>
-                      );
-                    })}
+                  <option>Tất cả</option>
+                  <option value="1">Ưu tiên</option>
+                  <option value="0">Không ưu tiên</option>
                 </Form.Select>
               </Form.Group>
-              <Form.Group as={Col} md="2" controlId="validationCustomUsername8">
-                <div className="form-check   label">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    checked={checkboxes.defaultCheck1 || selectAll}
-                    onChange={() =>
-                      setCheckboxes({
-                        ...checkboxes,
-                        defaultCheck1: !checkboxes.defaultCheck1,
-                      })
-                    }
-                    id="defaultCheck1"
-                  />
-                  <label
-                    className="form-check-label font-size"
-                    htmlFor="defaultCheck1"
-                  >
-                    Trạng thái SC
-                  </label>
-                </div>
-              </Form.Group>
-              <Form.Group as={Col} md="2" controlId="validationCustomUsername9">
-                <div className="form-check label">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    checked={checkboxes.defaultCheck2 || selectAll}
-                    onChange={() =>
-                      setCheckboxes({
-                        ...checkboxes,
-                        defaultCheck2: !checkboxes.defaultCheck2,
-                      })
-                    }
-                    id="defaultCheck2"
-                  />
-                  <label
-                    className="form-check-label font-size"
-                    htmlFor="defaultCheck2"
-                  >
-                    Xuất kho trả KH
-                  </label>
-                </div>
-              </Form.Group>
-              <Form.Group
-                as={Col}
-                md="2"
-                controlId="validationCustomUsername12"
-              >
-                <div className="form-check label">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    checked={checkboxes.defaultCheck3 || selectAll}
-                    onChange={() =>
-                      setCheckboxes({
-                        ...checkboxes,
-                        defaultCheck3: !checkboxes.defaultCheck3,
-                      })
-                    }
-                    id="defaultCheck3"
-                  />
-                  <label
-                    className="form-check-label font-size"
-                    htmlFor="defaultCheck3"
-                  >
-                    KCS VT
-                  </label>
-                </div>
-              </Form.Group>
-              <Form.Group
-                as={Col}
-                md="2"
-                controlId="validationCustomUsername13"
-              >
-                <div className="form-check label">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    checked={selectAll}
-                    onChange={() => {
-                      setSelectAll(!selectAll);
-                      setCheckboxes({
-                        defaultCheck1: !selectAll,
-                        defaultCheck2: !selectAll,
-                        defaultCheck3: !selectAll,
-                        defaultCheck4: !selectAll,
-                      });
-                    }}
-                    id="selectAllCheckbox"
-                  />
-                  <label
-                    className="form-check-label font-size"
-                    htmlFor="selectAllCheckbox"
-                  >
-                    Tất cả
-                  </label>
-                </div>
-              </Form.Group>
             </Row>
+            {/* admin and manager permission to display the export button */}
+            {localStorage.getItem("role") === "ROLE_MANAGER" ||
+            localStorage.getItem("role") === "ROLE_ADMIN" ? (
+              <Row className="mb-3 d-flex justify-content-center align-items-center">
+                <Form.Group
+                  as={Col}
+                  md="2"
+                  controlId="validationCustomUsername7"
+                >
+                  <Form.Label>Trạng thái xuất: </Form.Label>
+                </Form.Group>
+                <Form.Group
+                  as={Col}
+                  md="2"
+                  controlId="validationCustomUsername99"
+                >
+                  {/* <Form.Label>Xuất theo PO</Form.Label> */}
+                  <Form.Select
+                    aria-label="Default select example"
+                    onChange={(event) => {
+                      const value = event.target.value;
+                      setPo(value === "Tất cả PO" ? "getAll" : value);
+                    }}
+                  >
+                    <option>Tất cả PO</option>
+                    {listPo &&
+                      listPo.length > 0 &&
+                      listPo.map((item, index) => {
+                        return (
+                          <option key={index} value={item.poNumber}>
+                            {item.poNumber}
+                          </option>
+                        );
+                      })}
+                  </Form.Select>
+                </Form.Group>
+                <Form.Group
+                  as={Col}
+                  md="2"
+                  controlId="validationCustomUsername8"
+                >
+                  <div className="form-check   label">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      checked={checkboxes.defaultCheck1 || selectAll}
+                      onChange={() =>
+                        setCheckboxes({
+                          ...checkboxes,
+                          defaultCheck1: !checkboxes.defaultCheck1,
+                        })
+                      }
+                      id="defaultCheck1"
+                    />
+                    <label
+                      className="form-check-label font-size"
+                      htmlFor="defaultCheck1"
+                    >
+                      Cập nhật SC
+                    </label>
+                  </div>
+                </Form.Group>
+                <Form.Group
+                  as={Col}
+                  md="2"
+                  controlId="validationCustomUsername9"
+                >
+                  <div className="form-check label">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      checked={checkboxes.defaultCheck2 || selectAll}
+                      onChange={() =>
+                        setCheckboxes({
+                          ...checkboxes,
+                          defaultCheck2: !checkboxes.defaultCheck2,
+                        })
+                      }
+                      id="defaultCheck2"
+                    />
+                    <label
+                      className="form-check-label font-size"
+                      htmlFor="defaultCheck2"
+                    >
+                      Cập nhật XK
+                    </label>
+                  </div>
+                </Form.Group>
+                <Form.Group
+                  as={Col}
+                  md="2"
+                  controlId="validationCustomUsername12"
+                >
+                  <div className="form-check label">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      checked={checkboxes.defaultCheck3 || selectAll}
+                      onChange={() =>
+                        setCheckboxes({
+                          ...checkboxes,
+                          defaultCheck3: !checkboxes.defaultCheck3,
+                        })
+                      }
+                      id="defaultCheck3"
+                    />
+                    <label
+                      className="form-check-label font-size"
+                      htmlFor="defaultCheck3"
+                    >
+                      Cập nhật KCS
+                    </label>
+                  </div>
+                </Form.Group>
+                <Form.Group
+                  as={Col}
+                  md="2"
+                  controlId="validationCustomUsername13"
+                >
+                  <div className="form-check label">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      checked={selectAll}
+                      onChange={() => {
+                        setSelectAll(!selectAll);
+                        setCheckboxes({
+                          defaultCheck1: !selectAll,
+                          defaultCheck2: !selectAll,
+                          defaultCheck3: !selectAll,
+                          defaultCheck4: !selectAll,
+                        });
+                      }}
+                      id="selectAllCheckbox"
+                    />
+                    <label
+                      className="form-check-label font-size"
+                      htmlFor="selectAllCheckbox"
+                    >
+                      Tất cả
+                    </label>
+                  </div>
+                </Form.Group>
+              </Row>
+            ) : null}
+            {/* {/* repairman permission to display the export button */}
+            {localStorage.getItem("role") === "ROLE_REPAIRMAN" ? (
+              <Row className="mb-3 d-flex  align-items-center">
+                <Form.Group
+                  as={Col}
+                  md="2"
+                  controlId="validationCustomUsername7"
+                >
+                  <Form.Label>Trạng thái xuất: </Form.Label>
+                </Form.Group>
+                <Form.Group
+                  as={Col}
+                  md="2"
+                  controlId="validationCustomUsername99"
+                >
+                  {/* <Form.Label>Xuất theo PO</Form.Label> */}
+                  <Form.Select
+                    aria-label="Default select example"
+                    onChange={(event) => {
+                      const value = event.target.value;
+                      setPo(value === "Tất cả PO" ? "getAll" : value);
+                    }}
+                  >
+                    <option>Tất cả PO</option>
+                    {listPo &&
+                      listPo.length > 0 &&
+                      listPo.map((item, index) => {
+                        return (
+                          <option key={index} value={item.poNumber}>
+                            {item.poNumber}
+                          </option>
+                        );
+                      })}
+                  </Form.Select>
+                </Form.Group>
+                <Form.Group
+                  as={Col}
+                  md="2"
+                  controlId="validationCustomUsername8"
+                >
+                  <div className="form-check   label">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      checked={checkboxes.defaultCheck1 || selectAll}
+                      onChange={() =>
+                        setCheckboxes({
+                          ...checkboxes,
+                          defaultCheck1: !checkboxes.defaultCheck1,
+                        })
+                      }
+                      id="defaultCheck1"
+                    />
+                    <label
+                      className="form-check-label font-size"
+                      htmlFor="defaultCheck1"
+                    >
+                      Cập nhật SC
+                    </label>
+                  </div>
+                </Form.Group>
+              </Row>
+            ) : null}
+            {/* kcsanalyst permission to display the export button */}
+            {localStorage.getItem("role") === "ROLE_KCSANALYST" ? (
+              <Row className="mb-3 d-flex  align-items-center">
+                <Form.Group
+                  as={Col}
+                  md="2"
+                  controlId="validationCustomUsername7"
+                >
+                  <Form.Label>Trạng thái xuất: </Form.Label>
+                </Form.Group>
+                <Form.Group
+                  as={Col}
+                  md="2"
+                  controlId="validationCustomUsername99"
+                >
+                  {/* <Form.Label>Xuất theo PO</Form.Label> */}
+                  <Form.Select
+                    aria-label="Default select example"
+                    onChange={(event) => {
+                      const value = event.target.value;
+                      setPo(value === "Tất cả PO" ? "getAll" : value);
+                    }}
+                  >
+                    <option>Tất cả PO</option>
+                    {listPo &&
+                      listPo.length > 0 &&
+                      listPo.map((item, index) => {
+                        return (
+                          <option key={index} value={item.poNumber}>
+                            {item.poNumber}
+                          </option>
+                        );
+                      })}
+                  </Form.Select>
+                </Form.Group>
+                <Form.Group
+                  as={Col}
+                  md="2"
+                  controlId="validationCustomUsername12"
+                >
+                  <div className="form-check label">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      checked={checkboxes.defaultCheck3 || selectAll}
+                      onChange={() =>
+                        setCheckboxes({
+                          ...checkboxes,
+                          defaultCheck3: !checkboxes.defaultCheck3,
+                        })
+                      }
+                      id="defaultCheck3"
+                    />
+                    <label
+                      className="form-check-label font-size"
+                      htmlFor="defaultCheck3"
+                    >
+                      Cập nhật KCS
+                    </label>
+                  </div>
+                </Form.Group>
+              </Row>
+            ) : null}
           </div>
 
           {/* button */}
           <div className="my-3 add-new d-flex justify-content-between">
             <div className="col-3"></div>
             <div className="group-btn d-flex">
+              {/* button search */}
               <div className="search">
                 <button
                   className="btn btn-primary label-search"
@@ -675,9 +924,91 @@ export const TableHH = () => {
                   Search
                 </button>
               </div>
+              {/* admin and manager permission to display button */}
               {localStorage.getItem("role") === "ROLE_MANAGER" ||
               localStorage.getItem("role") === "ROLE_ADMIN" ? (
                 <>
+                  <div className="update update-btn">
+                    <NavDropdown
+                      title="Sample files"
+                      id="basic-nav-dropdown"
+                      className="btn btn-success nav-drop"
+                    >
+                      <div className="update-state">
+                        <button
+                          className="dropdown-item label-state"
+                          onClick={() => handleDownloadSampleFileImport()}
+                        >
+                          Import HH
+                        </button>
+                      </div>
+                      <div className="update-state">
+                        <button
+                          className="dropdown-item label-state"
+                          onClick={() => handleDownloadSampleFile(8)}
+                        >
+                          Số BBBG
+                        </button>
+                      </div>
+                      <div className="update-state">
+                        <button
+                          className="dropdown-item label-state"
+                          onClick={() => handleDownloadSampleFile(6)}
+                        >
+                          Ngày nhập
+                        </button>
+                      </div>
+                      <div className="update-state">
+                        <button
+                          className="dropdown-item label-state"
+                          onClick={() => handleDownloadSampleFile(7)}
+                        >
+                          Hạng mục SC
+                        </button>
+                      </div>
+                      <div className="update-state">
+                        <button
+                          className="dropdown-item label-state"
+                          onClick={() => handleDownloadSampleFile(5)}
+                        >
+                          Ưu tiên SC
+                        </button>
+                      </div>
+                      <div className="update-state">
+                        <button
+                          className="dropdown-item label-state"
+                          onClick={() => handleDownloadSampleFile(1)}
+                        >
+                          Cập nhật SC
+                        </button>
+                      </div>
+                      <div className="update-state">
+                        <button
+                          className="dropdown-item label-state"
+                          onClick={() => handleDownloadSampleFile(2)}
+                        >
+                          Cập nhật XK
+                        </button>
+                      </div>
+                      <div className="update-state">
+                        <button
+                          className="dropdown-item label-state"
+                          onClick={() => handleDownloadSampleFile(3)}
+                        >
+                          Cập nhật KCS
+                        </button>
+                      </div>
+                      <div className="update-state">
+                        <button
+                          className="dropdown-item label-state"
+                          onClick={() => handleDownloadSampleFile(4)}
+                        >
+                          Cập nhật BH
+                        </button>
+                      </div>
+                    </NavDropdown>
+                  </div>
+
                   <div className="import">
                     <label
                       htmlFor="test"
@@ -693,88 +1024,203 @@ export const TableHH = () => {
                       hidden
                     />
                   </div>
-
-                  <div className="update update-btn">
-                    <NavDropdown
-                      title="Update"
-                      id="basic-nav-dropdown"
-                      className="btn btn-warning nav-drop"
-                    >
-                      <div className="update-state">
-                        <label
-                          htmlFor="test1"
-                          className="dropdown-item label-state"
-                        >
-                          Trạng thái sửa chữa
-                        </label>
-                        <input
-                          type="file"
-                          id="test1"
-                          hidden
-                          onChange={handleUploadSC}
-                        />
-                      </div>
-                      <div className="update-state">
-                        <label
-                          htmlFor="test2"
-                          className="dropdown-item label-state"
-                        >
-                          Xuất kho trả KH
-                        </label>
-                        <input
-                          type="file"
-                          id="test2"
-                          hidden
-                          onChange={handleUploadSC}
-                        />
-                      </div>
-                      <div className="update-state">
-                        <label
-                          htmlFor="test3"
-                          className="dropdown-item label-state"
-                        >
-                          Trạng thái KCS
-                        </label>
-                        <input
-                          type="file"
-                          id="test3"
-                          hidden
-                          onChange={handleUploadSC}
-                        />
-                      </div>
-                      <div className="update-state">
-                        <label
-                          htmlFor="test4"
-                          className="dropdown-item label-state"
-                        >
-                          Trạng thái BH
-                        </label>
-                        <input
-                          type="file"
-                          id="test4"
-                          hidden
-                          onChange={handleUploadSC}
-                        />
-                      </div>
-                    </NavDropdown>
-                  </div>
-
-                  <div className="update">
-                    <button
-                      className="btn btn-success label-export"
-                      onClick={handleExport}
-                      disabled={
-                        !checkboxes.defaultCheck1 &&
-                        !checkboxes.defaultCheck2 &&
-                        !checkboxes.defaultCheck3 &&
-                        !checkboxes.defaultCheck4
-                      }
-                    >
-                      <AiOutlineDownload className="icon-export" />
-                      Export
-                    </button>
-                  </div>
                 </>
+              ) : null}
+              {/* repairman permission to display the update button */}
+              {localStorage.getItem("role") === "ROLE_REPAIRMAN" ? (
+                <div className="update update-btn">
+                  <NavDropdown
+                    title="Update"
+                    id="basic-nav-dropdown"
+                    className="btn btn-warning nav-drop"
+                  >
+                    <div className="update-state">
+                      <label
+                        htmlFor="test1"
+                        className="dropdown-item label-state"
+                      >
+                        Cập nhật SC
+                      </label>
+                      <input
+                        type="file"
+                        id="test1"
+                        hidden
+                        onChange={handleUploadSC}
+                      />
+                    </div>
+                  </NavDropdown>
+                </div>
+              ) : null}
+              {/* kcsanalyst permission to display the update button */}
+              {localStorage.getItem("role") === "ROLE_KCSANALYST" ? (
+                <div className="update update-btn">
+                  <NavDropdown
+                    title="Update"
+                    id="basic-nav-dropdown"
+                    className="btn btn-warning nav-drop"
+                  >
+                    <div className="update-state">
+                      <label
+                        htmlFor="test3"
+                        className="dropdown-item label-state"
+                      >
+                        Cập nhật KCS
+                      </label>
+                      <input
+                        type="file"
+                        id="test3"
+                        hidden
+                        onChange={handleUploadSC}
+                      />
+                    </div>
+                  </NavDropdown>
+                </div>
+              ) : null}
+              {/* admin and manager permission to display the update button */}
+              {localStorage.getItem("role") === "ROLE_MANAGER" ||
+              localStorage.getItem("role") === "ROLE_ADMIN" ? (
+                <div className="update update-btn">
+                  <NavDropdown
+                    title="Update"
+                    id="basic-nav-dropdown"
+                    className="btn btn-warning nav-drop"
+                  >
+                    <div className="update-state">
+                      <label
+                        htmlFor="test8"
+                        className="dropdown-item label-state"
+                      >
+                        Số BBBG
+                      </label>
+                      <input
+                        type="file"
+                        id="test8"
+                        hidden
+                        onChange={handleUploadSC}
+                      />
+                    </div>
+                    <div className="update-state">
+                      <label
+                        htmlFor="test7"
+                        className="dropdown-item label-state"
+                      >
+                        Ngày nhập
+                      </label>
+                      <input
+                        type="file"
+                        id="test7"
+                        hidden
+                        onChange={handleUploadSC}
+                      />
+                    </div>
+                    <div className="update-state">
+                      <label
+                        htmlFor="test5"
+                        className="dropdown-item label-state"
+                      >
+                        Hạng mục SC
+                      </label>
+                      <input
+                        type="file"
+                        id="test5"
+                        hidden
+                        onChange={handleUploadSC}
+                      />
+                    </div>
+                    <div className="update-state">
+                      <label
+                        htmlFor="test6"
+                        className="dropdown-item label-state"
+                      >
+                        Ưu tiên SC
+                      </label>
+                      <input
+                        type="file"
+                        id="test6"
+                        hidden
+                        onChange={handleUploadSC}
+                      />
+                    </div>
+                    <div className="update-state">
+                      <label
+                        htmlFor="test1"
+                        className="dropdown-item label-state"
+                      >
+                        Cập nhật SC
+                      </label>
+                      <input
+                        type="file"
+                        id="test1"
+                        hidden
+                        onChange={handleUploadSC}
+                      />
+                    </div>
+                    <div className="update-state">
+                      <label
+                        htmlFor="test2"
+                        className="dropdown-item label-state"
+                      >
+                        Cập nhật XK
+                      </label>
+                      <input
+                        type="file"
+                        id="test2"
+                        hidden
+                        onChange={handleUploadSC}
+                      />
+                    </div>
+                    <div className="update-state">
+                      <label
+                        htmlFor="test3"
+                        className="dropdown-item label-state"
+                      >
+                        Cập nhật KCS
+                      </label>
+                      <input
+                        type="file"
+                        id="test3"
+                        hidden
+                        onChange={handleUploadSC}
+                      />
+                    </div>
+                    <div className="update-state">
+                      <label
+                        htmlFor="test4"
+                        className="dropdown-item label-state"
+                      >
+                        Cập nhật BH
+                      </label>
+                      <input
+                        type="file"
+                        id="test4"
+                        hidden
+                        onChange={handleUploadSC}
+                      />
+                    </div>
+                  </NavDropdown>
+                </div>
+              ) : null}
+
+              {/*permission to display the export button */}
+              {localStorage.getItem("role") === "ROLE_MANAGER" ||
+              localStorage.getItem("role") === "ROLE_ADMIN" ||
+              localStorage.getItem("role") === "ROLE_REPAIRMAN" ||
+              localStorage.getItem("role") === "ROLE_KCSANALYST" ? (
+                <div className="update">
+                  <button
+                    className="btn btn-success label-export"
+                    onClick={handleExport}
+                    disabled={
+                      !checkboxes.defaultCheck1 &&
+                      !checkboxes.defaultCheck2 &&
+                      !checkboxes.defaultCheck3 &&
+                      !checkboxes.defaultCheck4
+                    }
+                  >
+                    <AiOutlineDownload className="icon-export" />
+                    Export
+                  </button>
+                </div>
               ) : null}
             </div>
           </div>
@@ -782,20 +1228,21 @@ export const TableHH = () => {
 
         {/* table */}
 
-        <Table striped bordered hover className="table-shadow">
+        <table className="table-shadow  table-color  table-bordered table-hover">
           <thead>
             <tr>
               <th>Stt</th>
               <th>Mã hàng hóa</th>
-              <th>Số serial hỏng</th>
+              <th>Số serial</th>
               <th>Số PO</th>
               <th>Số BBBG</th>
               <th>Ngày nhập</th>
-              <th>Hạng mục</th>
-              <th>Trạng thái SC</th>
-              <th>Xuất kho trả KH</th>
-              <th>KCS VT</th>
-              <th>Bảo hành</th>
+              <th>Hạng mục SC</th>
+              <th>Ưu tiên SC</th>
+              <th>Cập nhật SC</th>
+              <th>Cập nhật XK</th>
+              <th>Cập nhật KCS</th>
+              <th>Cập nhật BH</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -803,60 +1250,77 @@ export const TableHH = () => {
             {listPoDetail &&
               listPoDetail.length > 0 &&
               listPoDetail.map((item, index) => {
+                // background color when priority is equal to 1
+                const rowStyles = {
+                  backgroundColor: "#ffeeba", // Màu nền sáng
+                };
+                // convert this from long to date
                 const currentIndex = startIndex + index;
                 const time = item.importDate;
-                
                 const timeWarranty = item.warrantyPeriod;
-                let dataWarranty
+                let dataWarranty;
                 if (timeWarranty !== null) {
                   dataWarranty = moment(timeWarranty).format("DD/MM/YYYY");
                 }
                 const data = moment(time).format("DD/MM/YYYY");
-                  return (
-                    <tr
-                      key={`sc-${currentIndex}`}
-                      onDoubleClick={() => handleShowPoDetail(item)}
-                    >
-                      <td>{currentIndex + 1}</td>
-                      <td>{item.product.productId}</td>
-                      <td>{item.serialNumber}</td>
-                      <td>{item.po.poNumber}</td>
-                      <td>{item.bbbgNumber}</td>
-                      <td>{data}</td>
-                      <td>
-                        {item.repairCategory === 0 && "Nhập kho SC"}
-                        {item.repairCategory === 1 && "Nhập kho BH"}
-                      </td>
-                      <td>
-                        {item.repairStatus === 0 && "Sửa chữa không được"}
-                        {item.repairStatus === 1 && "Sửa chữa xong"}
-                        {item.repairStatus === 2 && "Cháy nổ"}
-                      </td>
-                      <td>
-                        {item.exportPartner === 0 && "Chưa xuất kho"}
-                        {item.exportPartner === 1 && "Xuất kho"}
-                      </td>
-                      <td>
-                        {item.kcsVT === 0 && "FAIL"}
-                        {item.kcsVT === 1 && "PASS"}
-                      </td>
-                      <td>{dataWarranty}</td>
-                      <td>
-                        {localStorage.getItem("role") === "ROLE_MANAGER" ||
-                        localStorage.getItem("role") === "ROLE_ADMIN" ? (
-                          <button
-                            className="btn btn-warning"
-                            onClick={() => handleEditPoDetail(item)}
-                          >
-                            Edit
-                          </button>
-                        ) : null}
-                      </td>
-                    </tr>
-                  );
+                // check if priority === 1 then change color
+                const rowStyle =
+                  item.priority === 1
+                    ? rowStyles
+                    : { backgroundColor: "#ffffff" };
+                return (
+                  <tr
+                    key={`sc-${currentIndex}`}
+                    onDoubleClick={() => handleShowPoDetail(item)}
+                    style={rowStyle}
+                    className="table-striped"
+                  >
+                    <td>{currentIndex + 1}</td>
+                    <td>{item.product.productId}</td>
+                    <td>{item.serialNumber}</td>
+                    <td>{item.po.poNumber}</td>
+                    <td>{item.bbbgNumber}</td>
+                    <td>{data}</td>
+                    <td>
+                      {item.repairCategory === 0 && "Nhập kho SC"}
+                      {item.repairCategory === 1 && "Nhập kho BH"}
+                    </td>
+                    <td>
+                      {item.priority === 0 && "Không ưu tiên"}
+                      {item.priority === 1 && "Ưu tiên"}
+                    </td>
+                    <td>
+                      {item.repairStatus === 0 && "Sửa chữa không được"}
+                      {item.repairStatus === 1 && "Sửa chữa xong"}
+                      {item.repairStatus === 2 && "Cháy nổ"}
+                    </td>
+                    <td>
+                      {item.exportPartner === 0 && "Chưa xuất kho"}
+                      {item.exportPartner === 1 && "Xuất kho"}
+                    </td>
+                    <td>
+                      {item.kcsVT === 0 && "FAIL"}
+                      {item.kcsVT === 1 && "PASS"}
+                    </td>
+                    <td>{dataWarranty}</td>
+                    <td>
+                      {localStorage.getItem("role") === "ROLE_MANAGER" ||
+                      localStorage.getItem("role") === "ROLE_ADMIN" ||
+                      localStorage.getItem("role") === "ROLE_REPAIRMAN" ||
+                      localStorage.getItem("role") === "ROLE_KCSANALYST" ? (
+                        <button
+                          className="btn btn-warning btn-sm"
+                          onClick={() => handleEditPoDetail(item)}
+                        >
+                          Edit
+                        </button>
+                      ) : null}
+                    </td>
+                  </tr>
+                );
               })}
           </tbody>
-        </Table>
+        </table>
 
         {/* Loading */}
 
@@ -871,7 +1335,7 @@ export const TableHH = () => {
           </div>
         )}
 
-        {/* Phân trang */}
+        {/* paging */}
 
         <div className="d-flex justify-content-end align-items-center">
           <ReactPaginate
@@ -968,158 +1432,6 @@ export const TableHH = () => {
               </Button>
               <Button variant="primary" onClick={handleExportNotify}>
                 Export
-              </Button>
-            </Modal.Footer>
-          </Modal>
-        </div>
-
-        <div
-          className="modal show"
-          style={{ display: "block", position: "initial" }}
-        >
-          <Modal show={isShowNotifyUpdateSC} onHide={handleCloses} size="lg">
-            <Modal.Header closeButton>
-              <Modal.Title className="text-center">Thông báo</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <Table striped bordered hover>
-                <thead>
-                  <tr>
-                    <th>Mã hàng hóa </th>
-                    <th>Mô tả lỗi </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data &&
-                    data.length > 0 &&
-                    data.map((item, index) => {
-                      return (
-                        <tr key={`sc-${index}`}>
-                          <td>{item.key}</td>
-                          <td>{item.errorDescription}</td>
-                        </tr>
-                      );
-                    })}
-                </tbody>
-              </Table>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={handleCloses}>
-                Close
-              </Button>
-            </Modal.Footer>
-          </Modal>
-        </div>
-
-        <div
-          className="modal show"
-          style={{ display: "block", position: "initial" }}
-        >
-          <Modal show={isShowNotifyUpdateXK} onHide={handleCloses} size="lg">
-            <Modal.Header closeButton>
-              <Modal.Title className="text-center">Thông báo</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <Table striped bordered hover>
-                <thead>
-                  <tr>
-                    <th>Mã hàng hóa </th>
-                    <th>Mô tả lỗi </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data &&
-                    data.length > 0 &&
-                    data.map((item, index) => {
-                      return (
-                        <tr key={`sc-${index}`}>
-                          <td>{item.key}</td>
-                          <td>{item.errorDescription}</td>
-                        </tr>
-                      );
-                    })}
-                </tbody>
-              </Table>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={handleCloses}>
-                Close
-              </Button>
-            </Modal.Footer>
-          </Modal>
-        </div>
-
-        <div
-          className="modal show"
-          style={{ display: "block", position: "initial" }}
-        >
-          <Modal show={isShowNotifyUpdateKCS} onHide={handleCloses} size="lg">
-            <Modal.Header closeButton>
-              <Modal.Title className="text-center">Thông báo</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <Table striped bordered hover>
-                <thead>
-                  <tr>
-                    <th>Mã hàng hóa </th>
-                    <th>Mô tả lỗi </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data &&
-                    data.length > 0 &&
-                    data.map((item, index) => {
-                      return (
-                        <tr key={`sc-${index}`}>
-                          <td>{item.key}</td>
-                          <td>{item.errorDescription}</td>
-                        </tr>
-                      );
-                    })}
-                </tbody>
-              </Table>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={handleCloses}>
-                Close
-              </Button>
-            </Modal.Footer>
-          </Modal>
-        </div>
-
-        <div
-          className="modal show"
-          style={{ display: "block", position: "initial" }}
-        >
-          <Modal show={isShowNotifyUpdateBH} onHide={handleCloses} size="lg">
-            <Modal.Header closeButton>
-              <Modal.Title className="text-center">Thông báo</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <Table striped bordered hover>
-                <thead>
-                  <tr>
-                    <th>Mã hàng hóa </th>
-                    <th>Mô tả lỗi </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data &&
-                    data.length > 0 &&
-                    data.map((item, index) => {
-                      return (
-                        <tr key={`sc-${index}`}>
-                          <td>{item.key}</td>
-                          <td>{item.errorDescription}</td>
-                        </tr>
-                      );
-                    })}
-                </tbody>
-              </Table>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={handleCloses}>
-                Close
               </Button>
             </Modal.Footer>
           </Modal>

@@ -173,10 +173,10 @@ const searchProduct = (keyword, property, pageIndex, pageSize) => {
 };
 
 // api add po
-const createPo = (poNumber, quantity, beginAt, endAt) => {
+const createPo = (contractNumber, poNumber, quantity, beginAt, endAt) => {
   return axioss.post(
     "/po/add",
-    { poNumber, quantity, beginAt, endAt },
+    { contractNumber, poNumber, quantity, beginAt, endAt },
     {
       headers: {
         email: `${localStorage.getItem("email")}`,
@@ -196,10 +196,10 @@ const getPo = () => {
 };
 
 // api update po
-const updatePo = (poNumber, quantity, beginAt, endAt) => {
+const updatePo = (contractNumber, poNumber, quantity, beginAt, endAt) => {
   return axioss.put(
     `/po/update/${localStorage.getItem("po")}`,
-    { poNumber, quantity, beginAt, endAt },
+    { contractNumber, poNumber, quantity, beginAt, endAt },
     {
       headers: {
         email: `${localStorage.getItem("email")}`,
@@ -281,6 +281,7 @@ const updatePoDetail = (
   bbbgNumber,
   importDate,
   repairCategory,
+  priority,
   repairStatus,
   exportPartner,
   kcsVT,
@@ -293,6 +294,7 @@ const updatePoDetail = (
       bbbgNumber,
       importDate,
       repairCategory,
+      priority,
       repairStatus,
       exportPartner,
       kcsVT,

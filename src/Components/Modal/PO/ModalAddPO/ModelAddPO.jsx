@@ -14,6 +14,7 @@ const ModelAddPO = (props) => {
   const [po, setPo] = useState("");
   const [quantity, setQuantity] = useState("");
   const [isValidate, setIsValidate] = useState("");
+  const [contract, setContract] = useState("")
 
   //handle change date start
   const handleDateChangeStart = (date) => {
@@ -44,14 +45,33 @@ const ModelAddPO = (props) => {
   // handle add po
   const handleAddPO = async () => {
     // validate
-    if (!po || !quantity || !selectedDateStart || !selectedDateStart) {
+    if (
+      !contract ||
+      !po ||
+      !quantity ||
+      !selectedDateStart ||
+      !selectedDateStart
+    ) {
       setIsValidate("Cần nhập đầy đủ thông tin");
-    } else if (quantity <= 0) {
+      return
+    } else {
+      setIsValidate("");
+    } 
+    if (quantity <= 0) {
       setIsValidate("Số lượng phải lớn hơn 0");
+      return
+    }else {
+      setIsValidate("");
+    } 
+    if (selectedDateStart >= selectedDateEnd) {
+      setIsValidate("Ngày bắt đầu phải nhỏ hơn ngày kết thúc");
+      return
     } else {
       setIsValidate("");
     }
+
     let res = await createPo(
+      contract,
       po,
       quantity,
       selectedDateStart.getTime(),
@@ -62,6 +82,7 @@ const ModelAddPO = (props) => {
     if (res && res.statusCode === 200) {
       toast.success("Thêm thành công!!");
       toast.warning("Bạn chỉ có thể chỉnh sửa trong 15 phút đầu!!");
+      setContract("")
       setPo("");
       setQuantity("");
       setSelectedDateEnd("");
@@ -71,10 +92,11 @@ const ModelAddPO = (props) => {
     } else {
       if (
         res &&
-        res.statusCode === 205 &&
-        res.statusMessage === "PO NUMBER ALREADY EXISTS"
+        res.statusCode === 205
       ) {
         setIsValidate("PO đã tồn tại");
+      } else {
+        setIsValidate("")
       }
     }
   };
@@ -93,6 +115,18 @@ const ModelAddPO = (props) => {
             <div>
               <div className="validate-add-po">{isValidate}</div>
               <form>
+                <div className="form-group mb-3">
+                  <label htmlFor="exampleInputEmail1">Số hợp đồng</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="exampleInputEmail9"
+                    aria-describedby="emailHelp"
+                    placeholder="Nhập số hợp đồng"
+                    value={contract}
+                    onChange={(event) => setContract(event.target.value)}
+                  />
+                </div>
                 <div className="form-group mb-3">
                   <label htmlFor="exampleInputEmail1">Số PO</label>
                   <input
@@ -123,6 +157,8 @@ const ModelAddPO = (props) => {
                     onChange={handleDateChangeStart}
                     customInput={<CustomInput />}
                     dateFormat="dd/MM/yyyy"
+                    showYearDropdown
+                    showMonthDropdown
                   />
                 </div>
                 <div className="form-group mb-3">
@@ -132,6 +168,8 @@ const ModelAddPO = (props) => {
                     onChange={handleDateChangeEnd}
                     customInput={<CustomInput />}
                     dateFormat="dd/MM/yyyy"
+                    showYearDropdown
+                    showMonthDropdown
                   />
                 </div>
               </form>

@@ -32,32 +32,11 @@ const ModalUpdateUser = (props) => {
   }, [dataEditUser]);
 
   // handle get role admin
-  const handleRole = async () => {
+  const handleRole = async (index) => {
     let res = await role();
-    console.log(res.data[0]);
     if (res) {
-      setRoleID(res.data[0]);
-      setRoleName(res.data[0].roleName);
-    }
-  };
-
-  // handle get role manager
-  const handleRole2 = async () => {
-    let res = await role();
-    console.log(res.data[1]);
-    if (res) {
-      setRoleID(res.data[1]);
-      setRoleName(res.data[1].roleName);
-    }
-  };
-
-  // handle get role user
-  const handleRole3 = async () => {
-    let res = await role();
-    console.log(res.data[2]);
-    if (res) {
-      setRoleID(res.data[2]);
-      setRoleName(res.data[2].roleName);
+      setRoleID(res.data[index]);
+      setRoleName(res.data[index].roleName);
     }
   };
 
@@ -125,25 +104,35 @@ const ModalUpdateUser = (props) => {
                 />
               </Form.Group>
             </Row>
-            <Row className="mb-3">
-              <Form.Group md="4" controlId="validationCustom09">
-                <Form.Label>Role</Form.Label>
-                <Dropdown>
-                  <Dropdown.Toggle variant="light">{roleName}</Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    <Dropdown.Item onClick={() => handleRole()}>
-                      Admin
-                    </Dropdown.Item>
-                    <Dropdown.Item onClick={() => handleRole2()}>
-                      Manager
-                    </Dropdown.Item>
-                    <Dropdown.Item onClick={() => handleRole3()}>
-                      User
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-              </Form.Group>
-            </Row>
+            {email !== localStorage.getItem("email") && (
+              <Row className="mb-3">
+                <Form.Group md="4" controlId="validationCustom09">
+                  <Form.Label>Role</Form.Label>
+                  <Dropdown>
+                    <Dropdown.Toggle variant="light">
+                      {roleName}
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu>
+                      <Dropdown.Item onClick={() => handleRole(0)}>
+                        Admin
+                      </Dropdown.Item>
+                      <Dropdown.Item onClick={() => handleRole(1)}>
+                        Manager
+                      </Dropdown.Item>
+                      <Dropdown.Item onClick={() => handleRole(2)}>
+                        User
+                      </Dropdown.Item>
+                      <Dropdown.Item onClick={() => handleRole(3)}>
+                        Repair
+                      </Dropdown.Item>
+                      <Dropdown.Item onClick={() => handleRole(4)}>
+                        KCS
+                      </Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
+                </Form.Group>
+              </Row>
+            )}
           </Form>
         </Modal.Body>
         <Modal.Footer>

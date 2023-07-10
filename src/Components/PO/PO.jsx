@@ -38,6 +38,7 @@ const PO = () => {
     setIsShowUpdate(false);
     setIsShowPODetail(false);
     setStatistical(false);
+    setDataStatistical("")
   };
 
   // call api get all po
@@ -118,6 +119,7 @@ const PO = () => {
           <thead>
             <tr>
               <th>Stt</th>
+              <th>Số hợp đồng</th>
               <th>Số PO </th>
               <th>Số lượng</th>
               <th>Ngày bắt đầu</th>
@@ -139,6 +141,7 @@ const PO = () => {
                     onDoubleClick={() => handleShowPo(item)}
                   >
                     <td>{index + 1}</td>
+                    <td>{item.contractNumber}</td>
                     <td>{item.poNumber}</td>
                     <td>{item.quantity}</td>
                     <td>{dataBegin}</td>
@@ -148,13 +151,13 @@ const PO = () => {
                       localStorage.getItem("role") === "ROLE_ADMIN" ? (
                         <>
                           <button
-                            className="btn btn-warning"
+                            className="btn btn-warning btn-xl"
                             onClick={() => handleUpdatePO(item)}
                           >
                             Edit
                           </button>
                           <button
-                            className="btn btn-primary mx-3"
+                            className="btn btn-primary mx-3 btn-xl"
                             onClick={() => handleViewPo(item)}
                           >
                             View

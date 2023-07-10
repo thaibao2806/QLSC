@@ -45,7 +45,7 @@
 }
 
 .tables {
-  margin: 70px;
+  margin: 70px 49px;
   font-size: 14px;
 
   .table-action {
@@ -59,6 +59,11 @@
 .table-shadow {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   margin-top: 10px;
+
+  .highlighted-row {
+    background-color: #fbdb7a; /* Màu nền sáng */
+    color: #fbdb7a;
+  }
 }
 
 .update-btn {
@@ -112,3 +117,41 @@
 .hide {
   display: none;
 }
+
+.table-color {
+    --bs-table-color-type: initial;
+    --bs-table-bg-type: initial;
+    --bs-table-color-state: initial;
+    --bs-table-bg-state: initial; 
+    --bs-table-border-color: #dee2e6;
+    --bs-table-accent-bg: transparent;
+    --bs-table-striped-color: #212529;
+    --bs-table-striped-bg: rgba(0, 0, 0, 0.05);
+    --bs-table-active-color: #212529;
+    --bs-table-active-bg: rgba(0, 0, 0, 0.1);
+    --bs-table-hover-color: #212529;
+    --bs-table-hover-bg: rgba(0, 0, 0, 0.075);
+    width: 100%;
+    margin-bottom: 1rem;
+    vertical-align: top;
+    border-color: var(--bs-table-border-color);
+
+    thead {
+      tr {
+        th {
+          padding: 10px;
+          background-color: #ffff;
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        td {
+          padding: 5px 5px 5px 10px;
+        }
+      }
+    }
+}
+
+

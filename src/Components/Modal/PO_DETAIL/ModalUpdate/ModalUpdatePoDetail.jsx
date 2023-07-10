@@ -28,6 +28,7 @@ const ModalUpdatePoDetail = (props) => {
   const [kcsVT, setKcsVT] = useState("");
   const [warrantyPeriod, setWarrantyPeriod] = useState("");
   const [poDetailId, setPoDetailId] = useState("");
+  const [prioritize, setPrioritize] = useState("")
 
   // check if show then get data po detail
   useEffect(() => {
@@ -50,6 +51,7 @@ const ModalUpdatePoDetail = (props) => {
       setKcsVT(dateEditPoDetail.kcsVT);
       setWarrantyPeriod(dataWarranty);
       setSelectedDateWarrity(dateEditPoDetail.warrantyPeriod);
+      setPrioritize(dateEditPoDetail.priority);
     }
   }, [dateEditPoDetail]);
 
@@ -91,6 +93,7 @@ const ModalUpdatePoDetail = (props) => {
       bbbg,
       startDate,
       repairCategory,
+      prioritize,
       repairStatus,
       exportPartner,
       kcsVT,
@@ -171,6 +174,8 @@ const ModalUpdatePoDetail = (props) => {
                       type="text"
                       placeholder="Số BBBG"
                       value={bbbg}
+                      readOnly
+                      disabled
                       onChange={(e) => setBbbg(e.target.value)}
                     />
                   </Form.Group>
@@ -180,7 +185,13 @@ const ModalUpdatePoDetail = (props) => {
                       selected={selectedDateStart}
                       onChange={handleDateChangeStart}
                       dateFormat="dd/MM/yyyy"
+                      showYearDropdown
+                      showMonthDropdown
                       customInput={<CustomInput />}
+                      disabled={
+                        localStorage.getItem("role") !== "ROLE_ADMIN" &&
+                        localStorage.getItem("role") !== "ROLE_MANAGER"
+                      }
                     />
                   </Form.Group>
                   <Form.Group
@@ -188,9 +199,13 @@ const ModalUpdatePoDetail = (props) => {
                     md="4"
                     controlId="validationCustomUsername2"
                   >
-                    <Form.Label>Hạng mục</Form.Label>
+                    <Form.Label>Hạng mục SC</Form.Label>
                     <Form.Select
                       aria-label="Default select example"
+                      disabled={
+                        localStorage.getItem("role") !== "ROLE_ADMIN" &&
+                        localStorage.getItem("role") !== "ROLE_MANAGER"
+                      }
                       value={repairCategory}
                       onChange={(event) => {
                         const value = event.target.value;
@@ -203,8 +218,26 @@ const ModalUpdatePoDetail = (props) => {
                   </Form.Group>
                 </Row>
                 <Row className="mb-3 ">
-                  <Form.Group as={Col} md="6" controlId="validationCustom05">
-                    <Form.Label>Trạng thái SC</Form.Label>
+                  <Form.Group as={Col} md="4" controlId="validationCustom099">
+                    <Form.Label>Ưu tiên SC</Form.Label>
+                    <Form.Select
+                      aria-label="Default select example111"
+                      disabled={
+                        localStorage.getItem("role") !== "ROLE_ADMIN" &&
+                        localStorage.getItem("role") !== "ROLE_MANAGER"
+                      }
+                      value={prioritize}
+                      onChange={(event) => {
+                        const value = event.target.value;
+                        setPrioritize(value === "Tất cả" ? null : value);
+                      }}
+                    >
+                      <option value="1">Ưu tiên</option>
+                      <option value="0">Không ưu tiên</option>
+                    </Form.Select>
+                  </Form.Group>
+                  <Form.Group as={Col} md="4" controlId="validationCustom05">
+                    <Form.Label>Cập nhật SC</Form.Label>
                     <Form.Select
                       aria-label="Default select example"
                       value={repairStatus}
@@ -212,16 +245,25 @@ const ModalUpdatePoDetail = (props) => {
                         const value = event.target.value;
                         setRepairStatus(value === "Tất cả" ? null : value);
                       }}
+                      disabled={
+                        localStorage.getItem("role") !== "ROLE_ADMIN" &&
+                        localStorage.getItem("role") !== "ROLE_MANAGER" &&
+                        localStorage.getItem("role") !== "ROLE_REPAIRMAN"
+                      }
                     >
                       <option value="0">Sửa chữa không được</option>
                       <option value="1">Sửa chữa xong</option>
                       <option value="2">Cháy nổ</option>
                     </Form.Select>
                   </Form.Group>
-                  <Form.Group as={Col} md="6" controlId="validationCustom06">
-                    <Form.Label>Xuất kho trả KH</Form.Label>
+                  <Form.Group as={Col} md="4" controlId="validationCustom06">
+                    <Form.Label>Cập nhật XK</Form.Label>
                     <Form.Select
                       aria-label="Default select example"
+                      disabled={
+                        localStorage.getItem("role") !== "ROLE_ADMIN" &&
+                        localStorage.getItem("role") !== "ROLE_MANAGER"
+                      }
                       value={exportPartner}
                       onChange={(event) => {
                         const value = event.target.value;
@@ -235,9 +277,14 @@ const ModalUpdatePoDetail = (props) => {
                 </Row>
                 <Row className="mb-3 ">
                   <Form.Group as={Col} md="6" controlId="validationCustom07">
-                    <Form.Label>KCS VT</Form.Label>
+                    <Form.Label>Cập nhật KCS</Form.Label>
                     <Form.Select
                       aria-label="Default select example1"
+                      disabled={
+                        localStorage.getItem("role") !== "ROLE_ADMIN" &&
+                        localStorage.getItem("role") !== "ROLE_MANAGER" &&
+                        localStorage.getItem("role") !== "ROLE_KCSANALYST"
+                      }
                       value={kcsVT}
                       onChange={(event) => {
                         const value = event.target.value;
@@ -249,12 +296,18 @@ const ModalUpdatePoDetail = (props) => {
                     </Form.Select>
                   </Form.Group>
                   <Form.Group as={Col} md="6" controlId="validationCustom08">
-                    <Form.Label>Bảo hành</Form.Label>
+                    <Form.Label>Cập nhật BH</Form.Label>
                     <DatePicker
                       selected={selectedDateWarrity}
                       onChange={handleDateChangeWarranty}
                       dateFormat="dd/MM/yyyy"
+                      showYearDropdown
+                      showMonthDropdown
                       customInput={<CustomInput />}
+                      disabled={
+                        localStorage.getItem("role") !== "ROLE_ADMIN" &&
+                        localStorage.getItem("role") !== "ROLE_MANAGER"
+                      }
                     />
                   </Form.Group>
                 </Row>

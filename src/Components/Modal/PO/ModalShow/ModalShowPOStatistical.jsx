@@ -55,10 +55,10 @@ const ModalShowPOStatistical = (props) => {
                 listPo.TRANG_THAI_SC.CHAY_NO,
               ],
               backgroundColor: [
-                "rgba(255, 0, 0, 0.5)",
-                "rgba(100, 255, 0, 0.5)",
-                "rgba(200, 50, 255, 0.5)",
-                "rgba(0, 100, 255, 0.5)",
+                "rgba(255, 0, 0, 1)", // Đỏ đậm
+                "rgba(100, 255, 0, 1)", // Xanh lá cây đậm
+                "rgba(200, 50, 255, 1)", // Tím đậm
+                "rgba(0, 100, 255, 1)", // Xanh dương đậm
               ],
             },
           ],
@@ -96,10 +96,10 @@ const ModalShowPOStatistical = (props) => {
                 listPo.XUAT_KHO.CHUA_CAP_NHAT,
               ],
               backgroundColor: [
-                "rgba(255, 0, 0, 0.5)",
-                "rgba(100, 255, 0, 0.5)",
-                "rgba(200, 50, 255, 0.5)",
-                "rgba(0, 100, 255, 0.5)",
+                "rgba(255, 0, 0, 1)", // Đỏ đậm
+                "rgba(100, 255, 0, 1)", // Xanh lá cây đậm
+                "rgba(200, 50, 255, 1)", // Tím đậm
+                "rgba(0, 100, 255, 1)", // Xanh dương đậm
               ],
             },
           ],
@@ -137,9 +137,10 @@ const ModalShowPOStatistical = (props) => {
                 listPo.KSC_VT.CHUA_CAP_NHAT,
               ],
               backgroundColor: [
-                "rgba(255, 0, 0, 0.5)",
-                "rgba(100, 255, 0, 0.5)",
-                "rgba(200, 50, 255, 0.5)",
+                "rgba(255, 0, 0, 1)", // Đỏ đậm
+                "rgba(100, 255, 0, 1)", // Xanh lá cây đậm
+                "rgba(200, 50, 255, 1)", // Tím đậm
+                "rgba(0, 100, 255, 1)", // Xanh dương đậm
               ],
             },
           ],
@@ -176,9 +177,10 @@ const ModalShowPOStatistical = (props) => {
                 listPo.BAO_HANH.CHUA_CAP_NHAT,
               ],
               backgroundColor: [
-                "rgba(255, 0, 0, 0.5)",
-                "rgba(100, 255, 0, 0.5)",
-                "rgba(200, 50, 255, 0.5)",
+                "rgba(255, 0, 0, 1)", // Đỏ đậm
+                "rgba(100, 255, 0, 1)", // Xanh lá cây đậm
+                "rgba(200, 50, 255, 1)", // Tím đậm
+                "rgba(0, 100, 255, 1)", // Xanh dương đậm
               ],
             },
           ],
@@ -252,97 +254,48 @@ const ModalShowPOStatistical = (props) => {
           {/* table and chart repair status */}
           <div className="table-status">
             <div className="table-sc">
-              <h5 className="table-sum">Trạng thái sửa chữa</h5>
               <div className="statistical-sc">
-                <Table striped bordered hover size="lg" className="table-sc">
+                <Table striped bordered hover size="lg" className="table-statistical">
                   <thead>
+                    <tr className="text-md-center">
+                      <th colSpan={4}>Trạng thái sửa chữa</th>
+                      <th colSpan={3}>Xuất kho</th>
+                      <th colSpan={3}>KCS</th>
+                      <th colSpan={2}>Bảo hành</th>
+                    </tr>
                     <tr>
                       <th>Sửa chữa xong</th>
                       <th>Sữa chữa không được</th>
                       <th>Chưa cập nhật</th>
                       <th>Cháy nổ</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {listPo && Object.keys(listPo).length > 0 && (
-                      <tr>
-                        <td>{listPo.TRANG_THAI_SC.SC_XONG}</td>
-                        <td>{listPo.TRANG_THAI_SC.SC_KHONG_DUOC}</td>
-                        <td>{listPo.TRANG_THAI_SC.CHUA_CAP_NHAT}</td>
-                        <td>{listPo.TRANG_THAI_SC.CHAY_NO}</td>
-                      </tr>
-                    )}
-                  </tbody>
-                </Table>
-              </div>
-            </div>
-            {/* table and chart export partner */}
-            <div className="table-xk">
-              <h5 className="table-sum">Xuất kho</h5>
-              <div className="statistical-sc">
-                <Table striped bordered hover size="lg" className="table-sc">
-                  <thead>
-                    <tr>
-                      <th>Không xuất kho</th>
                       <th>Đã xuất kho</th>
+                      <th>Chưa xuất kho</th>
                       <th>Chưa cập nhật</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {listPo && Object.keys(listPo).length > 0 && (
-                      <tr>
-                        <td>{listPo.XUAT_KHO.KHONG_XUAT_KHO}</td>
-                        <td>{listPo.XUAT_KHO.DA_XUAT_KHO}</td>
-                        <td>{listPo.XUAT_KHO.CHUA_CAP_NHAT}</td>
-                      </tr>
-                    )}
-                  </tbody>
-                </Table>
-              </div>
-            </div>
-          </div>
-          {/* table and chart kcs */}
-          <div className="table-kcs-bh">
-            <div className="table-kcs">
-              <h5 className="table-sum">KCS</h5>
-              <div className="statistical-sc">
-                <Table striped bordered hover size="lg" className="table-sc">
-                  <thead>
-                    <tr>
-                      <th>PASS</th>
-                      <th>FAIL</th>
+                      <th>Pass</th>
+                      <th>Fail</th>
                       <th>Chưa cập nhật</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {listPo && Object.keys(listPo).length > 0 && (
-                      <tr>
-                        <td>{listPo.KSC_VT.PASS}</td>
-                        <td>{listPo.KSC_VT.FAIL}</td>
-                        <td>{listPo.KSC_VT.CHUA_CAP_NHAT}</td>
-                      </tr>
-                    )}
-                  </tbody>
-                </Table>
-              </div>
-            </div>
-            {/* table and chart warranty */}
-            <div className="table-bh">
-              <h5 className="table-sum">Bảo hành</h5>
-              <div className="statistical-sc">
-                <Table striped bordered hover size="lg" className="table-sc">
-                  <thead>
-                    <tr>
                       <th>Đã cập nhật</th>
-                      <th>Chưa câp nhật</th>
+                      <th>Chưa cập nhật</th>
                     </tr>
                   </thead>
                   <tbody>
                     {listPo && Object.keys(listPo).length > 0 && (
-                      <tr>
-                        <td>{listPo.BAO_HANH.DA_CAP_NHAT}</td>
-                        <td>{listPo.BAO_HANH.CHUA_CAP_NHAT}</td>
-                      </tr>
+                      <>
+                        <tr>
+                          <td>{listPo.TRANG_THAI_SC.SC_XONG}</td>
+                          <td>{listPo.TRANG_THAI_SC.SC_KHONG_DUOC}</td>
+                          <td>{listPo.TRANG_THAI_SC.CHUA_CAP_NHAT}</td>
+                          <td>{listPo.TRANG_THAI_SC.CHAY_NO}</td>
+                          <td>{listPo.XUAT_KHO.DA_XUAT_KHO}</td>
+                          <td>{listPo.XUAT_KHO.KHONG_XUAT_KHO}</td>
+                          <td>{listPo.XUAT_KHO.CHUA_CAP_NHAT}</td>
+                          <td>{listPo.KSC_VT.PASS}</td>
+                          <td>{listPo.KSC_VT.FAIL}</td>
+                          <td>{listPo.KSC_VT.CHUA_CAP_NHAT}</td>
+                          <td>{listPo.BAO_HANH.DA_CAP_NHAT}</td>
+                          <td>{listPo.BAO_HANH.CHUA_CAP_NHAT}</td>
+                        </tr>
+                      </>
                     )}
                   </tbody>
                 </Table>

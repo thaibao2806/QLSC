@@ -38,32 +38,12 @@ const ModalAddUser = (props) => {
   };
 
   // handle role admin
-  const handleRole = async () => {
+  const handleRole = async (index) => {
     let res = await role();
     console.log(res);
     if (res && res.statusCode === 200) {
-      setRoleID(res.data[0]);
-      setRoleName(res.data[0].roleName);
-    }
-  };
-
-  // handle role manager
-  const handleRole2 = async () => {
-    let res = await role();
-    console.log(res.data[1]);
-    if (res && res.statusCode === 200) {
-      setRoleID(res.data[1]);
-      setRoleName(res.data[1].roleName);
-    }
-  };
-
-  // handle role user
-  const handleRole3 = async () => {
-    let res = await role();
-    console.log(res.data[2]);
-    if (res && res.statusCode === 200) {
-      setRoleID(res.data[2]);
-      setRoleName(res.data[2].roleName);
+      setRoleID(res.data[index]);
+      setRoleName(res.data[index].roleName);
     }
   };
 
@@ -209,14 +189,20 @@ const ModalAddUser = (props) => {
                       {roleName}
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
-                      <Dropdown.Item onClick={() => handleRole()}>
+                      <Dropdown.Item onClick={() => handleRole(0)}>
                         Admin
                       </Dropdown.Item>
-                      <Dropdown.Item onClick={() => handleRole2()}>
+                      <Dropdown.Item onClick={() => handleRole(1)}>
                         Manager
                       </Dropdown.Item>
-                      <Dropdown.Item onClick={() => handleRole3()}>
+                      <Dropdown.Item onClick={() => handleRole(2)}>
                         User
+                      </Dropdown.Item>
+                      <Dropdown.Item onClick={() => handleRole(3)}>
+                        Repair
+                      </Dropdown.Item>
+                      <Dropdown.Item onClick={() => handleRole(4)}>
+                        KCS
                       </Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>
