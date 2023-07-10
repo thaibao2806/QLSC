@@ -239,8 +239,8 @@ const ModalUpdatePoDetail = (props) => {
                         setPrioritize(value === "Tất cả" ? null : value);
                       }}
                     >
-                      <option value="1">Ưu tiên</option>
                       <option value="0">Không ưu tiên</option>
+                      <option value="1">Ưu tiên</option>
                     </Form.Select>
                   </Form.Group>
                   <Form.Group as={Col} md="4" controlId="validationCustom05">

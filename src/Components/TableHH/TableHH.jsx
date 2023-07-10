@@ -419,7 +419,14 @@ export const TableHH = () => {
       setListPoDetail(res.data);
       setTotalProducts(res.totalPages);
       setTotalPages(res.data.number);
+      
+    } 
+    if (res && res.statusCode === 204) {
+      setListPoDetail(res.data);
+      setTotalProducts(res.totalPages);
+      setTotalPages(res.data.number);
     }
+    
   };
 
   // handle edit po detail
@@ -482,6 +489,11 @@ export const TableHH = () => {
 
     writeFile(workbook, "update.xlsx");
   };
+
+  // handle reset
+  const handleReset = () => {
+    window.location.reload();
+  }
 
   return (
     <>
@@ -634,8 +646,8 @@ export const TableHH = () => {
                   }}
                 >
                   <option>Tất cả</option>
-                  <option value="1">Ưu tiên</option>
                   <option value="0">Không ưu tiên</option>
+                  <option value="1">Ưu tiên</option>
                 </Form.Select>
               </Form.Group>
             </Row>
@@ -917,6 +929,15 @@ export const TableHH = () => {
             <div className="col-3"></div>
             <div className="group-btn d-flex">
               {/* button search */}
+
+              <div className="search">
+                <button
+                  className="btn btn-primary label-search"
+                  onClick={() => handleReset()}
+                >
+                  Reset
+                </button>
+              </div>
               <div className="search">
                 <button
                   className="btn btn-primary label-search"
@@ -1387,7 +1408,7 @@ export const TableHH = () => {
           handleCloses={handleCloses}
           dateEditPoDetail={dateEditPoDetail}
           getProducts={getProducts}
-          currenPage = {currenPage}
+          currenPage={currenPage}
         />
 
         <div
