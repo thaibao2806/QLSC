@@ -13,7 +13,8 @@ import moment from "moment";
 
 const ModalUpdatePoDetail = (props) => {
 
-  const { show, handleCloses, dateEditPoDetail, getProducts } = props;
+  const { show, handleCloses, dateEditPoDetail, getProducts, currenPage } =
+    props;
   const [selectedDateStart, setSelectedDateStart] = useState(null);
   const [selectedDateWarrity, setSelectedDateWarrity] = useState(null);
   const [po, setPo] = useState("");
@@ -84,6 +85,12 @@ const ModalUpdatePoDetail = (props) => {
 
   // handle update po detail
   const handleUpdatePoDetail = async () => {
+    let page;
+    if (currenPage) {
+      page = currenPage;
+    } else {
+      page = 0;
+    }
     // convert date warranty and start date to long
     const WarrantyDate = new Date(selectedDateWarrity).getTime();
     const startDate = new Date(selectedDateStart).getTime();
@@ -101,7 +108,7 @@ const ModalUpdatePoDetail = (props) => {
     );
     if (res && res.statusCode === 200) {
       toast.success("Cập nhật thành công !!!");
-      getProducts(0);
+      getProducts(page);
       handleCloses();
     } else {
       toast.error("Cập nhật thất bại !!!");

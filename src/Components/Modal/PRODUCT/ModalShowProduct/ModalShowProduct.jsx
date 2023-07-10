@@ -7,7 +7,7 @@ import { updateProduct } from "../../../../service/service";
 import { toast } from "react-toastify";
 
 const ModalShowProduct = (props) => {
-  const { show, handleClose, dataDetail, getProducts } = props;
+  const { show, handleClose, dataDetail, getProducts, currentPage } = props;
   const [productId, setProductId] = useState("");
   const [productName, setProductName] = useState("");
 
@@ -21,11 +21,17 @@ const ModalShowProduct = (props) => {
 
   // handle update product
   const handleUpdateProduct = async () => {
+    let page
+    if(currentPage) {
+      page= currentPage
+    } else {
+      page = 0
+    }
     let res = await updateProduct(productId, productName);
     if (res && res.statusCode === 200) {
       handleClose();
       toast.success("Cập nhật thành công!!!");
-      getProducts(0);
+      getProducts(page);
     } else {
       toast.error("Cập nhật không thành công!!");
     }

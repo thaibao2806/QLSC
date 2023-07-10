@@ -27,6 +27,7 @@ const Product = () => {
   const [selectedOption, setSelectedOption] = useState("10");
   const [isShowAddProduct, setIsShowAddProduct] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [currentPage, setCurrentPage] = useState("")
 
   // call api when load page
   useEffect(() => {
@@ -69,6 +70,7 @@ const Product = () => {
       handleSearch(+event.selected);
     } else {
       getProducts(+event.selected);
+      setCurrentPage(selectedPage)
     }
   };
 
@@ -252,6 +254,7 @@ const Product = () => {
           show={isShowAddProduct}
           handleCloses={handleCloses}
           getProducts={getProducts}
+          currentPage={currentPage}
         />
 
         <ModalShowProduct
@@ -259,6 +262,7 @@ const Product = () => {
           handleClose={handleCloses}
           dataDetail={dataDetail}
           getProducts={getProducts}
+          currentPage={currentPage}
         />
 
         <div

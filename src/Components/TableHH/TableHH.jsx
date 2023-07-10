@@ -67,6 +67,7 @@ export const TableHH = () => {
   const [po, setPo] = useState("getAll");
   const [listPo, setListPo] = useState("");
   const [priority, setPriority] = useState(null);
+  const [currenPage, setCurrentPage] = useState("")
 
   // call api when load page
   useEffect(() => {
@@ -241,6 +242,7 @@ export const TableHH = () => {
       handleSearch(+event.selected);
     } else {
       getProducts(+event.selected);
+      setCurrentPage(selectedPage);
     }
   };
 
@@ -1385,6 +1387,7 @@ export const TableHH = () => {
           handleCloses={handleCloses}
           dateEditPoDetail={dateEditPoDetail}
           getProducts={getProducts}
+          currenPage = {currenPage}
         />
 
         <div

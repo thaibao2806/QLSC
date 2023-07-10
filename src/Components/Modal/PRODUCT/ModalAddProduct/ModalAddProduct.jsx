@@ -7,7 +7,13 @@ import { addProduct, updateProduct } from "../../../../service/service";
 import { toast } from "react-toastify";
 
 const ModalAddProduct = (props) => {
-  const { show, handleCloses, dataDetail, getProducts } = props;
+  const {
+    show,
+    handleCloses,
+    dataDetail,
+    getProducts,
+    currentPage,
+  } = props;
   const [productId, setProductId] = useState("");
   const [productName, setProductName] = useState("");
   const [validate, setValidate] = useState("");
@@ -22,6 +28,12 @@ const ModalAddProduct = (props) => {
 
   // handle add product
   const handleAddProduct = async () => {
+    let page;
+    if (currentPage) {
+      page = currentPage;
+    } else {
+      page = 0;
+    }
     //validate 
     if (!productId || !productName) {
       setValidate("Cần điền đầy đủ thông tin");
@@ -35,7 +47,7 @@ const ModalAddProduct = (props) => {
       setProductName("");
       handleCloses();
       toast.success("Thêm thành công!!");
-      getProducts(0);
+      getProducts(page);
     } else {
       setValidate(res.data.data);
     }
