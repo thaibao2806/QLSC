@@ -148,8 +148,8 @@ export const TableHH = () => {
       setIsLoading(true);
       let response = await importPODetail(formData);
       if (response && response.statusCode === 200) {
-        toast.success("Dữ liệu đã được tải thành công!");
-        // setIsShowNotify(true);
+        toast.success(`Có ${response.data.errorDescription}`);
+        setIsShowNotify(true);
         setData(response.data);
         getProducts(0);
       } else {
@@ -187,6 +187,8 @@ export const TableHH = () => {
         selectUpdateValue = "importDate";
       } else if (selectedState === "test8") {
         selectUpdateValue = "bbbgNumber";
+      } else if (selectedState === "test9") {
+        selectUpdateValue = "bbbgNumberPartner";
       }
 
       const file = event.target.files[0];
@@ -206,7 +208,7 @@ export const TableHH = () => {
       let response = await updateStatusPoDetail(formData);
       if (response && response.statusCode === 200) {
         toast.success("Dữ liệu đã được tải thành công!");
-        // setIsShowNotify(true);
+        setIsShowNotify(true);
         setData(response.data);
         getProducts(0);
       } else {
@@ -266,11 +268,11 @@ export const TableHH = () => {
     }
 
     if (checkboxes.defaultCheck2) {
-      selectedColumns.push("Cập nhật XK");
+      selectedColumns.push("Số BBBG Đối tác", "Cập nhật XK");
     }
 
     if (checkboxes.defaultCheck3) {
-      selectedColumns.push("Cập nhật KCS");
+      selectedColumns.push( "Cập nhật KCS");
     }
 
     if (checkboxes.defaultCheck4) {
@@ -313,19 +315,21 @@ export const TableHH = () => {
                 return item.bbbgNumber;
               }
               if (column === "Ngày nhập") {
-                return moment(item.importDate).format("DD/MM/YYYY");
+                if (item.importDate) {
+                  return moment(item.importDate).format("DD/MM/YYYY");
+                }
               }
               if (column === "Hạng mục SC") {
                 if (item.repairCategory === 0) {
                   return "Nhập kho SC";
-                } else {
+                } else if (item.repairCategory === 1) {
                   return "Nhập kho BH";
                 }
               }
-              if (column === "Ưu tiên SC") {
+              if (column === "Ưu Tiên SC") {
                 if (item.priority === 0) {
                   return "Không ưu tiên";
-                } else {
+                } else if (item.priority === 1) {
                   return "Ưu tiên";
                 }
               }
@@ -334,26 +338,29 @@ export const TableHH = () => {
                   return "Sửa chữa xong";
                 } else if (item.repairStatus === 0) {
                   return "Sửa chữa không được";
-                } else {
+                } else if (item.repairStatus === 2) {
                   return "Cháy nổ";
                 }
               }
+              if (column === "Số BBBG Đối tác") {
+                return item.bbbgNumber;
+              }
               if (column === "Cập nhật XK") {
-                if (item.exportPartner === 0) {
-                  return "Chưa xuất kho";
-                } else {
-                  return "Xuất kho";
+                if (item.exportPartner) {
+                  return moment(item.exportPartner).format("DD/MM/YYYY");
                 }
               }
               if (column === "Cập nhật KCS") {
                 if (item.kcsVT === 0) {
                   return "FAIL";
-                } else {
+                } else if (item.kcsVT === 1) {
                   return "PASS";
                 }
               }
               if (column === "Cập nhật BH") {
-                return moment(item.warrantyPeriod).format("DD/MM/YYYY");
+                if (item.warrantyPeriod) {
+                  return moment(item.warrantyPeriod).format("DD/MM/YYYY");
+                }
               }
             }),
           ];
@@ -364,7 +371,7 @@ export const TableHH = () => {
       const worksheet = utils.aoa_to_sheet(exportData);
       utils.book_append_sheet(workbook, worksheet, "Sheet1");
 
-      writeFile(workbook, "data.xlsx");
+      writeFile(workbook, "po_detail.xlsx");
     }
   };
 
@@ -424,7 +431,7 @@ export const TableHH = () => {
     if (res && res.statusCode === 204) {
       setListPoDetail(res.data);
       setTotalProducts(res.totalPages);
-      setTotalPages(res.data.number);
+      // setTotalPages(res.data.number);
     }
     
   };
@@ -445,15 +452,11 @@ export const TableHH = () => {
   // handle download file sample
   const handleDownloadSampleFileImport = () => {
     const columnHeader = [
-      "STT",
       "Mã hàng hóa",
       "Số serial",
       "Số PO",
-      "Số BBBG",
-      "Ngày nhập",
-      "Hạng mục SC",
     ];
-    const dataArray = [["Nhập khẩu dữ liệu ban đầu"], columnHeader];
+    const dataArray = [columnHeader];
     const workbook = utils.book_new();
     const worksheet = utils.aoa_to_sheet(dataArray);
     utils.book_append_sheet(workbook, worksheet, "Sheet1");
@@ -462,32 +465,43 @@ export const TableHH = () => {
   };
 
   const handleDownloadSampleFile = (index) => {
-    const columnHeader = ["STT", "Mã hàng hóa", "Số serial", "Số PO"];
-
+    let namefile
+    const columnHeader = ["Mã hàng hóa", "Số serial", "Số PO"];
     if (index === 1) {
       columnHeader.push("Cập nhật SC");
+      namefile = "Cap-nhat-SC.xlsx";
     } else if (index === 2) {
       columnHeader.push("Cập nhật XK");
+      namefile = "Cap-nhat-XK.xlsx";
     } else if (index === 3) {
       columnHeader.push("Cập nhật KCS");
+      namefile = "Cap-nhat-KCS.xlsx";
     } else if (index === 4) {
       columnHeader.push("Cập nhật BH");
+      namefile = "Cap-nhat-BH.xlsx";
     } else if (index === 5) {
       columnHeader.push("Ưu Tiên SC");
+      namefile = "uu-tien-SC.xlsx";
     } else if (index === 6) {
       columnHeader.push("Ngày nhập");
+      namefile = "ngay-nhap.xlsx";
     } else if (index === 7) {
       columnHeader.push("Hạng mục SC");
+      namefile = "hang-muc-sc.xlsx";
     } else if (index === 8) {
       columnHeader.push("Số BBBG");
+      namefile = "so-bbbg.xlsx";
+    } else if (index === 9) {
+      columnHeader.push("Số BBBG Đối tác");
+      namefile = "so-bbbg-doi-tac.xlsx";
     }
-    const dataArray = [["Nhập khẩu dữ liệu ban đầu"], columnHeader];
+    const dataArray = [ columnHeader];
 
     const workbook = utils.book_new();
     const worksheet = utils.aoa_to_sheet(dataArray);
     utils.book_append_sheet(workbook, worksheet, "Sheet1");
 
-    writeFile(workbook, "update.xlsx");
+    writeFile(workbook, namefile);
   };
 
   // handle reset
@@ -976,6 +990,14 @@ export const TableHH = () => {
                       <div className="update-state">
                         <button
                           className="dropdown-item label-state"
+                          onClick={() => handleDownloadSampleFile(9)}
+                        >
+                          Số BBBG Xuất
+                        </button>
+                      </div>
+                      <div className="update-state">
+                        <button
+                          className="dropdown-item label-state"
                           onClick={() => handleDownloadSampleFile(6)}
                         >
                           Ngày nhập
@@ -1180,6 +1202,20 @@ export const TableHH = () => {
                     </div>
                     <div className="update-state">
                       <label
+                        htmlFor="test9"
+                        className="dropdown-item label-state"
+                      >
+                        Số BBBG đối tác
+                      </label>
+                      <input
+                        type="file"
+                        id="test9"
+                        hidden
+                        onChange={handleUploadSC}
+                      />
+                    </div>
+                    <div className="update-state">
+                      <label
                         htmlFor="test2"
                         className="dropdown-item label-state"
                       >
@@ -1263,6 +1299,7 @@ export const TableHH = () => {
               <th>Hạng mục SC</th>
               <th>Ưu tiên SC</th>
               <th>Cập nhật SC</th>
+              <th>Số BBBG Đối tác</th>
               <th>Cập nhật XK</th>
               <th>Cập nhật KCS</th>
               <th>Cập nhật BH</th>
@@ -1278,6 +1315,7 @@ export const TableHH = () => {
                   backgroundColor: "#ffeeba", // Màu nền sáng
                 };
                 // convert this from long to date
+                const timeExport = item.exportPartner;
                 const currentIndex = startIndex + index;
                 const time = item.importDate;
                 const timeWarranty = item.warrantyPeriod;
@@ -1285,7 +1323,14 @@ export const TableHH = () => {
                 if (timeWarranty !== null) {
                   dataWarranty = moment(timeWarranty).format("DD/MM/YYYY");
                 }
-                const data = moment(time).format("DD/MM/YYYY");
+                let data;
+                if (time !== null) {
+                  data = moment(time).format("DD/MM/YYYY");
+                }
+                let dataExportPartner 
+                if (timeExport !== null) {
+                  dataExportPartner = moment(timeExport).format("DD/MM/YYYY");
+                }
                 // check if priority === 1 then change color
                 const rowStyle =
                   item.priority === 1
@@ -1309,17 +1354,17 @@ export const TableHH = () => {
                       {item.repairCategory === 1 && "Nhập kho BH"}
                     </td>
                     <td>
-                      {item.priority === 0 && "Không ưu tiên"}
+                      {item.priority === 0 && "Không UT"}
                       {item.priority === 1 && "Ưu tiên"}
                     </td>
                     <td>
-                      {item.repairStatus === 0 && "Sửa chữa không được"}
-                      {item.repairStatus === 1 && "Sửa chữa xong"}
+                      {item.repairStatus === 0 && "SC không được"}
+                      {item.repairStatus === 1 && "SC xong"}
                       {item.repairStatus === 2 && "Cháy nổ"}
                     </td>
+                    <td>{item.bbbgNumberPartner}</td>
                     <td>
-                      {item.exportPartner === 0 && "Chưa xuất kho"}
-                      {item.exportPartner === 1 && "Xuất kho"}
+                      {dataExportPartner}
                     </td>
                     <td>
                       {item.kcsVT === 0 && "FAIL"}

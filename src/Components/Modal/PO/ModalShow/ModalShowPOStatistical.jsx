@@ -87,12 +87,11 @@ const ModalShowPOStatistical = (props) => {
       myChartXK = new Chart(ctx, {
         type: "pie",
         data: {
-          labels: ["Không XK", "Đã XK", "Chưa cập nhật"],
+          labels: ["Đã cập nhật", "Chưa cập nhật"],
           datasets: [
             {
               data: [
-                listPo.XUAT_KHO.KHONG_XUAT_KHO,
-                listPo.XUAT_KHO.DA_XUAT_KHO,
+                listPo.XUAT_KHO.DA_CAP_NHAT,
                 listPo.XUAT_KHO.CHUA_CAP_NHAT,
               ],
               backgroundColor: [
@@ -255,7 +254,13 @@ const ModalShowPOStatistical = (props) => {
           <div className="table-status">
             <div className="table-sc">
               <div className="statistical-sc">
-                <Table striped bordered hover size="lg" className="table-statistical">
+                <Table
+                  striped
+                  bordered
+                  hover
+                  size="lg"
+                  className="table-statistical"
+                >
                   <thead>
                     <tr className="text-md-center">
                       <th colSpan={4}>Trạng thái sửa chữa</th>
@@ -266,10 +271,9 @@ const ModalShowPOStatistical = (props) => {
                     <tr>
                       <th>Sửa chữa xong</th>
                       <th>Sữa chữa không được</th>
-                      <th>Chưa cập nhật</th>
                       <th>Cháy nổ</th>
-                      <th>Đã xuất kho</th>
-                      <th>Chưa xuất kho</th>
+                      <th>Chưa cập nhật</th>
+                      <th>Đã cập nhật</th>
                       <th>Chưa cập nhật</th>
                       <th>Pass</th>
                       <th>Fail</th>
@@ -284,16 +288,27 @@ const ModalShowPOStatistical = (props) => {
                         <tr>
                           <td>{listPo.TRANG_THAI_SC.SC_XONG}</td>
                           <td>{listPo.TRANG_THAI_SC.SC_KHONG_DUOC}</td>
-                          <td>{listPo.TRANG_THAI_SC.CHUA_CAP_NHAT}</td>
                           <td>{listPo.TRANG_THAI_SC.CHAY_NO}</td>
-                          <td>{listPo.XUAT_KHO.DA_XUAT_KHO}</td>
-                          <td>{listPo.XUAT_KHO.KHONG_XUAT_KHO}</td>
+                          <td>{listPo.TRANG_THAI_SC.CHUA_CAP_NHAT}</td>
+                          <td>{listPo.XUAT_KHO.DA_CAP_NHAT}</td>
                           <td>{listPo.XUAT_KHO.CHUA_CAP_NHAT}</td>
                           <td>{listPo.KSC_VT.PASS}</td>
                           <td>{listPo.KSC_VT.FAIL}</td>
                           <td>{listPo.KSC_VT.CHUA_CAP_NHAT}</td>
                           <td>{listPo.BAO_HANH.DA_CAP_NHAT}</td>
                           <td>{listPo.BAO_HANH.CHUA_CAP_NHAT}</td>
+                        </tr>
+                        <tr>
+                          <td>Tỉ lệ hoàn thành: </td>
+                          <td>
+                            {(
+                              (listPo.KSC_VT.PASS /
+                                (listPo.TONG_SO_LUONG.SO_LUONG_IMPORT -
+                                  listPo.TRANG_THAI_SC.CHAY_NO)) *
+                              100
+                            ).toFixed(2)}
+                            %
+                          </td>
                         </tr>
                       </>
                     )}

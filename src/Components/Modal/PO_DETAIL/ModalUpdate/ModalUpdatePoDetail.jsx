@@ -17,10 +17,13 @@ const ModalUpdatePoDetail = (props) => {
     props;
   const [selectedDateStart, setSelectedDateStart] = useState(null);
   const [selectedDateWarrity, setSelectedDateWarrity] = useState(null);
+  const [selectedDateExportPartner, setSelectedDateExportPartner] =
+    useState(null);
   const [po, setPo] = useState("");
   const [productId, setProductId] = useState("");
   const [serialNumber, setSerialNumber] = useState("");
   const [bbbg, setBbbg] = useState("");
+  const [bbbgPartner, setBbbgPartner] = useState("");
   const [importDate, setImportDate] = useState("");
   const [repairCategory, setRepairCategory] = useState("");
   const [isValidate, setIsValidate] = useState("");
@@ -44,15 +47,17 @@ const ModalUpdatePoDetail = (props) => {
       setSerialNumber(dateEditPoDetail.serialNumber);
       setPo(dateEditPoDetail.po.poNumber);
       setBbbg(dateEditPoDetail.bbbgNumber);
-      setImportDate(data);
+      // setImportDate(data);
       setSelectedDateStart(dateEditPoDetail.importDate);
       setRepairCategory(dateEditPoDetail.repairCategory);
       setRepairStatus(dateEditPoDetail.repairStatus);
       setExportPartner(dateEditPoDetail.exportPartner);
+      setSelectedDateExportPartner(dateEditPoDetail.exportPartner);
       setKcsVT(dateEditPoDetail.kcsVT);
       setWarrantyPeriod(dataWarranty);
       setSelectedDateWarrity(dateEditPoDetail.warrantyPeriod);
       setPrioritize(dateEditPoDetail.priority);
+      setBbbgPartner(dateEditPoDetail.bbbgNumberPartner);
     }
   }, [dateEditPoDetail]);
 
@@ -64,6 +69,10 @@ const ModalUpdatePoDetail = (props) => {
   // handle change end date
   const handleDateChangeWarranty = (date) => {
     setSelectedDateWarrity(date);
+  };
+
+  const handleDateChangeExportPartner = (date) => {
+    setSelectedDateExportPartner(date);
   };
 
   // custom icon calendar input
@@ -94,6 +103,7 @@ const ModalUpdatePoDetail = (props) => {
     // convert date warranty and start date to long
     const WarrantyDate = new Date(selectedDateWarrity).getTime();
     const startDate = new Date(selectedDateStart).getTime();
+    const exportDate = new Date(selectedDateExportPartner).getTime();
     // call api update po detail
     let res = await updatePoDetail(
       poDetailId,
@@ -102,9 +112,10 @@ const ModalUpdatePoDetail = (props) => {
       repairCategory,
       prioritize,
       repairStatus,
-      exportPartner,
+      exportDate,
       kcsVT,
-      WarrantyDate
+      WarrantyDate,
+      bbbgPartner
     );
     if (res && res.statusCode === 200) {
       toast.success("Cập nhật thành công !!!");
@@ -181,8 +192,6 @@ const ModalUpdatePoDetail = (props) => {
                       type="text"
                       placeholder="Số BBBG"
                       value={bbbg}
-                      readOnly
-                      disabled
                       onChange={(e) => setBbbg(e.target.value)}
                     />
                   </Form.Group>
@@ -219,6 +228,7 @@ const ModalUpdatePoDetail = (props) => {
                         setRepairCategory(value === "Tất cả" ? null : value);
                       }}
                     >
+                      <option value={null}>Chưa cập nhật</option>
                       <option value="0">Nhập kho SC</option>
                       <option value="1">Nhập kho BH</option>
                     </Form.Select>
@@ -239,6 +249,7 @@ const ModalUpdatePoDetail = (props) => {
                         setPrioritize(value === "Tất cả" ? null : value);
                       }}
                     >
+                      <option value={null}>Chưa cập nhật</option>
                       <option value="0">Không ưu tiên</option>
                       <option value="1">Ưu tiên</option>
                     </Form.Select>
@@ -258,6 +269,7 @@ const ModalUpdatePoDetail = (props) => {
                         localStorage.getItem("role") !== "ROLE_REPAIRMAN"
                       }
                     >
+                      <option value={null}>Chưa cập nhật</option>
                       <option value="0">Sửa chữa không được</option>
                       <option value="1">Sửa chữa xong</option>
                       <option value="2">Cháy nổ</option>
@@ -265,25 +277,32 @@ const ModalUpdatePoDetail = (props) => {
                   </Form.Group>
                   <Form.Group as={Col} md="4" controlId="validationCustom06">
                     <Form.Label>Cập nhật XK</Form.Label>
-                    <Form.Select
-                      aria-label="Default select example"
+                    <DatePicker
+                      selected={selectedDateExportPartner}
+                      onChange={handleDateChangeExportPartner}
+                      dateFormat="dd/MM/yyyy"
+                      showYearDropdown
+                      showMonthDropdown
+                      customInput={<CustomInput />}
                       disabled={
                         localStorage.getItem("role") !== "ROLE_ADMIN" &&
                         localStorage.getItem("role") !== "ROLE_MANAGER"
                       }
-                      value={exportPartner}
-                      onChange={(event) => {
-                        const value = event.target.value;
-                        setExportPartner(value === "Tất cả" ? null : value);
-                      }}
-                    >
-                      <option value="0">Chưa xuất kho</option>
-                      <option value="1">Xuất kho</option>
-                    </Form.Select>
+                    />
                   </Form.Group>
                 </Row>
                 <Row className="mb-3 ">
-                  <Form.Group as={Col} md="6" controlId="validationCustom07">
+                  <Form.Group as={Col} md="4" controlId="validationCustom03">
+                    <Form.Label>Số BBBG Đối tác</Form.Label>
+                    <Form.Control
+                      required
+                      type="text"
+                      placeholder="Số BBBG Đối tác"
+                      value={bbbgPartner}
+                      onChange={(e) => setBbbgPartner(e.target.value)}
+                    />
+                  </Form.Group>
+                  <Form.Group as={Col} md="4" controlId="validationCustom07">
                     <Form.Label>Cập nhật KCS</Form.Label>
                     <Form.Select
                       aria-label="Default select example1"
@@ -298,11 +317,12 @@ const ModalUpdatePoDetail = (props) => {
                         setKcsVT(value === "Tất cả" ? null : value);
                       }}
                     >
+                      <option value={null}>Chưa cập nhật</option>
                       <option value="0">FAIL</option>
                       <option value="1">PASS</option>
                     </Form.Select>
                   </Form.Group>
-                  <Form.Group as={Col} md="6" controlId="validationCustom08">
+                  <Form.Group as={Col} md="4" controlId="validationCustom08">
                     <Form.Label>Cập nhật BH</Form.Label>
                     <DatePicker
                       selected={selectedDateWarrity}

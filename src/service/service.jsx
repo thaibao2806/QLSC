@@ -285,7 +285,8 @@ const updatePoDetail = (
   repairStatus,
   exportPartner,
   kcsVT,
-  warrantyPeriod
+  warrantyPeriod,
+  bbbgNumberPartner
 ) => {
   return axioss.put(
     `/po-detail/update/${poDetailId}`,
@@ -299,6 +300,7 @@ const updatePoDetail = (
       exportPartner,
       kcsVT,
       warrantyPeriod,
+      bbbgNumberPartner,
     },
     {
       headers: {

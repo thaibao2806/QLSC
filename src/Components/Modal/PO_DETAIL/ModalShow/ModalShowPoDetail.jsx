@@ -15,6 +15,7 @@ const ModalShowPoDetail = (props) => {
   const [productId, setProductId] = useState("");
   const [serialNumber, setSerialNumber] = useState("");
   const [bbbg, setBbbg] = useState("");
+  const [bbbgPartner, setBbbgPartner] = useState("");
   const [importDate, setImportDate] = useState("");
   const [repairCategory, setRepairCategory] = useState("");
   const [isValidate, setIsValidate] = useState("");
@@ -45,6 +46,7 @@ const ModalShowPoDetail = (props) => {
       setKcsVT(dateShowPoDetail.kcsVT);
       setWarrantyPeriod(dataWarranty);
       setPrioritize(dateShowPoDetail.priority);
+      setBbbgPartner(dateShowPoDetail.bbbgNumberPartner);
     }
   }, [dateShowPoDetail]);
 
@@ -207,7 +209,18 @@ const ModalShowPoDetail = (props) => {
                   </Form.Group>
                 </Row>
                 <Row className="mb-3 ">
-                  <Form.Group as={Col} md="6" controlId="validationCustom01">
+                  <Form.Group as={Col} md="4" controlId="validationCustom01">
+                    <Form.Label>Số BBBG Đối tác</Form.Label>
+                    <Form.Control
+                      required
+                      readOnly
+                      type="text"
+                      placeholder="Số BBBG đối tác"
+                      value={bbbgPartner}
+                      onChange={(e) => setBbbgPartner(e.target.value)}
+                    />
+                  </Form.Group>
+                  <Form.Group as={Col} md="4" controlId="validationCustom01">
                     <Form.Label>Cập nhật KCS</Form.Label>
                     <Form.Control
                       required
@@ -218,7 +231,7 @@ const ModalShowPoDetail = (props) => {
                       onChange={(e) => setKcsVT(e.target.value)}
                     />
                   </Form.Group>
-                  <Form.Group as={Col} md="6" controlId="validationCustom02">
+                  <Form.Group as={Col} md="4" controlId="validationCustom02">
                     <Form.Label>Cập nhật BH</Form.Label>
                     <Form.Control
                       required

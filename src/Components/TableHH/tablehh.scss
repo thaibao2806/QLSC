@@ -45,7 +45,7 @@
 }
 
 .tables {
-  margin: 70px 49px;
+  margin: 70px 15px;
   font-size: 14px;
 
   .table-action {
@@ -119,6 +119,7 @@
 }
 
 .table-color {
+      font-size: 12px;
     --bs-table-color-type: initial;
     --bs-table-bg-type: initial;
     --bs-table-color-state: initial;
@@ -152,6 +153,13 @@
         }
       }
     }
+}
+
+.btn-group-sm>.btn, .btn-sm {
+    --bs-btn-padding-y: 1px;
+    --bs-btn-padding-x: 8px;
+    --bs-btn-font-size: -11.125rem;
+    --bs-btn-border-radius: var(--bs-border-radius-sm);
 }
 
 
