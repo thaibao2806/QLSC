@@ -264,7 +264,7 @@ const ModalShowPOStatistical = (props) => {
                   <thead>
                     <tr className="text-md-center">
                       <th colSpan={4}>Trạng thái sửa chữa</th>
-                      <th colSpan={3}>Xuất kho</th>
+                      <th colSpan={2}>Xuất kho</th>
                       <th colSpan={3}>KCS</th>
                       <th colSpan={2}>Bảo hành</th>
                     </tr>
