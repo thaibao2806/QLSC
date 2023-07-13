@@ -83,7 +83,8 @@ export const TableHH = () => {
       repairCategory ||
       repairStatus ||
       exportPartner ||
-      kcsVt
+      kcsVt ||
+      priority
     ) {
       handleSearch(0);
     } else {
@@ -245,7 +246,8 @@ export const TableHH = () => {
       repairCategory ||
       repairStatus ||
       exportPartner ||
-      kcsVt
+      kcsVt ||
+      priority
     ) {
       handleSearch(+event.selected);
     } else {
@@ -1323,7 +1325,7 @@ export const TableHH = () => {
                       {item.repairStatus === 1 && "SC xong"}
                       {item.repairStatus === 2 && "Cháy nổ"}
                     </td>
-                    <td>{item.bbbgNumberExport}</td>
+                    <td className="col-bbxk">{item.bbbgNumberExport}</td>
                     <td>{dataExportPartner}</td>
                     <td>
                       {item.kcsVT === 0 && "FAIL"}

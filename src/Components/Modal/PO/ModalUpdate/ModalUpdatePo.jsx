@@ -27,6 +27,7 @@ const ModalUpdatePo = (props) => {
       setContractNumber(dataPo.contractNumber)
       setSelectedDate(dataPo.contractWarrantyExpirationDate);
       setSelectedDateWarranty(dataPo.warrantyExpirationDate);
+      setIsValidate("")
     }
   }, [dataPo]);
 
@@ -109,21 +110,29 @@ const ModalUpdatePo = (props) => {
           setIsValidate(
             "Bạn chỉ được phép chỉnh PO và số Hợp đồng trong 24h!!"
           );
-        } else {
+        } else if (res.statusMessage === "NEW PO NUMBER ALREADY EXISTS") {
           setIsValidate("Số PO đã tồn tại");
+          setPo(dataPo.poNumber);
+        } else {
+          setIsValidate("")
         }
-      } else {
+      } else if (res && res.data.statusCode === 501) {
         setIsValidate("");
         handleClose();
         toast.error("Cập nhật không thành công do đã import dữ liệu theo PO!!");
+        setPo(dataPo.poNumber)
+      }else {
+        setIsValidate("");
+        handleClose();
+        toast.error("Cập nhật không thành công!!");
       }
     } catch (error) {
       // Xử lý lỗi ở đây
-      toast.error("Cập nhật không thành công");
+      toast.error("Cập nhật không thành công!!!!");
+      handleClose();
       console.error(error);
     }
   };
-
 
   return (
     <div

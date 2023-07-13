@@ -93,12 +93,14 @@ const ModelAddPO = (props) => {
     // call api
     if (res && res.statusCode === 200) {
       toast.success("Thêm thành công!!");
-      toast.warning("Bạn chỉ có thể chỉnh sửa trong 15 phút đầu!!");
+      toast.warning("Bạn chỉ được phép chỉnh sửa số PO và hợp đồng trong 24h");
       setContract("")
       setPo("");
       setQuantity("");
       setSelectedDateEnd("");
       setSelectedDateStart("");
+      setSelectedDate("")
+      setSelectedDateWarranty("")
       getAllPo();
       handleClose();
     } else {
@@ -109,6 +111,8 @@ const ModelAddPO = (props) => {
         setIsValidate("PO đã tồn tại");
       } else {
         setIsValidate("")
+        toast.error("Thêm không thành công!!!")
+        handleClose();
       }
     }
   };

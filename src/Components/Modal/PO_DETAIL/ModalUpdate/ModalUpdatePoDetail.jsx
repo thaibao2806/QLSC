@@ -139,6 +139,10 @@ const ModalUpdatePoDetail = (props) => {
       toast.success("Cập nhật thành công !!!");
       getProducts(page);
       handleCloses();
+      setRepairCategory(null)
+      setPrioritize(null)
+      setRepairStatus(null)
+      setKcsVT(null)
     } else {
       toast.error("Cập nhật thất bại !!!");
     }
