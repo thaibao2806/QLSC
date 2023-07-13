@@ -582,7 +582,7 @@ export const TableHH = () => {
                   }}
                 >
                   <option>Tất cả</option>
-                  <option value="0">Không ưu tiên</option>
+                  {/* <option value="0">Không ưu tiên</option> */}
                   <option value="1">Ưu tiên</option>
                 </Form.Select>
               </Form.Group>

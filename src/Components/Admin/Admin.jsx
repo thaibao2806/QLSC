@@ -239,7 +239,6 @@ const Admin = () => {
               {listUser &&
                 listUser.length > 0 &&
                 listUser.map((item, index) => {
-                  console.log("check role", item.roles[0].roleName);
                   if (item.removed === true) {
                     return null;
                   }
