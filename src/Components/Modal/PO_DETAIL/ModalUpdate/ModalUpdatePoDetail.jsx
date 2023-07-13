@@ -33,6 +33,7 @@ const ModalUpdatePoDetail = (props) => {
   const [warrantyPeriod, setWarrantyPeriod] = useState("");
   const [poDetailId, setPoDetailId] = useState("");
   const [prioritize, setPrioritize] = useState("")
+  const [note, setNote] = useState("")
 
   // check if show then get data po detail
   useEffect(() => {
@@ -57,7 +58,8 @@ const ModalUpdatePoDetail = (props) => {
       setWarrantyPeriod(dataWarranty);
       setSelectedDateWarrity(dateEditPoDetail.warrantyPeriod);
       setPrioritize(dateEditPoDetail.priority);
-      setBbbgPartner(dateEditPoDetail.bbbgNumberPartner);
+      setBbbgPartner(dateEditPoDetail.bbbgNumberExport);
+      setNote(dateEditPoDetail.note)
     }
   }, [dateEditPoDetail]);
 
@@ -101,9 +103,24 @@ const ModalUpdatePoDetail = (props) => {
       page = 0;
     }
     // convert date warranty and start date to long
-    const WarrantyDate = new Date(selectedDateWarrity).getTime();
-    const startDate = new Date(selectedDateStart).getTime();
-    const exportDate = new Date(selectedDateExportPartner).getTime();
+    let WarrantyDate
+    let startDate;
+    let exportDate;
+    if(selectedDateWarrity !== null) {
+        WarrantyDate = new Date(selectedDateWarrity).getTime();
+    } else {
+      WarrantyDate = selectedDateWarrity;
+    }
+    if(selectedDateStart !== null) {
+      startDate = new Date(selectedDateStart).getTime();
+    } else {
+      startDate = selectedDateStart;
+    }
+    if (selectedDateExportPartner !== null) {
+      exportDate = new Date(selectedDateExportPartner).getTime();
+    } else {
+      exportDate = selectedDateExportPartner;
+    }
     // call api update po detail
     let res = await updatePoDetail(
       poDetailId,
@@ -115,7 +132,8 @@ const ModalUpdatePoDetail = (props) => {
       exportDate,
       kcsVT,
       WarrantyDate,
-      bbbgPartner
+      bbbgPartner,
+      note
     );
     if (res && res.statusCode === 200) {
       toast.success("Cập nhật thành công !!!");
@@ -185,18 +203,18 @@ const ModalUpdatePoDetail = (props) => {
                   </Form.Group>
                 </Row>
                 <Row className="mb-3 ">
-                  <Form.Group as={Col} md="4" controlId="validationCustom03">
-                    <Form.Label>Số BBBG</Form.Label>
+                  {/* <Form.Group as={Col} md="4" controlId="validationCustom03">
+                    <Form.Label>Số BBNK</Form.Label>
                     <Form.Control
                       required
                       type="text"
-                      placeholder="Số BBBG"
+                      placeholder="Số BBNK"
                       value={bbbg}
                       onChange={(e) => setBbbg(e.target.value)}
                     />
-                  </Form.Group>
-                  <Form.Group as={Col} md="4" controlId="validationCustom04">
-                    <Form.Label>Ngày nhập</Form.Label>
+                  </Form.Group> */}
+                  <Form.Group as={Col} md="6" controlId="validationCustom04">
+                    <Form.Label>Ngày nhập kho</Form.Label>
                     <DatePicker
                       selected={selectedDateStart}
                       onChange={handleDateChangeStart}
@@ -212,7 +230,7 @@ const ModalUpdatePoDetail = (props) => {
                   </Form.Group>
                   <Form.Group
                     as={Col}
-                    md="4"
+                    md="6"
                     controlId="validationCustomUsername2"
                   >
                     <Form.Label>Hạng mục SC</Form.Label>
@@ -275,6 +293,18 @@ const ModalUpdatePoDetail = (props) => {
                       <option value="2">Cháy nổ</option>
                     </Form.Select>
                   </Form.Group>
+                  <Form.Group as={Col} md="4" controlId="validationCustom03">
+                    <Form.Label>Số BBXK</Form.Label>
+                    <Form.Control
+                      required
+                      type="text"
+                      placeholder="Số BBXK"
+                      value={bbbgPartner}
+                      onChange={(e) => setBbbgPartner(e.target.value)}
+                    />
+                  </Form.Group>
+                </Row>
+                <Row className="mb-3 ">
                   <Form.Group as={Col} md="4" controlId="validationCustom06">
                     <Form.Label>Cập nhật XK</Form.Label>
                     <DatePicker
@@ -288,18 +318,6 @@ const ModalUpdatePoDetail = (props) => {
                         localStorage.getItem("role") !== "ROLE_ADMIN" &&
                         localStorage.getItem("role") !== "ROLE_MANAGER"
                       }
-                    />
-                  </Form.Group>
-                </Row>
-                <Row className="mb-3 ">
-                  <Form.Group as={Col} md="4" controlId="validationCustom03">
-                    <Form.Label>Số BBBG Đối tác</Form.Label>
-                    <Form.Control
-                      required
-                      type="text"
-                      placeholder="Số BBBG Đối tác"
-                      value={bbbgPartner}
-                      onChange={(e) => setBbbgPartner(e.target.value)}
                     />
                   </Form.Group>
                   <Form.Group as={Col} md="4" controlId="validationCustom07">
@@ -335,6 +353,20 @@ const ModalUpdatePoDetail = (props) => {
                         localStorage.getItem("role") !== "ROLE_ADMIN" &&
                         localStorage.getItem("role") !== "ROLE_MANAGER"
                       }
+                    />
+                  </Form.Group>
+                </Row>
+                <Row className="mb-3 ">
+                  <Form.Group
+                    className="mb-3"
+                    controlId="exampleForm.ControlTextarea1"
+                  >
+                    <Form.Label>Ghi chú</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      rows={3}
+                      value={note}
+                      onChange={(event) => setNote(event.target.value)}
                     />
                   </Form.Group>
                 </Row>

@@ -31,8 +31,10 @@ const ModalShowPoDetail = (props) => {
     // convert date import and warranty, format date dd/mm/yy
     const time = dateShowPoDetail.importDate;
     const data = moment(time).format("DD/MM/YYYY");
+    const timeExport = dateShowPoDetail.exportPartner
     const timeWarranty = dateShowPoDetail.warrantyPeriod;
     const dataWarranty = moment(timeWarranty).format("DD/MM/YYYY");
+    const dataExportPartner = moment(timeExport).format("DD/MM/YYYY")
     if (show) {
       setProductId(dateShowPoDetail.product.productId);
       setProductName(dateShowPoDetail.product.productName);
@@ -42,11 +44,11 @@ const ModalShowPoDetail = (props) => {
       setImportDate(data);
       setRepairCategory(dateShowPoDetail.repairCategory);
       setRepairStatus(dateShowPoDetail.repairStatus);
-      setExportPartner(dateShowPoDetail.exportPartner);
+      setExportPartner(dataExportPartner);
       setKcsVT(dateShowPoDetail.kcsVT);
       setWarrantyPeriod(dataWarranty);
       setPrioritize(dateShowPoDetail.priority);
-      setBbbgPartner(dateShowPoDetail.bbbgNumberPartner);
+      setBbbgPartner(dateShowPoDetail.bbbgNumberExport);
     }
   }, [dateShowPoDetail]);
 
@@ -121,31 +123,20 @@ const ModalShowPoDetail = (props) => {
                   </Form.Group>
                 </Row>
                 <Row className="mb-3 ">
-                  <Form.Group as={Col} md="4" controlId="validationCustom01">
-                    <Form.Label>Số BBBG</Form.Label>
+                  <Form.Group as={Col} md="6" controlId="validationCustom02">
+                    <Form.Label>Ngày nhập kho</Form.Label>
                     <Form.Control
                       required
                       readOnly
                       type="text"
-                      placeholder="Số BBBG"
-                      value={bbbg}
-                      onChange={(e) => setBbbg(e.target.value)}
-                    />
-                  </Form.Group>
-                  <Form.Group as={Col} md="4" controlId="validationCustom02">
-                    <Form.Label>Ngày nhập</Form.Label>
-                    <Form.Control
-                      required
-                      readOnly
-                      type="text"
-                      placeholder="Ngày nhập"
+                      placeholder="Ngày nhập kho"
                       value={importDate}
                       onChange={(e) => setImportDate(e.target.value)}
                     />
                   </Form.Group>
                   <Form.Group
                     as={Col}
-                    md="4"
+                    md="6"
                     controlId="validationCustomUsername"
                   >
                     <Form.Label>Hạng mục SC</Form.Label>
@@ -174,7 +165,6 @@ const ModalShowPoDetail = (props) => {
                       value={prioritize === 0 ? "Không ưu tiên" : "Ưu tiên"}
                       onChange={(e) => setPrioritize(e.target.value)}
                     />
-                    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group as={Col} md="4" controlId="validationCustom01">
                     <Form.Label>Cập nhật SC</Form.Label>
@@ -194,8 +184,20 @@ const ModalShowPoDetail = (props) => {
                       }
                       onChange={(e) => setRepairStatus(e.target.value)}
                     />
-                    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                   </Form.Group>
+                  <Form.Group as={Col} md="4" controlId="validationCustom01">
+                    <Form.Label>Số BBXK</Form.Label>
+                    <Form.Control
+                      required
+                      readOnly
+                      type="text"
+                      placeholder="Số BBXK"
+                      value={bbbgPartner}
+                      onChange={(e) => setBbbgPartner(e.target.value)}
+                    />
+                  </Form.Group>
+                </Row>
+                <Row className="mb-3 ">
                   <Form.Group as={Col} md="4" controlId="validationCustom02">
                     <Form.Label>Cập nhật XK</Form.Label>
                     <Form.Control
@@ -203,21 +205,8 @@ const ModalShowPoDetail = (props) => {
                       readOnly
                       type="text"
                       placeholder="Cập nhật XK"
-                      value={exportPartner === 0 ? "Chưa xuất kho" : "Xuất kho"}
+                      value={exportPartner}
                       onChange={(e) => setExportPartner(e.target.value)}
-                    />
-                  </Form.Group>
-                </Row>
-                <Row className="mb-3 ">
-                  <Form.Group as={Col} md="4" controlId="validationCustom01">
-                    <Form.Label>Số BBBG Đối tác</Form.Label>
-                    <Form.Control
-                      required
-                      readOnly
-                      type="text"
-                      placeholder="Số BBBG đối tác"
-                      value={bbbgPartner}
-                      onChange={(e) => setBbbgPartner(e.target.value)}
                     />
                   </Form.Group>
                   <Form.Group as={Col} md="4" controlId="validationCustom01">

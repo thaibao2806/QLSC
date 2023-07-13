@@ -162,4 +162,18 @@
     --bs-btn-border-radius: var(--bs-border-radius-sm);
 }
 
+.btn-edit {
+  margin-right: 3px;
+}
+
+.btn-action {
+  max-width: 100px;
+}
+
+.col-note {
+  max-width: 200px;
+  overflow: hidden;
+  word-wrap: break-word;
+}
+
 

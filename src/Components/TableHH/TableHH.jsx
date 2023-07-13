@@ -28,6 +28,7 @@ import Form from "react-bootstrap/Form";
 import ModalUpdatePoDetail from "../Modal/PO_DETAIL/ModalUpdate/ModalUpdatePoDetail";
 import ModalShowPoDetail from "../Modal/PO_DETAIL/ModalShow/ModalShowPoDetail";
 import { saveAs } from "file-saver";
+import ModalDeletePODetail from "../Modal/PO_DETAIL/ModalDelete/ModalDeletePODetail";
 
 export const TableHH = () => {
   const [listPoDetail, setListPoDetail] = useState([]);
@@ -68,6 +69,8 @@ export const TableHH = () => {
   const [listPo, setListPo] = useState("");
   const [priority, setPriority] = useState(null);
   const [currenPage, setCurrentPage] = useState("")
+  const [showDelete, setShowDelete] = useState(false)
+  const [dataDeletePODetail, setDataDeletePoDetail] = useState("")
 
   // call api when load page
   useEffect(() => {
@@ -92,6 +95,9 @@ export const TableHH = () => {
   // handle change date start
   const handleDateChangeStart = (date) => {
     setSelectedDateStart(date);
+  };
+  const handleDateChangeExportPartner = (date) => {
+    setExportPartner(date);
   };
 
   // custom input icon calendar
@@ -148,7 +154,7 @@ export const TableHH = () => {
       setIsLoading(true);
       let response = await importPODetail(formData);
       if (response && response.statusCode === 200) {
-        toast.success(`Có ${response.data.errorDescription}`);
+        toast.success("Dữ liệu đã được tải thành công!!");
         setIsShowNotify(true);
         setData(response.data);
         getProducts(0);
@@ -188,7 +194,7 @@ export const TableHH = () => {
       } else if (selectedState === "test8") {
         selectUpdateValue = "bbbgNumber";
       } else if (selectedState === "test9") {
-        selectUpdateValue = "bbbgNumberPartner";
+        selectUpdateValue = "bbbgNumberExport";
       }
 
       const file = event.target.files[0];
@@ -257,8 +263,7 @@ export const TableHH = () => {
       "Mã hàng hóa",
       "Số serial",
       "Số PO",
-      "Số BBBG",
-      "Ngày nhập",
+      "Ngày nhập kho",
       "Hạng mục SC",
       "Ưu Tiên SC",
     ];
@@ -268,7 +273,7 @@ export const TableHH = () => {
     }
 
     if (checkboxes.defaultCheck2) {
-      selectedColumns.push("Số BBBG Đối tác", "Cập nhật XK");
+      selectedColumns.push("Số BBXK", "Cập nhật XK");
     }
 
     if (checkboxes.defaultCheck3) {
@@ -311,10 +316,7 @@ export const TableHH = () => {
               if (column === "Số PO") {
                 return item.po.poNumber;
               }
-              if (column === "Số BBBG") {
-                return item.bbbgNumber;
-              }
-              if (column === "Ngày nhập") {
+              if (column === "Ngày nhập kho") {
                 if (item.importDate) {
                   return moment(item.importDate).format("DD/MM/YYYY");
                 }
@@ -342,8 +344,8 @@ export const TableHH = () => {
                   return "Cháy nổ";
                 }
               }
-              if (column === "Số BBBG Đối tác") {
-                return item.bbbgNumber;
+              if (column === "Số BBXK") {
+                return item.bbbgNumberExport;
               }
               if (column === "Cập nhật XK") {
                 if (item.exportPartner) {
@@ -395,15 +397,20 @@ export const TableHH = () => {
     setIsShowNotifyUpdateBH(false);
     setisShowEditPoDetail(false);
     setIsShowPoDetail(false);
+    setShowDelete(false);
   };
 
   // Search
 
   const handleSearch = async (page) => {
     let time = selectedDateStart;
+    let timeExport = exportPartner
 
     if (selectedDateStart !== null) {
       time = moment(selectedDateStart).format("DD/MM/YYYY");
+    }
+    if(exportPartner !== null ) {
+      timeExport = moment(exportPartner).format("DD/MM/YYYY");
     }
     let res = await searchPODetail(
       [
@@ -414,7 +421,7 @@ export const TableHH = () => {
         time,
         repairCategory,
         repairStatus,
-        exportPartner,
+        timeExport,
         kcsVt,
         priority,
       ],
@@ -471,7 +478,7 @@ export const TableHH = () => {
       columnHeader.push("Cập nhật SC");
       namefile = "Cap-nhat-SC.xlsx";
     } else if (index === 2) {
-      columnHeader.push("Cập nhật XK");
+      columnHeader.push("Cập nhật XK", "Số BBXK");
       namefile = "Cap-nhat-XK.xlsx";
     } else if (index === 3) {
       columnHeader.push("Cập nhật KCS");
@@ -483,18 +490,12 @@ export const TableHH = () => {
       columnHeader.push("Ưu Tiên SC");
       namefile = "uu-tien-SC.xlsx";
     } else if (index === 6) {
-      columnHeader.push("Ngày nhập");
-      namefile = "ngay-nhap.xlsx";
+      columnHeader.push("Ngày nhập kho");
+      namefile = "ngay-nhap-kho.xlsx";
     } else if (index === 7) {
       columnHeader.push("Hạng mục SC");
       namefile = "hang-muc-sc.xlsx";
-    } else if (index === 8) {
-      columnHeader.push("Số BBBG");
-      namefile = "so-bbbg.xlsx";
-    } else if (index === 9) {
-      columnHeader.push("Số BBBG Đối tác");
-      namefile = "so-bbbg-doi-tac.xlsx";
-    }
+    } 
     const dataArray = [ columnHeader];
 
     const workbook = utils.book_new();
@@ -507,6 +508,12 @@ export const TableHH = () => {
   // handle reset
   const handleReset = () => {
     window.location.reload();
+  }
+
+  // handle delete Po detail
+  const handleDeletePoDetail = (item) => {
+    setShowDelete(true)
+    setDataDeletePoDetail(item)
   }
 
   return (
@@ -563,29 +570,28 @@ export const TableHH = () => {
                     })}
                 </Form.Select>
               </Form.Group>
-              <Form.Group as={Col} md="2" controlId="validationCustomUsername2">
-                <Form.Label>Số BBBG</Form.Label>
-                <InputGroup hasValidation>
-                  <Form.Control
-                    type="text"
-                    placeholder="Số BBBG"
-                    value={bbbg !== null ? bbbg : ""}
-                    onChange={(event) => {
-                      const value = event.target.value;
-                      setBbbg(value !== "" ? value : null);
-                    }}
-                    aria-describedby="inputGroupPrepend"
-                    required
-                  />
-                </InputGroup>
+              <Form.Group as={Col} md="2" controlId="validationCustom05">
+                <Form.Label>Ưu tiên SC</Form.Label>
+                <Form.Select
+                  aria-label="Default select example"
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    setPriority(value === "Tất cả" ? null : value);
+                  }}
+                >
+                  <option>Tất cả</option>
+                  <option value="0">Không ưu tiên</option>
+                  <option value="1">Ưu tiên</option>
+                </Form.Select>
               </Form.Group>
               <Form.Group as={Col} md="2" controlId="validationCustomUsername3">
-                <Form.Label>Ngày nhập</Form.Label>
+                <Form.Label>Ngày nhập kho</Form.Label>
                 <div className="">
                   <DatePicker
                     selected={selectedDateStart}
                     onChange={handleDateChangeStart}
                     customInput={<CustomInput />}
+                    dateFormat="dd/MM/yyyy"
                     showYearDropdown
                     showMonthDropdown
                   />
@@ -622,19 +628,32 @@ export const TableHH = () => {
                   <option value="2">Cháy nổ</option>
                 </Form.Select>
               </Form.Group>
+              <Form.Group as={Col} md="2" controlId="validationCustomUsername2">
+                <Form.Label>Số BBXK</Form.Label>
+                <InputGroup hasValidation>
+                  <Form.Control
+                    type="text"
+                    placeholder="Số BBXK"
+                    value={bbbg !== null ? bbbg : ""}
+                    onChange={(event) => {
+                      const value = event.target.value;
+                      setBbbg(value !== "" ? value : null);
+                    }}
+                    aria-describedby="inputGroupPrepend"
+                    required
+                  />
+                </InputGroup>
+              </Form.Group>
               <Form.Group as={Col} md="2" controlId="validationCustom04">
                 <Form.Label>Cập nhật XK</Form.Label>
-                <Form.Select
-                  aria-label="Default select example"
-                  onChange={(event) => {
-                    const value = event.target.value;
-                    setExportPartner(value === "Tất cả" ? null : value);
-                  }}
-                >
-                  <option>Tất cả</option>
-                  <option value="0">Chưa xuất kho</option>
-                  <option value="1">Xuất kho</option>
-                </Form.Select>
+                <DatePicker
+                  selected={exportPartner}
+                  onChange={handleDateChangeExportPartner}
+                  customInput={<CustomInput />}
+                  dateFormat="dd/MM/yyyy"
+                  showYearDropdown
+                  showMonthDropdown
+                />
               </Form.Group>
               <Form.Group as={Col} md="2" controlId="validationCustom05">
                 <Form.Label>Cập nhật KCS</Form.Label>
@@ -648,20 +667,6 @@ export const TableHH = () => {
                   <option>Tất cả</option>
                   <option value="0">FAIL</option>
                   <option value="1">PASS</option>
-                </Form.Select>
-              </Form.Group>
-              <Form.Group as={Col} md="2" controlId="validationCustom05">
-                <Form.Label>Ưu tiên SC</Form.Label>
-                <Form.Select
-                  aria-label="Default select example"
-                  onChange={(event) => {
-                    const value = event.target.value;
-                    setPriority(value === "Tất cả" ? null : value);
-                  }}
-                >
-                  <option>Tất cả</option>
-                  <option value="0">Không ưu tiên</option>
-                  <option value="1">Ưu tiên</option>
                 </Form.Select>
               </Form.Group>
             </Row>
@@ -982,25 +987,9 @@ export const TableHH = () => {
                       <div className="update-state">
                         <button
                           className="dropdown-item label-state"
-                          onClick={() => handleDownloadSampleFile(8)}
-                        >
-                          Số BBBG
-                        </button>
-                      </div>
-                      <div className="update-state">
-                        <button
-                          className="dropdown-item label-state"
-                          onClick={() => handleDownloadSampleFile(9)}
-                        >
-                          Số BBBG Xuất
-                        </button>
-                      </div>
-                      <div className="update-state">
-                        <button
-                          className="dropdown-item label-state"
                           onClick={() => handleDownloadSampleFile(6)}
                         >
-                          Ngày nhập
+                          Ngày nhập kho
                         </button>
                       </div>
                       <div className="update-state">
@@ -1132,24 +1121,10 @@ export const TableHH = () => {
                   >
                     <div className="update-state">
                       <label
-                        htmlFor="test8"
-                        className="dropdown-item label-state"
-                      >
-                        Số BBBG
-                      </label>
-                      <input
-                        type="file"
-                        id="test8"
-                        hidden
-                        onChange={handleUploadSC}
-                      />
-                    </div>
-                    <div className="update-state">
-                      <label
                         htmlFor="test7"
                         className="dropdown-item label-state"
                       >
-                        Ngày nhập
+                        Ngày nhập kho
                       </label>
                       <input
                         type="file"
@@ -1196,20 +1171,6 @@ export const TableHH = () => {
                       <input
                         type="file"
                         id="test1"
-                        hidden
-                        onChange={handleUploadSC}
-                      />
-                    </div>
-                    <div className="update-state">
-                      <label
-                        htmlFor="test9"
-                        className="dropdown-item label-state"
-                      >
-                        Số BBBG đối tác
-                      </label>
-                      <input
-                        type="file"
-                        id="test9"
                         hidden
                         onChange={handleUploadSC}
                       />
@@ -1294,15 +1255,15 @@ export const TableHH = () => {
               <th>Mã hàng hóa</th>
               <th>Số serial</th>
               <th>Số PO</th>
-              <th>Số BBBG</th>
-              <th>Ngày nhập</th>
+              <th>Ngày nhập kho</th>
               <th>Hạng mục SC</th>
               <th>Ưu tiên SC</th>
               <th>Cập nhật SC</th>
-              <th>Số BBBG Đối tác</th>
+              <th>Số BBXK</th>
               <th>Cập nhật XK</th>
               <th>Cập nhật KCS</th>
               <th>Cập nhật BH</th>
+              <th>Ghi chú</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -1327,7 +1288,7 @@ export const TableHH = () => {
                 if (time !== null) {
                   data = moment(time).format("DD/MM/YYYY");
                 }
-                let dataExportPartner 
+                let dataExportPartner;
                 if (timeExport !== null) {
                   dataExportPartner = moment(timeExport).format("DD/MM/YYYY");
                 }
@@ -1347,7 +1308,7 @@ export const TableHH = () => {
                     <td>{item.product.productId}</td>
                     <td>{item.serialNumber}</td>
                     <td>{item.po.poNumber}</td>
-                    <td>{item.bbbgNumber}</td>
+                    {/* <td>{item.bbbgNumber}</td> */}
                     <td>{data}</td>
                     <td>
                       {item.repairCategory === 0 && "Nhập kho SC"}
@@ -1362,25 +1323,33 @@ export const TableHH = () => {
                       {item.repairStatus === 1 && "SC xong"}
                       {item.repairStatus === 2 && "Cháy nổ"}
                     </td>
-                    <td>{item.bbbgNumberPartner}</td>
-                    <td>
-                      {dataExportPartner}
-                    </td>
+                    <td>{item.bbbgNumberExport}</td>
+                    <td>{dataExportPartner}</td>
                     <td>
                       {item.kcsVT === 0 && "FAIL"}
                       {item.kcsVT === 1 && "PASS"}
                     </td>
                     <td>{dataWarranty}</td>
-                    <td>
+                    <td className="col-note">{item.note}</td>
+                    <td className="btn-action">
                       {localStorage.getItem("role") === "ROLE_MANAGER" ||
                       localStorage.getItem("role") === "ROLE_ADMIN" ||
                       localStorage.getItem("role") === "ROLE_REPAIRMAN" ||
                       localStorage.getItem("role") === "ROLE_KCSANALYST" ? (
                         <button
-                          className="btn btn-warning btn-sm"
+                          className="btn btn-warning btn-sm btn-edit"
                           onClick={() => handleEditPoDetail(item)}
                         >
                           Edit
+                        </button>
+                      ) : null}
+
+                      {localStorage.getItem("role") === "ROLE_ADMIN" ? (
+                        <button
+                          className="btn btn-danger btn-sm"
+                          onClick={() => handleDeletePoDetail(item)}
+                        >
+                          Del
                         </button>
                       ) : null}
                     </td>
@@ -1456,6 +1425,13 @@ export const TableHH = () => {
           currenPage={currenPage}
         />
 
+        <ModalDeletePODetail
+          show={showDelete}
+          handleCloses={handleCloses}
+          dataDeletePODetail={dataDeletePODetail}
+          getProducts={getProducts}
+          currenPage={currenPage}
+        />
         <div
           className="modal show "
           style={{ display: "block", position: "initial" }}

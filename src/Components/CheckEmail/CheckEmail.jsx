@@ -39,7 +39,8 @@ export const CheckEmail = () => {
       await delay(3000);
       navigate("/forgot-password");
     } else {
-      setVadilationEmail("Email not found");
+      if(res && res.statusCode === 204)
+      setVadilationEmail(res.data);
       setLoadingOTP(false);
     }
   };

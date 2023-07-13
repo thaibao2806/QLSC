@@ -50,7 +50,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 20px 0 10px 0;
+    margin: 40px 0 10px 0;
     .total {
         width: 46%;
         padding: 20px;
@@ -121,4 +121,24 @@
         margin-left: 25%;
         padding-left: 14%;
     }
+}
+
+.col-content {
+    width: 150px;
+}
+
+.chart-statistical {
+  display: flex;
+  justify-content: space-between;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.chart-name {
+    margin-top: 20px;
+  text-align: center;
 }

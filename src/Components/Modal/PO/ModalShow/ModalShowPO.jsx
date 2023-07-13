@@ -9,14 +9,20 @@ const ModalShowPO = (props) => {
   const [selectedDateEnd, setSelectedDateEnd] = useState(null);
   const [po, setPo] = useState("");
   const [quantity, setQuantity] = useState("");
+  const [contract, setContract] = useState("")
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDateWarranty, setSelectedDateWarranty] = useState(null);
 
   // check if show modal then get the data passed
   useEffect(() => {
     if (show) {
+      setContract(dataPo.contractNumber);
       setPo(dataPo.poNumber);
       setQuantity(dataPo.quantity);
       setSelectedDateStart(dataPo.beginAt);
       setSelectedDateEnd(dataPo.endAt);
+      setSelectedDate(dataPo.contractWarrantyExpirationDate);
+      setSelectedDateWarranty(dataPo.warrantyExpirationDate);
     }
   }, [dataPo]);
 
@@ -60,6 +66,19 @@ const ModalShowPO = (props) => {
             <div>
               <form>
                 <div className="form-group mb-3">
+                  <label htmlFor="exampleInputEmail1">Số hợp đồng</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="exampleInputEmail1"
+                    aria-describedby="emailHelp"
+                    placeholder="Nhập số đồng"
+                    value={contract}
+                    readOnly
+                    onChange={(event) => setContract(event.target.value)}
+                  />
+                </div>
+                <div className="form-group mb-3">
                   <label htmlFor="exampleInputEmail1">Số PO</label>
                   <input
                     type="text"
@@ -99,6 +118,28 @@ const ModalShowPO = (props) => {
                   <DatePicker
                     selected={selectedDateEnd}
                     onChange={handleDateChangeEnd}
+                    dateFormat="dd/MM/yyyy"
+                    readOnly
+                    customInput={<CustomInput />}
+                  />
+                </div>
+                <div className="form-group mb-3">
+                  <label htmlFor="exampleInputPassword4">
+                    Ngày hết hạn bảo lãnh THHĐ
+                  </label>
+                  <DatePicker
+                    selected={selectedDate}
+                    dateFormat="dd/MM/yyyy"
+                    readOnly
+                    customInput={<CustomInput />}
+                  />
+                </div>
+                <div className="form-group mb-3">
+                  <label htmlFor="exampleInputPassword4">
+                    Ngày hết hạn bảo lãnh bảo hành
+                  </label>
+                  <DatePicker
+                    selected={selectedDateWarranty}
                     dateFormat="dd/MM/yyyy"
                     readOnly
                     customInput={<CustomInput />}

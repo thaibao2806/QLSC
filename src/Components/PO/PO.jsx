@@ -124,6 +124,8 @@ const PO = () => {
               <th>Số lượng</th>
               <th>Ngày bắt đầu</th>
               <th>Ngày kết thúc</th>
+              <th>Ngày hết hạn bảo lãnh THHĐ</th>
+              <th>Ngày hết hạn bảo lãnh bảo hành</th>
               {user && user.auth && <th>Action</th>}
             </tr>
           </thead>
@@ -135,6 +137,10 @@ const PO = () => {
                 const dataBegin = moment(timeBegin).format("DD/MM/YYYY");
                 const timeEnd = item.endAt;
                 const datEnd = moment(timeEnd).format("DD/MM/YYYY");
+                const time = item.contractWarrantyExpirationDate;
+                const dataTime = moment(time).format("DD/MM/YYYY");
+                const timeWarranty = item.warrantyExpirationDate;
+                const dataWarranty = moment(timeWarranty).format("DD/MM/YYYY");
                 return (
                   <tr
                     key={`po-${index}`}
@@ -146,6 +152,8 @@ const PO = () => {
                     <td>{item.quantity}</td>
                     <td>{dataBegin}</td>
                     <td>{datEnd}</td>
+                    <td>{dataTime}</td>
+                    <td>{dataWarranty}</td>
                     <td>
                       {localStorage.getItem("role") === "ROLE_MANAGER" ||
                       localStorage.getItem("role") === "ROLE_ADMIN" ? (
@@ -187,7 +195,7 @@ const PO = () => {
         </>
       )}
 
-        {/* Modal  */}
+      {/* Modal  */}
       <ModelAddPO
         show={isShowAddPO}
         handleClose={handleClose}

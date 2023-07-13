@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Modal, Button } from "react-bootstrap";
+import { Modal, Button, Row, Form, Col } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import { FaCalendarAlt } from "react-icons/fa";
 import "./modeladdpo.scss";
@@ -11,6 +11,8 @@ const ModelAddPO = (props) => {
   const { show, handleClose, getAllPo } = props;
   const [selectedDateStart, setSelectedDateStart] = useState(null);
   const [selectedDateEnd, setSelectedDateEnd] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDateWarranty, setSelectedDateWarranty] = useState(null);
   const [po, setPo] = useState("");
   const [quantity, setQuantity] = useState("");
   const [isValidate, setIsValidate] = useState("");
@@ -24,6 +26,12 @@ const ModelAddPO = (props) => {
   // handle change date end
   const handleDateChangeEnd = (date) => {
     setSelectedDateEnd(date);
+  };
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  };
+  const handleDateChangeWarranty = (date) => {
+    setSelectedDateWarranty(date);
   };
 
   // custom input icon calendar
@@ -50,7 +58,9 @@ const ModelAddPO = (props) => {
       !po ||
       !quantity ||
       !selectedDateStart ||
-      !selectedDateStart
+      !selectedDateStart ||
+      !selectedDate ||
+      !selectedDateWarranty
     ) {
       setIsValidate("Cần nhập đầy đủ thông tin");
       return
@@ -75,7 +85,9 @@ const ModelAddPO = (props) => {
       po,
       quantity,
       selectedDateStart.getTime(),
-      selectedDateEnd.getTime()
+      selectedDateEnd.getTime(),
+      selectedDate.getTime(),
+      selectedDateWarranty.getTime()
     );
 
     // call api
@@ -106,7 +118,7 @@ const ModelAddPO = (props) => {
       className="modal show"
       style={{ display: "block", position: "initial" }}
     >
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleClose} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Add new PO</Modal.Title>
         </Modal.Header>
@@ -114,64 +126,129 @@ const ModelAddPO = (props) => {
           <div className="body-add-new">
             <div>
               <div className="validate-add-po">{isValidate}</div>
-              <form>
-                <div className="form-group mb-3">
-                  <label htmlFor="exampleInputEmail1">Số hợp đồng</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="exampleInputEmail9"
-                    aria-describedby="emailHelp"
-                    placeholder="Nhập số hợp đồng"
-                    value={contract}
-                    onChange={(event) => setContract(event.target.value)}
-                  />
-                </div>
-                <div className="form-group mb-3">
-                  <label htmlFor="exampleInputEmail1">Số PO</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="exampleInputEmail1"
-                    aria-describedby="emailHelp"
-                    placeholder="Nhập số PO"
-                    value={po}
-                    onChange={(event) => setPo(event.target.value)}
-                  />
-                </div>
-                <div className="form-group mb-3">
-                  <label htmlFor="exampleInputPassword1">Số lượng</label>
-                  <input
-                    type="number"
-                    className="form-control"
-                    id="exampleInputPassword1"
-                    placeholder="Nhập số lượng"
-                    value={quantity}
-                    onChange={(event) => setQuantity(event.target.value)}
-                  />
-                </div>
-                <div className="form-group mb-3">
-                  <label htmlFor="exampleInputPassword3">Ngày bắt đầu</label>
-                  <DatePicker
-                    selected={selectedDateStart}
-                    onChange={handleDateChangeStart}
-                    customInput={<CustomInput />}
-                    dateFormat="dd/MM/yyyy"
-                    showYearDropdown
-                    showMonthDropdown
-                  />
-                </div>
-                <div className="form-group mb-3">
-                  <label htmlFor="exampleInputPassword4">Ngày kết thúc</label>
-                  <DatePicker
-                    selected={selectedDateEnd}
-                    onChange={handleDateChangeEnd}
-                    customInput={<CustomInput />}
-                    dateFormat="dd/MM/yyyy"
-                    showYearDropdown
-                    showMonthDropdown
-                  />
-                </div>
+              <form className="input-po-detail">
+                <Row className="mb-3 ">
+                  <Form.Group
+                    as={Col}
+                    md="6"
+                    className="mb-3"
+                    controlId="exampleForm.ControlTextarea1"
+                  >
+                    <Form.Label>Nhập số hợp đồng</Form.Label>
+                    <Form.Control
+                      type="text"
+                      className="form-control"
+                      id="exampleInputEmail9"
+                      aria-describedby="emailHelp"
+                      placeholder="Nhập số hợp đồng"
+                      value={contract}
+                      onChange={(event) => setContract(event.target.value)}
+                    />
+                  </Form.Group>
+                  <Form.Group
+                    as={Col}
+                    md="6"
+                    className="mb-3"
+                    controlId="exampleForm.ControlTextarea1"
+                  >
+                    <Form.Label>Nhập số PO</Form.Label>
+                    <Form.Control
+                      type="text"
+                      className="form-control"
+                      id="exampleInputEmail1"
+                      aria-describedby="emailHelp"
+                      placeholder="Nhập số PO"
+                      value={po}
+                      onChange={(event) => setPo(event.target.value)}
+                    />
+                  </Form.Group>
+                </Row>
+                <Row className="mb-3 ">
+                  <Form.Group
+                    as={Col}
+                    md="12"
+                    className="mb-3"
+                    controlId="exampleForm.ControlTextarea1"
+                  >
+                    <Form.Label>Số lượng</Form.Label>
+                    <Form.Control
+                      type="number"
+                      className="form-control"
+                      id="exampleInputPassword1"
+                      placeholder="Nhập số lượng"
+                      value={quantity}
+                      onChange={(event) => setQuantity(event.target.value)}
+                    />
+                  </Form.Group>
+                </Row>
+                <Row className="mb-3 ">
+                  <Form.Group
+                    as={Col}
+                    md="6"
+                    className="mb-3"
+                    controlId="exampleForm.ControlTextarea1"
+                  >
+                    <Form.Label>Ngày bắt đầu</Form.Label>
+                    <DatePicker
+                      selected={selectedDateStart}
+                      onChange={handleDateChangeStart}
+                      customInput={<CustomInput />}
+                      dateFormat="dd/MM/yyyy"
+                      showYearDropdown
+                      showMonthDropdown
+                    />
+                  </Form.Group>
+                  <Form.Group
+                    as={Col}
+                    md="6"
+                    className="mb-3"
+                    controlId="exampleForm.ControlTextarea1"
+                  >
+                    <Form.Label>Ngày kết thúc</Form.Label>
+                    <DatePicker
+                      selected={selectedDateEnd}
+                      onChange={handleDateChangeEnd}
+                      customInput={<CustomInput />}
+                      dateFormat="dd/MM/yyyy"
+                      showYearDropdown
+                      showMonthDropdown
+                    />
+                  </Form.Group>
+                </Row>
+                <Row className="mb-3 ">
+                  <Form.Group
+                    as={Col}
+                    md="6"
+                    className="mb-3"
+                    controlId="exampleForm.ControlTextarea1999"
+                  >
+                    <Form.Label>Ngày hết hạn bảo lãnh THHĐ</Form.Label>
+                    <DatePicker
+                      selected={selectedDate}
+                      onChange={handleDateChange}
+                      customInput={<CustomInput />}
+                      dateFormat="dd/MM/yyyy"
+                      showYearDropdown
+                      showMonthDropdown
+                    />
+                  </Form.Group>
+                  <Form.Group
+                    as={Col}
+                    md="6"
+                    className="mb-3"
+                    controlId="exampleForm.ControlTextarea199"
+                  >
+                    <Form.Label>Ngày hết hạn bảo lãnh bảo hành</Form.Label>
+                    <DatePicker
+                      selected={selectedDateWarranty}
+                      onChange={handleDateChangeWarranty}
+                      customInput={<CustomInput />}
+                      dateFormat="dd/MM/yyyy"
+                      showYearDropdown
+                      showMonthDropdown
+                    />
+                  </Form.Group>
+                </Row>
               </form>
             </div>
           </div>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Button } from "react-bootstrap";
+import { Modal, Button, Row, Form, Col } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import { FaCalendarAlt } from "react-icons/fa";
 import { updatePo } from "../../../../service/service";
@@ -9,6 +9,8 @@ const ModalUpdatePo = (props) => {
   const { show, handleClose, dataPo, getAllPo } = props;
   const [selectedDateStart, setSelectedDateStart] = useState(null);
   const [selectedDateEnd, setSelectedDateEnd] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDateWarranty, setSelectedDateWarranty] = useState(null);
   const [po, setPo] = useState("");
   const [quantity, setQuantity] = useState("");
   const [isValidate, setIsValidate] = useState("");
@@ -23,6 +25,8 @@ const ModalUpdatePo = (props) => {
       setSelectedDateStart(dataPo.beginAt);
       setSelectedDateEnd(dataPo.endAt);
       setContractNumber(dataPo.contractNumber)
+      setSelectedDate(dataPo.contractWarrantyExpirationDate);
+      setSelectedDateWarranty(dataPo.warrantyExpirationDate);
     }
   }, [dataPo]);
 
@@ -34,6 +38,14 @@ const ModalUpdatePo = (props) => {
   // handle change date end
   const handleDateChangeEnd = (date) => {
     setSelectedDateEnd(date);
+  };
+
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  };
+
+  const handleDateChangeWarranty = (date) => {
+    setSelectedDateWarranty(date);
   };
 
   // custom icon calendar input
@@ -55,56 +67,70 @@ const ModalUpdatePo = (props) => {
 
   // handle update po
   const handleUpdatePo = async () => {
-    if(selectedDateStart >= selectedDateEnd) {
+    if (selectedDateStart >= selectedDateEnd) {
       setIsValidate("Ngày bắt đầu phải nhỏ hơn ngày kết thúc");
       return;
     } else {
-      setIsValidate("")
+      setIsValidate("");
     }
-    if(quantity <=0 ) {
+
+    if (quantity <= 0) {
       setIsValidate("Số lượng phải lớn hơn 0");
       return;
     } else {
-      setIsValidate("")
+      setIsValidate("");
     }
-    // convert start and end dates to long
+
     const endDate = new Date(selectedDateEnd).getTime();
     const startDate = new Date(selectedDateStart).getTime();
-    // call api
-    let res = await updatePo(contractNumber, po, quantity, startDate, endDate);
-    if (res && res.statusCode === 200) {
-      handleClose();
-      toast.success("Cập nhật thông tin thành công !!");
-      localStorage.removeItem("po");
-      getAllPo();
-    } else {
-      if (
-        res &&
-        res.statusCode === 205 &&
-        res.statusMessage === "YOU CAN ONLY UPDATE WITHIN THE FIRST 15 MINUTES"
-      ) {
-        setIsValidate(
-          "Bạn chỉ được phép chỉnh sửa số lượng!!"
-        );
-      } else if (
-        res &&
-        res.statusCode === 205
-      ) {
-        setIsValidate("Số PO đã tồn tại");
+    const date = new Date(selectedDate).getTime();
+    const dateWarranty = new Date(selectedDateWarranty).getTime();
+
+    try {
+      let res = await updatePo(
+        contractNumber,
+        po,
+        quantity,
+        startDate,
+        endDate,
+        date,
+        dateWarranty
+      );
+
+      if (res && res.statusCode === 200) {
+        handleClose();
+        toast.success("Cập nhật thông tin thành công!!");
+        localStorage.removeItem("po");
+        getAllPo();
+      } else if (res && res.statusCode === 205) {
+        if (
+          res.statusMessage === "YOU CAN ONLY UPDATE WITHIN THE FIRST 24 HOURS"
+        ) {
+          setIsValidate(
+            "Bạn chỉ được phép chỉnh PO và số Hợp đồng trong 24h!!"
+          );
+        } else {
+          setIsValidate("Số PO đã tồn tại");
+        }
       } else {
         setIsValidate("");
         handleClose();
-        toast.error("Cập nhật thông tin không thành công !!");
+        toast.error("Cập nhật không thành công do đã import dữ liệu theo PO!!");
       }
+    } catch (error) {
+      // Xử lý lỗi ở đây
+      toast.error("Cập nhật không thành công");
+      console.error(error);
     }
   };
+
 
   return (
     <div
       className="modal show"
       style={{ display: "block", position: "initial" }}
     >
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleClose} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Update PO</Modal.Title>
         </Modal.Header>
@@ -112,64 +138,125 @@ const ModalUpdatePo = (props) => {
           <div className="body-add-new">
             <div>
               <div className="validate-add-po">{isValidate}</div>
-              <form>
-                <div className="form-group mb-3">
-                  <label htmlFor="exampleInputEmail9">Số hợp đồng</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="exampleInputEmail9"
-                    aria-describedby="emailHelp"
-                    placeholder="Nhập số PO"
-                    value={contractNumber}
-                    onChange={(event) => setContractNumber(event.target.value)}
-                  />
-                </div>
-                <div className="form-group mb-3">
-                  <label htmlFor="exampleInputEmail1">Số PO</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="exampleInputEmail1"
-                    aria-describedby="emailHelp"
-                    placeholder="Nhập số PO"
-                    value={po}
-                    onChange={(event) => setPo(event.target.value)}
-                  />
-                </div>
-                <div className="form-group mb-3">
-                  <label htmlFor="exampleInputPassword1">Số lượng</label>
-                  <input
-                    type="number"
-                    className="form-control"
-                    id="exampleInputPassword1"
-                    placeholder="Nhập số lượng"
-                    value={quantity}
-                    onChange={(event) => setQuantity(event.target.value)}
-                  />
-                </div>
-                <div className="form-group mb-3">
-                  <label htmlFor="exampleInputPassword3">Ngày bắt đầu</label>
-                  <DatePicker
-                    selected={selectedDateStart}
-                    onChange={handleDateChangeStart}
-                    dateFormat="dd/MM/yyyy"
-                    showYearDropdown
-                    showMonthDropdown
-                    customInput={<CustomInput />}
-                  />
-                </div>
-                <div className="form-group mb-3">
-                  <label htmlFor="exampleInputPassword4">Ngày kết thúc</label>
-                  <DatePicker
-                    selected={selectedDateEnd}
-                    onChange={handleDateChangeEnd}
-                    dateFormat="dd/MM/yyyy"
-                    showYearDropdown
-                    showMonthDropdown
-                    customInput={<CustomInput />}
-                  />
-                </div>
+              <form className="input-po-detail">
+                <Row className="mb-3 ">
+                  <Form.Group
+                    as={Col}
+                    md="6"
+                    className="mb-3"
+                  >
+                    <Form.Label>Số hợp đồng</Form.Label>
+                    <Form.Control
+                      type="text"
+                      className="form-control"
+                      id="exampleInputEmail9"
+                      aria-describedby="emailHelp"
+                      placeholder="Nhập số PO"
+                      value={contractNumber}
+                      onChange={(event) =>
+                        setContractNumber(event.target.value)
+                      }
+                    />
+                  </Form.Group>
+                  <Form.Group
+                    as={Col}
+                    md="6"
+                    className="mb-3"
+                  >
+                    <Form.Label>Số PO</Form.Label>
+                    <Form.Control
+                      type="text"
+                      className="form-control"
+                      id="exampleInputEmail1"
+                      aria-describedby="emailHelp"
+                      placeholder="Nhập số PO"
+                      value={po}
+                      onChange={(event) => setPo(event.target.value)}
+                    />
+                  </Form.Group>
+                </Row>
+                <Row className="mb-3 ">
+                  <Form.Group
+                    as={Col}
+                    md="12"
+                    className="mb-3"
+                  >
+                    <Form.Label>Số lượng</Form.Label>
+                    <Form.Control
+                      type="number"
+                      className="form-control"
+                      id="exampleInputPassword1"
+                      placeholder="Nhập số lượng"
+                      value={quantity}
+                      onChange={(event) => setQuantity(event.target.value)}
+                    />
+                  </Form.Group>
+                </Row>
+                <Row className="mb-3 ">
+                  <Form.Group
+                    as={Col}
+                    md="6"
+                    className="mb-3"
+                  >
+                    <Form.Label>Ngày bắt đầu</Form.Label>
+                    <DatePicker
+                      selected={selectedDateStart}
+                      onChange={handleDateChangeStart}
+                      dateFormat="dd/MM/yyyy"
+                      showYearDropdown
+                      showMonthDropdown
+                      customInput={<CustomInput />}
+                    />
+                  </Form.Group>
+                  <Form.Group
+                    as={Col}
+                    md="6"
+                    className="mb-3"
+                  >
+                    <Form.Label>Ngày kết thúc</Form.Label>
+                    <DatePicker
+                      selected={selectedDateEnd}
+                      onChange={handleDateChangeEnd}
+                      dateFormat="dd/MM/yyyy"
+                      showYearDropdown
+                      showMonthDropdown
+                      customInput={<CustomInput />}
+                    />
+                  </Form.Group>
+                </Row>
+                <Row className="mb-3 ">
+                  <Form.Group
+                    as={Col}
+                    md="6"
+                    className="mb-3"
+                  >
+                    <Form.Label>Ngày hết hạn bảo lãnh THHĐ</Form.Label>
+                    <DatePicker
+                      selected={selectedDate}
+                      onChange={handleDateChange}
+                      dateFormat="dd/MM/yyyy"
+                      showYearDropdown
+                      showMonthDropdown
+                      customInput={<CustomInput />}
+                    />
+                  </Form.Group>
+                  <Form.Group
+                    as={Col}
+                    md="6"
+                    className="mb-3"
+                    controlId="exampleForm.ControlTextarea19999999"
+                  >
+                    <Form.Label>Ngày hết hạn bảo lãnh bảo hành</Form.Label>
+                    <DatePicker
+                      selected={selectedDateWarranty}
+                      onChange={handleDateChangeWarranty}
+                      dateFormat="dd/MM/yyyy"
+                      showYearDropdown
+                      showMonthDropdown
+                      customInput={<CustomInput />}
+                    />
+                  </Form.Group>
+                </Row>
               </form>
             </div>
           </div>

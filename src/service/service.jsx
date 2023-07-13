@@ -173,10 +173,26 @@ const searchProduct = (keyword, property, pageIndex, pageSize) => {
 };
 
 // api add po
-const createPo = (contractNumber, poNumber, quantity, beginAt, endAt) => {
+const createPo = (
+  contractNumber,
+  poNumber,
+  quantity,
+  beginAt,
+  endAt,
+  contractWarrantyExpirationDate,
+  warrantyExpirationDate
+) => {
   return axioss.post(
     "/po/add",
-    { contractNumber, poNumber, quantity, beginAt, endAt },
+    {
+      contractNumber,
+      poNumber,
+      quantity,
+      beginAt,
+      endAt,
+      contractWarrantyExpirationDate,
+      warrantyExpirationDate,
+    },
     {
       headers: {
         email: `${localStorage.getItem("email")}`,
@@ -196,10 +212,26 @@ const getPo = () => {
 };
 
 // api update po
-const updatePo = (contractNumber, poNumber, quantity, beginAt, endAt) => {
+const updatePo = (
+  contractNumber,
+  poNumber,
+  quantity,
+  beginAt,
+  endAt,
+  contractWarrantyExpirationDate,
+  warrantyExpirationDate
+) => {
   return axioss.put(
     `/po/update/${localStorage.getItem("po")}`,
-    { contractNumber, poNumber, quantity, beginAt, endAt },
+    {
+      contractNumber,
+      poNumber,
+      quantity,
+      beginAt,
+      endAt,
+      contractWarrantyExpirationDate,
+      warrantyExpirationDate,
+    },
     {
       headers: {
         email: `${localStorage.getItem("email")}`,
@@ -286,7 +318,8 @@ const updatePoDetail = (
   exportPartner,
   kcsVT,
   warrantyPeriod,
-  bbbgNumberPartner
+  bbbgNumberExport,
+  note
 ) => {
   return axioss.put(
     `/po-detail/update/${poDetailId}`,
@@ -300,7 +333,8 @@ const updatePoDetail = (
       exportPartner,
       kcsVT,
       warrantyPeriod,
-      bbbgNumberPartner,
+      bbbgNumberExport,
+      note,
     },
     {
       headers: {
@@ -352,6 +386,16 @@ const updateStatusPoDetail = (file) => {
   return axioss.post("/po-detail/update", file, config);
 }
 
+// api delete po detail
+const deletePODetail = (id) => {
+  const config = {
+    headers: {
+      email: localStorage.getItem("email"),
+    },
+  };
+  return axioss.post(`/po-detail/deleteByID?id=${id}`,null, config);
+}
+
 export {
   fecthAll,
   notify,
@@ -381,4 +425,5 @@ export {
   exportByPO,
   importPODetail,
   updateStatusPoDetail,
+  deletePODetail,
 };

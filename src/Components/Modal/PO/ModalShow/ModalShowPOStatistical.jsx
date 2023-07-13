@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./modalstatistical.scss";
 import { Modal, Table } from "react-bootstrap";
-import { Chart } from "chart.js/auto";
+import Chart from "chart.js";
 import { showStatistical } from "../../../../service/service";
+// import { Bar } from "react-chartjs-2";
 
 const ModalShowPOStatistical = (props) => {
   const { show, handleClose, dataStatistical } = props;
@@ -43,16 +44,16 @@ const ModalShowPOStatistical = (props) => {
       }
 
       myChartSC = new Chart(ctx, {
-        type: "pie",
+        type: "horizontalBar", // Thay đổi kiểu biểu đồ thành "horizontalBar"
         data: {
-          labels: ["SC xong", "SC không được", "Chưa cập nhật", "Cháy nổ"],
+          labels: ["Chưa cập nhật", "Cháy nổ", "SC không được", "SC xong"],
           datasets: [
             {
               data: [
-                listPo.TRANG_THAI_SC.SC_XONG,
-                listPo.TRANG_THAI_SC.SC_KHONG_DUOC,
                 listPo.TRANG_THAI_SC.CHUA_CAP_NHAT,
+                listPo.TRANG_THAI_SC.SC_KHONG_DUOC,
                 listPo.TRANG_THAI_SC.CHAY_NO,
+                listPo.TRANG_THAI_SC.SC_XONG,
               ],
               backgroundColor: [
                 "rgba(255, 0, 0, 1)", // Đỏ đậm
@@ -60,22 +61,26 @@ const ModalShowPOStatistical = (props) => {
                 "rgba(200, 50, 255, 1)", // Tím đậm
                 "rgba(0, 100, 255, 1)", // Xanh dương đậm
               ],
+              borderWidth: 0, // Loại bỏ đường viền của các thanh
             },
           ],
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          title: {
-            display: true,
-            text: "Weather",
+          scales: {
+            xAxes: [{ ticks: { beginAtZero: true } }], // Thêm xAxes với thuộc tính ticks để bắt đầu từ giá trị 0
+            yAxes: [{ barThickness: 30 }], // Thêm yAxes với thuộc tính barThickness để chỉ định độ dày của thanh
+          },
+          legend: {
+            display: false, // Ẩn hình chú thích
           },
         },
       });
     }
   };
 
-  // chart export partner
+
   const createOrUpdateChartXK = () => {
     if (chartRefXK.current) {
       const ctx = chartRefXK.current.getContext("2d");
@@ -85,14 +90,14 @@ const ModalShowPOStatistical = (props) => {
       }
 
       myChartXK = new Chart(ctx, {
-        type: "pie",
+        type: "horizontalBar",
         data: {
-          labels: ["Đã cập nhật", "Chưa cập nhật"],
+          labels: ["Chưa cập nhật", "Đã cập nhật"],
           datasets: [
             {
               data: [
-                listPo.XUAT_KHO.DA_CAP_NHAT,
                 listPo.XUAT_KHO.CHUA_CAP_NHAT,
+                listPo.XUAT_KHO.DA_CAP_NHAT,
               ],
               backgroundColor: [
                 "rgba(255, 0, 0, 1)", // Đỏ đậm
@@ -106,9 +111,12 @@ const ModalShowPOStatistical = (props) => {
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          title: {
-            display: true,
-            text: "Weather",
+          scales: {
+            xAxes: [{ ticks: { beginAtZero: true } }], // Thêm xAxes với thuộc tính ticks để bắt đầu từ giá trị 0
+            yAxes: [{ barThickness: 30 }], // Thêm yAxes với thuộc tính barThickness để chỉ định độ dày của thanh
+          },
+          legend: {
+            display: false, // Ẩn hình chú thích
           },
         },
       });
@@ -125,15 +133,15 @@ const ModalShowPOStatistical = (props) => {
       }
 
       myChartKCS = new Chart(ctx, {
-        type: "pie",
+        type: "horizontalBar",
         data: {
-          labels: ["PASS", "FAIL", "Chưa cập nhật"],
+          labels: ["Chưa cập nhật", "FAIL", "PASS"],
           datasets: [
             {
               data: [
-                listPo.KSC_VT.PASS,
-                listPo.KSC_VT.FAIL,
                 listPo.KSC_VT.CHUA_CAP_NHAT,
+                listPo.KSC_VT.FAIL,
+                listPo.KSC_VT.PASS,
               ],
               backgroundColor: [
                 "rgba(255, 0, 0, 1)", // Đỏ đậm
@@ -147,9 +155,12 @@ const ModalShowPOStatistical = (props) => {
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          title: {
-            display: true,
-            text: "Weather",
+          scales: {
+            xAxes: [{ ticks: { beginAtZero: true } }], // Thêm xAxes với thuộc tính ticks để bắt đầu từ giá trị 0
+            yAxes: [{ barThickness: 30 }], // Thêm yAxes với thuộc tính barThickness để chỉ định độ dày của thanh
+          },
+          legend: {
+            display: false, // Ẩn hình chú thích
           },
         },
       });
@@ -166,14 +177,14 @@ const ModalShowPOStatistical = (props) => {
       }
 
       myChartBH = new Chart(ctx, {
-        type: "pie",
+        type: "horizontalBar",
         data: {
-          labels: ["Đã cập nhật", "Chưa cập nhật"],
+          labels: ["Chưa cập nhật", "Đã cập nhật"],
           datasets: [
             {
               data: [
-                listPo.BAO_HANH.DA_CAP_NHAT,
                 listPo.BAO_HANH.CHUA_CAP_NHAT,
+                listPo.BAO_HANH.DA_CAP_NHAT,
               ],
               backgroundColor: [
                 "rgba(255, 0, 0, 1)", // Đỏ đậm
@@ -187,9 +198,12 @@ const ModalShowPOStatistical = (props) => {
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          title: {
-            display: true,
-            text: "Weather",
+          scales: {
+            xAxes: [{ ticks: { beginAtZero: true } }], // Thêm xAxes với thuộc tính ticks để bắt đầu từ giá trị 0
+            yAxes: [{ barThickness: 30 }], // Thêm yAxes với thuộc tính barThickness để chỉ định độ dày của thanh
+          },
+          legend: {
+            display: false, // Ẩn hình chú thích
           },
         },
       });
@@ -213,26 +227,41 @@ const ModalShowPOStatistical = (props) => {
         <Modal.Body>
           <div className="chart-statistical">
             <div className="card">
-              <div className="card-body" style={{ height: "200px" }}>
-                <canvas ref={chartRef} style={{ border: "none" }} />
+              <div
+                className="card-body"
+                style={{ height: "250px", width: "350px" }}
+              >
+                <canvas ref={chartRef} />
+                <p className="chart-name">Biểu đồ trạng thái SC</p>
               </div>
             </div>
-
             <div className="card">
-              <div className="card-body" style={{ height: "200px" }}>
+              <div
+                className="card-body"
+                style={{ height: "250px", width: "350px" }}
+              >
                 <canvas ref={chartRefXK} />
+                <p className="chart-name">Biểu đồ xuất kho</p>
               </div>
             </div>
 
             <div className="card">
-              <div className="card-body" style={{ height: "200px" }}>
+              <div
+                className="card-body"
+                style={{ height: "250px", width: "350px" }}
+              >
                 <canvas ref={chartRefKCS} />
+                <p className="chart-name">Biểu đồ KCS</p>
               </div>
             </div>
 
             <div className="card">
-              <div className="card-body" style={{ height: "200px" }}>
+              <div
+                className="card-body"
+                style={{ height: "250px", width: "350px" }}
+              >
                 <canvas ref={chartRefBH} />
+                <p className="chart-name">Biểu đồ bảo hành</p>
               </div>
             </div>
           </div>
@@ -240,7 +269,7 @@ const ModalShowPOStatistical = (props) => {
             {listPo && Object.keys(listPo).length > 0 && (
               <>
                 <div className="total border-0">
-                  <h4>Tổng số lượng</h4>
+                  <h4>SL khai báo theo PO</h4>
                   <h1>{listPo.TONG_SO_LUONG.TONG}</h1>
                 </div>
                 <div className="total-import">
@@ -269,17 +298,17 @@ const ModalShowPOStatistical = (props) => {
                       <th colSpan={2}>Bảo hành</th>
                     </tr>
                     <tr>
-                      <th>Sửa chữa xong</th>
-                      <th>Sữa chữa không được</th>
-                      <th>Cháy nổ</th>
-                      <th>Chưa cập nhật</th>
-                      <th>Đã cập nhật</th>
-                      <th>Chưa cập nhật</th>
-                      <th>Pass</th>
-                      <th>Fail</th>
-                      <th>Chưa cập nhật</th>
-                      <th>Đã cập nhật</th>
-                      <th>Chưa cập nhật</th>
+                      <th className="col-content">Sửa chữa xong</th>
+                      <th className="col-content">SC không được</th>
+                      <th className="col-content">Cháy nổ</th>
+                      <th className="col-content">Chưa cập nhật</th>
+                      <th className="col-content">Đã cập nhật</th>
+                      <th className="col-content">Chưa cập nhật</th>
+                      <th className="col-content">Pass</th>
+                      <th className="col-content">Fail</th>
+                      <th className="col-content">Chưa cập nhật</th>
+                      <th className="col-content">Đã cập nhật</th>
+                      <th className="col-content">Chưa cập nhật</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -300,13 +329,15 @@ const ModalShowPOStatistical = (props) => {
                         </tr>
                         <tr>
                           <td>Tỉ lệ hoàn thành: </td>
-                          <td>
-                            {(
-                              (listPo.KSC_VT.PASS /
-                                (listPo.TONG_SO_LUONG.SO_LUONG_IMPORT -
-                                  listPo.TRANG_THAI_SC.CHAY_NO)) *
-                              100
-                            ).toFixed(2)}
+                          <td colSpan={10}>
+                            {listPo.KSC_VT.PASS
+                              ? (
+                                  (listPo.KSC_VT.PASS /
+                                    (listPo.TONG_SO_LUONG.SO_LUONG_IMPORT -
+                                      listPo.TRANG_THAI_SC.CHAY_NO)) *
+                                  100
+                                ).toFixed(2)
+                              : 0}
                             %
                           </td>
                         </tr>
