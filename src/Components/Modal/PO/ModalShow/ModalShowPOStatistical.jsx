@@ -232,7 +232,9 @@ const ModalShowPOStatistical = (props) => {
                 style={{ height: "250px", width: "350px" }}
               >
                 <canvas ref={chartRef} />
-                <p className="chart-name">Biểu đồ trạng thái SC</p>
+                <p className="chart-name">
+                  <b>Tổng hợp Trạng thái SC</b>
+                </p>
               </div>
             </div>
             <div className="card">
@@ -241,7 +243,9 @@ const ModalShowPOStatistical = (props) => {
                 style={{ height: "250px", width: "350px" }}
               >
                 <canvas ref={chartRefXK} />
-                <p className="chart-name">Biểu đồ xuất kho</p>
+                <p className="chart-name">
+                  <b>Tổng hợp Xuất kho</b>
+                </p>
               </div>
             </div>
 
@@ -251,7 +255,9 @@ const ModalShowPOStatistical = (props) => {
                 style={{ height: "250px", width: "350px" }}
               >
                 <canvas ref={chartRefKCS} />
-                <p className="chart-name">Biểu đồ KCS</p>
+                <p className="chart-name">
+                  <b>Tổng hợp KCS</b>
+                </p>
               </div>
             </div>
 
@@ -261,7 +267,9 @@ const ModalShowPOStatistical = (props) => {
                 style={{ height: "250px", width: "350px" }}
               >
                 <canvas ref={chartRefBH} />
-                <p className="chart-name">Biểu đồ bảo hành</p>
+                <p className="chart-name">
+                  <b>Tổng hợp Bảo hành</b>
+                </p>
               </div>
             </div>
           </div>

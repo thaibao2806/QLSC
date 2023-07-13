@@ -332,7 +332,7 @@ export const TableHH = () => {
               }
               if (column === "Ưu Tiên SC") {
                 if (item.priority === 0) {
-                  return "Không ưu tiên";
+                  return 
                 } else if (item.priority === 1) {
                   return "Ưu tiên";
                 }
@@ -1258,7 +1258,7 @@ export const TableHH = () => {
               <th>Số serial</th>
               <th>Số PO</th>
               <th>Ngày nhập kho</th>
-              <th>Hạng mục SC</th>
+              <th>HM SC</th>
               <th>Ưu tiên SC</th>
               <th>Cập nhật SC</th>
               <th>Số BBXK</th>
@@ -1313,11 +1313,11 @@ export const TableHH = () => {
                     {/* <td>{item.bbbgNumber}</td> */}
                     <td>{data}</td>
                     <td>
-                      {item.repairCategory === 0 && "Nhập kho SC"}
-                      {item.repairCategory === 1 && "Nhập kho BH"}
+                      {item.repairCategory === 0 && "NK SC"}
+                      {item.repairCategory === 1 && "NK BH"}
                     </td>
                     <td>
-                      {item.priority === 0 && "Không UT"}
+                      {/* {item.priority === 0 && "Không UT"} */}
                       {item.priority === 1 && "Ưu tiên"}
                     </td>
                     <td>
