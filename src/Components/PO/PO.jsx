@@ -115,7 +115,7 @@ const PO = () => {
         <div className="my-3 add-new d-flex justify-content-between">
           <div className="col-6">
             <div className="col-6">
-              <div className="btn-search input-group w-100">
+              <div className="btn-search input-group w-75">
                 <input
                   className="form-control"
                   placeholder="Search..."
