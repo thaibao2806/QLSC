@@ -29,6 +29,7 @@ const Product = () => {
   const [isShowAddProduct, setIsShowAddProduct] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [currentPage, setCurrentPage] = useState("")
+  const [currentPageSearch, setCurrentPageSearch] = useState("")
 
   // call api when load page
   useEffect(() => {
@@ -69,6 +70,7 @@ const Product = () => {
     setStartIndex(newStartIndex);
     if (search) {
       handleSearch(+event.selected);
+      setCurrentPageSearch(selectedPage)
     } else {
       getProducts(+event.selected);
       setCurrentPage(selectedPage)
@@ -139,6 +141,7 @@ const Product = () => {
   const handleReset = () => {
     getProducts(0)
     setSearch("")
+    window.location.reload();
   }
 
   return (
@@ -282,6 +285,7 @@ const Product = () => {
           currentPage={currentPage}
           search={search}
           handleSearch={handleSearch}
+          currentPageSearch={currentPageSearch}
         />
 
         <div

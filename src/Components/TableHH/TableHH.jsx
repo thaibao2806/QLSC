@@ -75,6 +75,7 @@ export const TableHH = () => {
   const [value1, setValue1] = useState(""); // State cho ô tìm kiếm thứ nhất
   const [value2, setValue2] = useState("");
   const [debounceTimeout, setDebounceTimeout] = useState(null);
+  const [currentPageSearch, setCurrentPageSearch] = useState("");
 
 
   // call api when load page
@@ -255,6 +256,7 @@ export const TableHH = () => {
       priority
     ) {
       handleSearch(+event.selected);
+      setCurrentPageSearch(selectedPage)
     } else {
       getProducts(+event.selected);
       setCurrentPage(selectedPage);
@@ -1483,6 +1485,17 @@ export const TableHH = () => {
           getProducts={getProducts}
           currenPage={currenPage}
           handleSearch={handleSearch}
+          currentPageSearch={currentPageSearch}
+          productIds={productId}
+          serialNumbers={serialNumber}
+          value1s={value1}
+          bbbgs={bbbg}
+          selectedDateStarts={selectedDateStart}
+          repairCategorys={repairCategory}
+          repairStatuss={repairStatus}
+          exportPartners={exportPartner}
+          kcsVts={kcsVt}
+          prioritys={priority}
         />
 
         <ModalDeletePODetail

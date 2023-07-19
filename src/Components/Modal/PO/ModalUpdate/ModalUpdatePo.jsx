@@ -15,6 +15,7 @@ const ModalUpdatePo = (props) => {
     currentPage,
     handleSearch,
     search,
+    currentPageSearch,
   } = props;
   const [selectedDateStart, setSelectedDateStart] = useState(null);
   const [selectedDateEnd, setSelectedDateEnd] = useState(null);
@@ -141,7 +142,7 @@ const ModalUpdatePo = (props) => {
           localStorage.removeItem("po");
           
           if (search) {
-            handleSearch(page);
+            handleSearch(currentPageSearch);
           } else {
             getAllPo(page);
           }

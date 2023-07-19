@@ -20,6 +20,17 @@ const ModalUpdatePoDetail = (props) => {
     getProducts,
     currenPage,
     handleSearch,
+    currentPageSearch,
+    productIds ,
+    serialNumbers ,
+    value1s ,
+    bbbgs ,
+    selectedDateStarts ,
+    repairCategorys ,
+    repairStatuss ,
+    exportPartners ,
+    kcsVts ,
+    prioritys
   } = props;
   const [selectedDateStart, setSelectedDateStart] = useState(null);
   const [selectedDateWarrity, setSelectedDateWarrity] = useState(null);
@@ -143,8 +154,20 @@ const ModalUpdatePoDetail = (props) => {
     );
     if (res && res.statusCode === 200) {
       toast.success("Cập nhật thành công !!!");
-      if (handleSearch) {
-        handleSearch(page)
+      if (
+        currentPageSearch ||
+        productIds ||
+        serialNumbers ||
+        value1s ||
+        bbbgs ||
+        selectedDateStarts ||
+        repairCategorys ||
+        repairStatuss ||
+        exportPartners ||
+        kcsVts ||
+        prioritys
+      ) {
+        handleSearch(currentPageSearch);
       } else {
         getProducts(page);
       } 

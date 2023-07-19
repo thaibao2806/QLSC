@@ -35,6 +35,7 @@ const PO = () => {
   const [selectedOption, setSelectedOption] = useState("50");
   const [startIndex, setStartIndex] = useState(0);
   const [currentPage, setCurrentPage] = useState("");
+  const [currentPageSearch, setCurrentPageSearch] = useState("");
 
   // call get all po when load page
   useEffect(() => {
@@ -82,7 +83,7 @@ const PO = () => {
     setStartIndex(newStartIndex);
     if (search) {
       handleSearch(+event.selected);
-      setCurrentPage(selectedPage);
+      setCurrentPageSearch(selectedPage);
     } else {
       getAllPo(+event.selected);
       setCurrentPage(selectedPage);
@@ -133,6 +134,7 @@ const PO = () => {
   const handleReset = () => {
     getAllPo(0)
     setSearch("")
+    window.location.reload();
   }
 
 
@@ -334,6 +336,7 @@ const PO = () => {
         currentPage={currentPage}
         handleSearch={handleSearch}
         search={search}
+        currentPageSearch={currentPageSearch}
       />
 
       <ModalShowPO
