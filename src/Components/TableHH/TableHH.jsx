@@ -49,7 +49,7 @@ export const TableHH = () => {
   const [startIndex, setStartIndex] = useState(0);
   const [isShowPoDetail, setIsShowPoDetail] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
-  const [selectedOption, setSelectedOption] = useState("50");
+  const [selectedOption, setSelectedOption] = useState("100");
   const [checkboxes, setCheckboxes] = useState({
     defaultCheck1: false,
     defaultCheck2: false,
@@ -1464,6 +1464,7 @@ export const TableHH = () => {
             <option value="100">100 / Trang</option>
             <option value="300">300 / Trang</option>
             <option value="500">500 / Trang</option>
+            <option value="2000">2000 / Trang</option>
           </Form.Select>
         </div>
 
