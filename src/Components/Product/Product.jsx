@@ -25,7 +25,7 @@ const Product = () => {
   const [search, setSearch] = useState("");
   const [startIndex, setStartIndex] = useState(0);
   const [dataDetail, setDataDetail] = useState("");
-  const [selectedOption, setSelectedOption] = useState("10");
+  const [selectedOption, setSelectedOption] = useState("50");
   const [isShowAddProduct, setIsShowAddProduct] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [currentPage, setCurrentPage] = useState("")
