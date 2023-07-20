@@ -128,6 +128,7 @@ export const TableHH = () => {
       ) {
         if (item) {
           searchByPO(0);
+          setValue1(item)
         }else {
         handleSearch(0);
         }

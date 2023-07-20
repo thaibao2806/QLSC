@@ -63,7 +63,8 @@ export const Header = () => {
               window.location.pathname === "/" ||
               window.location.pathname === "/quanly" ||
               window.location.pathname === "/sanpham" ||
-              window.location.pathname === "/sn-check") && (
+              window.location.pathname === "/sn-check" ||
+              window.location.pathname === "/barcode-check") && (
               <>
                 <Nav className="me-auto nav-bar">
                   <NavLink to="/" className="nav-link">
