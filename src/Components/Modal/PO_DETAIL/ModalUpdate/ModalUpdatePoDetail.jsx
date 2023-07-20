@@ -21,16 +21,18 @@ const ModalUpdatePoDetail = (props) => {
     currenPage,
     handleSearch,
     currentPageSearch,
-    productIds ,
-    serialNumbers ,
-    value1s ,
-    bbbgs ,
-    selectedDateStarts ,
-    repairCategorys ,
-    repairStatuss ,
-    exportPartners ,
-    kcsVts ,
-    prioritys
+    productIds,
+    serialNumbers,
+    value1s,
+    bbbgs,
+    selectedDateStarts,
+    repairCategorys,
+    repairStatuss,
+    exportPartners,
+    kcsVts,
+    prioritys,
+    items,
+    searchByPO,
   } = props;
   const [selectedDateStart, setSelectedDateStart] = useState(null);
   const [selectedDateWarrity, setSelectedDateWarrity] = useState(null);
@@ -159,6 +161,7 @@ const ModalUpdatePoDetail = (props) => {
         productIds ||
         serialNumbers ||
         value1s ||
+        items ||
         bbbgs ||
         selectedDateStarts ||
         repairCategorys ||
@@ -167,7 +170,11 @@ const ModalUpdatePoDetail = (props) => {
         kcsVts ||
         prioritys
       ) {
-        handleSearch(currentPageSearch);
+        if(items) {
+          searchByPO(currentPageSearch)
+        }else {
+          handleSearch(currentPageSearch);
+        }
       } else {
         getProducts(page);
       } 

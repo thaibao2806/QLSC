@@ -114,15 +114,15 @@ const Product = () => {
     if (search) {
       try {
         const res = await searchProduct([search], "ALL", page, itemsPerPage);
-        console.log(res);
         if (res && res.data) {
           setListHH(res.data);
           setTotalProducts(res.totalPages);
           setTotalPages(res.totalPages);
-          // setStartIndex(page * itemsPerPage);
+          setCurrentPageSearch(page);
         } else {
           if(res && res.statusCode === 204) {
             setListHH(res.data);
+            setCurrentPageSearch(page);
           }
         }
       } catch (error) {
@@ -144,26 +144,35 @@ const Product = () => {
     window.location.reload();
   }
 
+  const handlePressEnter = (event) => {
+    if (event && event.key === "Enter") {
+      handleSearch(0);
+    }
+  };
+
   return (
     <>
       <div className="product">
         {/* button */}
 
-        <div className="my-3 add-new d-flex justify-content-between">
-          <div className="col-5 d-flex">
-            <div className="btn-search input-group w-75">
-              <input
-                className="form-control"
-                placeholder="Search..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-              <button
-                className="btn1 btn-primary1"
-                onClick={() => handleSearch()}
-              >
-                <AiOutlineSearch />
-              </button>
+        <div className="my-3 add-new d-flex justify-content-between flex-wrap">
+          <div className="col-6 d-flex">
+            <div className="col-6">
+              <div className="btn-search input-group w-100">
+                <input
+                  className="form-control"
+                  placeholder="Search..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  onKeyDown={(e) => handlePressEnter(e)}
+                />
+                <button
+                  className="btn1 btn-primary1"
+                  onClick={() => handleSearch()}
+                >
+                  <AiOutlineSearch />
+                </button>
+              </div>
             </div>
             <div className="update-po col-2 mx-2">
               <button
@@ -206,7 +215,7 @@ const Product = () => {
 
         {/* table */}
 
-        <Table striped bordered hover className="table-shadow ">
+        <Table striped bordered hover className="table-shadow responsive-table">
           <thead>
             <tr>
               <th>Stt</th>

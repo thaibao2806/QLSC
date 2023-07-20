@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import { useLocation } from "react-router-dom";
 import Table from "react-bootstrap/Table";
 import { AiOutlineDownload, AiOutlineSearch } from "react-icons/ai";
 import { FaFileImport } from "react-icons/fa";
@@ -29,6 +30,9 @@ import ModalShowPoDetail from "../Modal/PO_DETAIL/ModalShow/ModalShowPoDetail";
 import { saveAs } from "file-saver";
 import ModalDeletePODetail from "../Modal/PO_DETAIL/ModalDelete/ModalDeletePODetail";
 import Autosuggest from "react-autosuggest";
+
+const ItemContext = React.createContext(null);
+
 
 export const TableHH = () => {
   const [listPoDetail, setListPoDetail] = useState([]);
@@ -78,26 +82,100 @@ export const TableHH = () => {
   const [currentPageSearch, setCurrentPageSearch] = useState("");
 
 
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const item = JSON.parse(queryParams.get("item"));
+
+  // useEffect(() => {
+  //   console.log("Received Item:", item);
+  //   if(item) {
+  //     const searchByPO = async(page) => {
+  //       let res = await searchPODetail(
+  //         [null, null, item, null, null, null, null, null, null, null],
+  //         "ALL",
+  //         page,
+  //         selectedOption
+  //       );
+  //       if (res && res.statusCode === 200) {
+  //         setListPoDetail(res.data);
+  //         setTotalProducts(res.totalPages);
+  //         setTotalPages(res.data.number);
+  //       }
+  //       if (res && res.statusCode === 204) {
+  //         setListPoDetail(res.data);
+  //         setTotalProducts(res.totalPages);
+  //         // setTotalPages(res.data.number);
+  //       }
+  //     }
+  //     searchByPO(0)
+  //   }
+  // }, [item]);
+
   // call api when load page
   useEffect(() => {
-    if (
-      productId ||
-      serialNumber ||
-      value1 ||
-      bbbg ||
-      selectedDateStart ||
-      repairCategory ||
-      repairStatus ||
-      exportPartner ||
-      kcsVt ||
-      priority
-    ) {
-      handleSearch(0);
-    } else {
-      getProducts(0);
-      getAllPO();
-    }
+      if (
+        productId ||
+        serialNumber ||
+        value1 ||
+        item ||
+        bbbg ||
+        selectedDateStart ||
+        repairCategory ||
+        repairStatus ||
+        exportPartner ||
+        kcsVt ||
+        priority
+      ) {
+        if (item) {
+          searchByPO(0);
+        }else {
+        handleSearch(0);
+        }
+      } else {
+        getProducts(0);
+        getAllPO();
+      }
+    
   }, [selectedOption]);
+
+  const searchByPO = async (page) => {
+    let time = selectedDateStart;
+    let timeExport = exportPartner;
+    if (selectedDateStart !== null) {
+      time = moment(selectedDateStart).format("DD/MM/YYYY");
+    }
+    if (exportPartner !== null) {
+      timeExport = moment(exportPartner).format("DD/MM/YYYY");
+    }
+    let res = await searchPODetail(
+      [
+        productId,
+        serialNumber,
+        item,
+        bbbg,
+        time,
+        repairCategory,
+        repairStatus,
+        timeExport,
+        kcsVt,
+        priority,
+      ],
+      "ALL",
+      page,
+      selectedOption
+    );
+    if (res && res.statusCode === 200) {
+      setListPoDetail(res.data);
+      setTotalProducts(res.totalPages);
+      setTotalPages(res.data.number);
+      setCurrentPageSearch(page);
+    }
+    if (res && res.statusCode === 204) {
+      setListPoDetail(res.data);
+      setTotalProducts(res.totalPages);
+      // setTotalPages(res.data.number);
+    }
+  };
 
   // handle change date start
   const handleDateChangeStart = (date) => {
@@ -247,6 +325,7 @@ export const TableHH = () => {
       productId ||
       serialNumber ||
       value1 ||
+      item ||
       bbbg ||
       selectedDateStart ||
       repairCategory ||
@@ -255,8 +334,13 @@ export const TableHH = () => {
       kcsVt ||
       priority
     ) {
+      if(item) {
+        searchByPO(+event.selected);
+        setCurrentPageSearch(selectedPage);
+      } else {
       handleSearch(+event.selected);
-      setCurrentPageSearch(selectedPage)
+      setCurrentPageSearch(selectedPage);
+      }
     } else {
       getProducts(+event.selected);
       setCurrentPage(selectedPage);
@@ -414,18 +498,23 @@ export const TableHH = () => {
   const handleSearch = async (page) => {
     let time = selectedDateStart;
     let timeExport = exportPartner
-
     if (selectedDateStart !== null) {
       time = moment(selectedDateStart).format("DD/MM/YYYY");
     }
     if(exportPartner !== null ) {
       timeExport = moment(exportPartner).format("DD/MM/YYYY");
     }
+    let poItem
+    if(item) {
+      poItem = item
+    } else {
+      poItem = value1
+    }
     let res = await searchPODetail(
       [
         productId,
         serialNumber,
-        value1,
+        poItem,
         bbbg,
         time,
         repairCategory,
@@ -442,12 +531,12 @@ export const TableHH = () => {
       setListPoDetail(res.data);
       setTotalProducts(res.totalPages);
       setTotalPages(res.data.number);
-      
+      setCurrentPageSearch(page);
     } 
     if (res && res.statusCode === 204) {
       setListPoDetail(res.data);
       setTotalProducts(res.totalPages);
-      // setTotalPages(res.data.number);
+      setCurrentPageSearch(page);
     }
     
   };
@@ -517,6 +606,7 @@ export const TableHH = () => {
   // handle reset
   const handleReset = () => {
     window.location.reload();
+    window.location.href = `/quanly`;
   }
 
   // handle delete Po detail
@@ -1496,6 +1586,8 @@ export const TableHH = () => {
           exportPartners={exportPartner}
           kcsVts={kcsVt}
           prioritys={priority}
+          items={item}
+          searchByPO={searchByPO}
         />
 
         <ModalDeletePODetail

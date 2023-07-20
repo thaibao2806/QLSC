@@ -36,6 +36,7 @@ const PO = () => {
   const [startIndex, setStartIndex] = useState(0);
   const [currentPage, setCurrentPage] = useState("");
   const [currentPageSearch, setCurrentPageSearch] = useState("");
+  const [getPO, setGetPO] = useState("")
 
   // call get all po when load page
   useEffect(() => {
@@ -121,9 +122,11 @@ const PO = () => {
       if(res && res.statusCode === 200) {
         setListPo(res.data)
         setTotalProducts(res.totalPages);
+        setCurrentPageSearch(page);
       } else {
         if(res && res.statusCode === 204) {
           setListPo(res.data);
+          setCurrentPageSearch(page);
         }
       }
     } else {
@@ -138,6 +141,16 @@ const PO = () => {
   }
 
 
+  const handleGetPoNumber = (item) => {
+    setGetPO(item)
+    window.location.href = `/quanly?item=${JSON.stringify(item)}`;
+  }
+
+  const handlePressEnter = (event) => {
+    if (event && event.key === "Enter") {
+      handleSearch(0);
+    }
+  };
 
   return (
     <div className="po-tables">
@@ -151,6 +164,7 @@ const PO = () => {
                   placeholder="Search..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
+                  onKeyDown={(e) => handlePressEnter(e)}
                 />
                 <button
                   className="btn2 btn-primary2"
@@ -238,7 +252,12 @@ const PO = () => {
                     >
                       <td>{currentIndex + 1}</td>
                       <td>{item.contractNumber}</td>
-                      <td>{item.poNumber}</td>
+                      <td
+                        className="col-po"
+                        onClick={() => handleGetPoNumber(item.poNumber)}
+                      >
+                        {item.poNumber}
+                      </td>
                       <td>{item.quantity}</td>
                       <td>{dataBegin}</td>
                       <td>{datEnd}</td>
@@ -250,7 +269,7 @@ const PO = () => {
                         localStorage.getItem("role") === "ROLE_ADMIN" ? (
                           <>
                             <button
-                              className="btn btn-warning btn-sm"
+                              className="btn btn-warning btn-sm btn-respon"
                               onClick={() => handleUpdatePO(item)}
                             >
                               Edit
