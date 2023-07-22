@@ -19,6 +19,7 @@ import {
   handleRefresh,
 } from "../../redux/actions/userAction";
 import logo from "../../assets/logo_28-06-2017_LogoOceanTelecomtailieupng-removebg-preview.png";
+import { toast } from "react-toastify";
 
 const Admin = () => {
   
@@ -141,6 +142,9 @@ const Admin = () => {
               <NavLink to="/admin" className="nav-link">
                 Quản lý User
               </NavLink>
+              <NavLink to="/diary" className="nav-link">
+                Nhật ký
+              </NavLink>
             </Nav>
             <Nav>
               {user && user.email ? (
@@ -255,7 +259,7 @@ const Admin = () => {
                       <td>{item.fullName}</td>
                       <td>{item.email}</td>
                       <td>{item.phoneNumber}</td>
-                      <td>{item.roles[0].roleName}</td>
+                      {/* <td>{item.roles[0].roleName}</td> */}
                       <td>
                         {item.status === 0 && "Mới"}
                         {item.status === 1 && "Đã đổi mật khẩu"}

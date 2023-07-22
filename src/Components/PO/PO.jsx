@@ -248,21 +248,20 @@ const PO = () => {
                     <tr
                       key={`po-${currentIndex}`}
                       onDoubleClick={() => handleShowPo(item)}
-                      className="header-table "
                     >
-                      <td>{currentIndex + 1}</td>
-                      <td>{item.contractNumber}</td>
+                      <td className="item-table ">{currentIndex + 1}</td>
+                      <td className="item-table ">{item.contractNumber}</td>
                       <td
                         className="col-po"
                         onClick={() => handleGetPoNumber(item.poNumber)}
                       >
                         {item.poNumber}
                       </td>
-                      <td>{item.quantity}</td>
-                      <td>{dataBegin}</td>
-                      <td>{datEnd}</td>
-                      <td>{dataTime}</td>
-                      <td>{dataWarranty}</td>
+                      <td className="item-table ">{item.quantity}</td>
+                      <td className="item-table ">{dataBegin}</td>
+                      <td className="item-table ">{datEnd}</td>
+                      <td className="item-table ">{dataTime}</td>
+                      <td className="item-table ">{dataWarranty}</td>
                       <td className="col-note">{item.note}</td>
                       <td className="col-action">
                         {localStorage.getItem("role") === "ROLE_MANAGER" ||
