@@ -142,7 +142,7 @@ const Admin = () => {
               <NavLink to="/admin" className="nav-link">
                 Quản lý User
               </NavLink>
-              <NavLink to="/diary" className="nav-link">
+              <NavLink to="/history" className="nav-link">
                 Nhật ký
               </NavLink>
             </Nav>
@@ -259,7 +259,7 @@ const Admin = () => {
                       <td>{item.fullName}</td>
                       <td>{item.email}</td>
                       <td>{item.phoneNumber}</td>
-                      {/* <td>{item.roles[0].roleName}</td> */}
+                      <td>{item.roles[0].roleName}</td>
                       <td>
                         {item.status === 0 && "Mới"}
                         {item.status === 1 && "Đã đổi mật khẩu"}

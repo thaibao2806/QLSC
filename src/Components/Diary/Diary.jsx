@@ -98,7 +98,7 @@ const Diary = () => {
               <NavLink to="/admin" className="nav-link">
                 Quản lý User
               </NavLink>
-              <NavLink to="/diary" className="nav-link">
+              <NavLink to="/history" className="nav-link">
                 Nhật ký
               </NavLink>
             </Nav>
@@ -163,7 +163,7 @@ const Diary = () => {
             </div>
           </div>
           {/* table user */}
-          <Table striped bordered className="table-shadow">
+          <Table striped bordered hover className="table-shadow table-history">
             <thead>
               <tr>
                 <th>Stt</th>
@@ -171,7 +171,7 @@ const Diary = () => {
                 <th>Thời gian</th>
                 <th>Đối tượng </th>
                 <th>Hành động</th>
-                <th>Mô tả chi tiết</th>
+                <th >Mô tả chi tiết</th>
               </tr>
             </thead>
             <tbody>
@@ -203,7 +203,7 @@ const Diary = () => {
                         <td>{data}</td>
                         <td>{item.object}</td>
                         <td>{item.action}</td>
-                        <td>
+                        <td className="col-descript">
                           <span>
                             {isExpanded ? (
                               specificationLines.map((line, i) => (
