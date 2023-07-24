@@ -1851,7 +1851,6 @@ export const TableHH = () => {
               {dataBarcode && dataBarcode.length > 0 && (
                 <th className="text-center">Action</th>
               )}
-              {/* <th>Action</th> */}
             </tr>
           </thead>
           <tbody>

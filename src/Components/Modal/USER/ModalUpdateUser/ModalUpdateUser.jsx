@@ -42,7 +42,7 @@ const ModalUpdateUser = (props) => {
 
   // handle update user
   const handleUpdateUser = async () => {
-    let res = await updateUser(email, fullName, phone, [roleID, roleName]);
+    let res = await updateUser(email, fullName, phone, [roleID]);
     if (res && res.statusCode === 200) {
       handleClose();
       toast.success("Cập nhật thông tin thành công !!");
