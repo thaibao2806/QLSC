@@ -228,7 +228,7 @@ const Diary = () => {
                           </span>
                           {item.specification.length > 1000 && (
                             <button
-                              className="btn btn-link"
+                              className="btn btn-link btn-sm"
                               onClick={() =>
                                 setExpandedIndex(isExpanded ? null : index)
                               }
