@@ -97,7 +97,6 @@ const ModalAddUser = (props) => {
       res.data.statusMessage === "CANNOT ACCEPT THE REQUIRED ACTION"
     ) {
       setValidate("Email đã tồn tại!!!");
-      return;
     } else {
       setValidate("");
     }
@@ -109,6 +108,12 @@ const ModalAddUser = (props) => {
     setValidateEmail("")
     setValidatePassword("")
     setValidatePhone("")
+    setFullName("");
+    setEmail("");
+    setPhone("");
+    setCreator("");
+    setPassword("");
+    setRoleName("Chose Role")
   }
 
   return (
