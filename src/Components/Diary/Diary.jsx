@@ -81,21 +81,28 @@ const Diary = () => {
   };
 
   const handleDownloadHistory = async (item) => {
-    let res = await downloadHistory(item);
-    const blob = new Blob([res], {
-      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    });
 
-    // Tạo URL tạm thời cho Blob
-    const url = URL.createObjectURL(blob);
+      let res = await downloadHistory(item);
+      console.log(res.status)
+      if(res.status === 404) {
+        alert("File không tồn tại !!")
+        return
+      } 
+        const blob = new Blob([res], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
 
-    // Tạo một link ẩn để download file
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "history_file.xlsx";
-    link.click();
+        // Tạo URL tạm thời cho Blob
+        const url = URL.createObjectURL(blob);
 
-    URL.revokeObjectURL(url);
+        // Tạo một link ẩn để download file
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "history_file.xlsx";
+        link.click();
+
+        URL.revokeObjectURL(url);
+      
   };
 
   const sortedListHistory = _.sortBy(listHistory, ["created"]);
