@@ -193,9 +193,8 @@ export const TableHH = () => {
       let response = await importPODetail(formData);
       if (response && response.statusCode === 200) {
         toast.success("Dữ liệu đã được tải thành công!!");
-        setIsShowNotify(true);
-        setData(response.data);
-        getProducts(0);
+        setListPoDetail(response.data);
+        setTotalProducts(response.totalPages);
       } else {
         toast.error("Dữ liệu đã được tải không thành công!");
         setData(response.data);
@@ -228,9 +227,8 @@ export const TableHH = () => {
       let response = await updateStatusPoDetail(formData);
       if (response && response.statusCode === 200) {
         toast.success("Dữ liệu đã được tải thành công!");
-        setIsShowNotify(true);
-        setData(response.data);
-        getProducts(0);
+        setListPoDetail(response.data);
+        setTotalProducts(response.totalPages);
       } else {
         toast.error("Dữ liệu đã được tải không thành công!");
         setData(response.data);
