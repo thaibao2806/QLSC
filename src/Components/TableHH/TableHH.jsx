@@ -778,6 +778,7 @@ export const TableHH = () => {
       "Ưu Tiên SC",
       "Cập nhật SC",
       "Số BBXK",
+      "Cập nhật XK",
       "Cập nhật KCS",
       "Cập nhật BH",
       "Ghi chú",
@@ -1291,7 +1292,6 @@ export const TableHH = () => {
             <div className="col-3"></div>
             <div className="group-btn d-flex">
               {/* button search */}
-
               <div className="search">
                 <button
                   className="btn btn-primary label-search"
@@ -1300,52 +1300,59 @@ export const TableHH = () => {
                   Reset
                 </button>
               </div>
-              <div className="update update-btn">
-                <button
-                  className="btn btn-success"
-                  onClick={handleDownloadSampleFile}
-                >
-                  Sample File
-                </button>
-              </div>
+              {localStorage.getItem("role") !== "ROLE_USER" && (
+                <>
+                  <div className="update update-btn">
+                    <button
+                      className="btn btn-success"
+                      onClick={handleDownloadSampleFile}
+                    >
+                      Sample File
+                    </button>
+                  </div>
 
-              <div className="import">
-                <label htmlFor="test" className="btn btn-danger label-import">
-                  <FaFileImport className="icon-import" />
-                  Import
-                </label>
-                <input
-                  type="file"
-                  onChange={handleFileUpload}
-                  id="test"
-                  hidden
-                />
-              </div>
-              <div className="import">
-                <label
-                  htmlFor="test99"
-                  className="btn btn-warning label-import"
-                >
-                  <FaFileImport className="icon-import" />
-                  Update
-                </label>
-                <input
-                  type="file"
-                  onChange={handleUploadSC}
-                  id="test99"
-                  hidden
-                />
-              </div>
-              <div className="update">
-                <button
-                  className="btn btn-success label-export"
-                  onClick={handleExportSearch}
-                  disabled={!isExportButtonEnabled}
-                >
-                  <AiOutlineDownload className="icon-export" />
-                  Export
-                </button>
-              </div>
+                  <div className="import">
+                    <label
+                      htmlFor="test"
+                      className="btn btn-danger label-import"
+                    >
+                      <FaFileImport className="icon-import" />
+                      Import
+                    </label>
+                    <input
+                      type="file"
+                      onChange={handleFileUpload}
+                      id="test"
+                      hidden
+                    />
+                  </div>
+                  <div className="import">
+                    <label
+                      htmlFor="test99"
+                      className="btn btn-warning label-import"
+                    >
+                      <FaFileImport className="icon-import" />
+                      Update
+                    </label>
+                    <input
+                      type="file"
+                      onChange={handleUploadSC}
+                      id="test99"
+                      hidden
+                    />
+                  </div>
+                  <div className="update">
+                    <button
+                      className="btn btn-success label-export"
+                      onClick={handleExportSearch}
+                      disabled={!isExportButtonEnabled}
+                    >
+                      <AiOutlineDownload className="icon-export" />
+                      Export
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -1638,8 +1645,8 @@ export const TableHH = () => {
               onChange={(event) => setSelectedOption(event.target.value)}
               value={selectedOption}
             >
-              <option value="500">5000 / Trang</option>
-              <option value="2000">10000 / Trang</option>
+              <option value="500">1000 / Trang</option>
+              <option value="2000">5000 / Trang</option>
             </Form.Select>
           </div>
         )}
