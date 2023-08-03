@@ -460,9 +460,7 @@ export const TableHH = () => {
 
   const renderSuggestion = (suggestion, { query }) => {
     const suggestionText = suggestion.poNumber;
-    const matchIndex = suggestionText
-      .toLowerCase()
-      .indexOf(query.toLowerCase());
+    const matchIndex = suggestionText.toLowerCase().indexOf(query.toLowerCase());
     const matchStart = matchIndex >= 0 ? matchIndex : suggestionText.length;
     const matchEnd = matchStart + query.length;
     const beforeMatch = suggestionText.slice(0, matchStart);
@@ -489,30 +487,15 @@ export const TableHH = () => {
     setSelectedSuggestion(suggestion);
     setValue1((prevValue) => {
       const inputValues = prevValue.trim().split(" ");
-      const lastValue = inputValues[inputValues.length - 1];
-      const newValue =
-        inputValues.slice(0, -1).join(" ") +
-        " " +
-        lastValue +
-        suggestion.poNumber +
-        " ";
+      const newValue = inputValues.slice(0, -1).join(" ") + " " + suggestion.poNumber + " ";
       return newValue;
     });
   };
 
   const onKeyDown = (event) => {
     if (event.key === "Enter") {
-      if (!selectedSuggestion) {
         // Gọi hàm search khi không có gợi ý nào được chọn
         handleSearch();
-      } else {
-        // Nếu có gợi ý được chọn, giữ lại giá trị hiện tại trong ô tìm kiếm
-        setValue1((prevValue) => {
-          const inputValues = prevValue.trim().split(" ");
-          const lastValue = inputValues[inputValues.length - 1];
-          return inputValues.slice(0, -1).join(" ") + " " + lastValue + " ";
-        });
-      }
     }
   };
 
