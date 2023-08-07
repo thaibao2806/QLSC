@@ -69,7 +69,6 @@ const ModalUpdatePoDetail = (props) => {
       setSerialNumber(dateEditPoDetail.serialNumber);
       setPo(dateEditPoDetail.po.poNumber);
       setBbbg(dateEditPoDetail.bbbgNumber);
-      // setImportDate(data);
       setSelectedDateStart(dateEditPoDetail.importDate);
       setRepairCategory(dateEditPoDetail.repairCategory);
       setRepairStatus(dateEditPoDetail.repairStatus);
@@ -80,7 +79,7 @@ const ModalUpdatePoDetail = (props) => {
       setSelectedDateWarrity(dateEditPoDetail.warrantyPeriod);
       setPrioritize(dateEditPoDetail.priority);
       setBbbgPartner(dateEditPoDetail.bbbgNumberExport);
-      setNote(dateEditPoDetail.note)
+      setNote(dateEditPoDetail.note);
     }
   }, [dateEditPoDetail]);
 
@@ -371,8 +370,8 @@ const ModalUpdatePoDetail = (props) => {
                       }
                     >
                       <option value={null}>Chưa cập nhật</option>
-                      <option value="0">Sửa chữa không được</option>
-                      <option value="1">Sửa chữa xong</option>
+                      <option value="0">Trả hỏng</option>
+                      <option value="1">SC OK</option>
                       <option value="2">Cháy nổ</option>
                     </Form.Select>
                   </Form.Group>
