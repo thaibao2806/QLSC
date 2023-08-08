@@ -33,6 +33,7 @@ const ModalUpdatePoDetail = (props) => {
     prioritys,
     items,
     searchByPO,
+    datae,
   } = props;
   const [selectedDateStart, setSelectedDateStart] = useState(null);
   const [selectedDateWarrity, setSelectedDateWarrity] = useState(null);
@@ -81,7 +82,7 @@ const ModalUpdatePoDetail = (props) => {
       setBbbgPartner(dateEditPoDetail.bbbgNumberExport);
       setNote(dateEditPoDetail.note);
     }
-  }, [dateEditPoDetail]);
+  }, [dateEditPoDetail, datae]);
 
   // handle change state date
   const handleDateChangeStart = (date) => {
