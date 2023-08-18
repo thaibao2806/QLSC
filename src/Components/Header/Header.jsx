@@ -86,14 +86,15 @@ export const Header = () => {
               window.location.pathname === "/quanly" ||
               window.location.pathname === "/sanpham" ||
               window.location.pathname === "/sn-check" ||
-              window.location.pathname === "/barcode-check") && (
+              window.location.pathname === "/barcode-check" ||
+              window.location.pathname === "/quan-li-sua-chua") && (
               <>
                 <Nav className="me-auto nav-bar">
                   <NavLink to="/" className="nav-link">
                     Hợp đồng
                   </NavLink>
                   <NavLink to="/quanly" className="nav-link">
-                    QLSC
+                    QLPO
                   </NavLink>
                   {/* <NavLink to="/sn-check" className="nav-link">
                     S/N Check
@@ -101,6 +102,9 @@ export const Header = () => {
                    <NavLink to="/barcode-check" className="nav-link">
                     Barcode Check
                   </NavLink> */}
+                  <NavLink to="/quan-li-sua-chua" className="nav-link">
+                    QLSC
+                  </NavLink>
                   <NavLink to="/sanpham" className="nav-link">
                     QL Mã HH
                   </NavLink>

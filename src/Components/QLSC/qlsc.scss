@@ -44,7 +44,7 @@
   }
 }
 
-.tables {
+.tables-qlsc {
   margin: 70px 15px;
   font-size: 14px;
 
@@ -53,7 +53,7 @@
     padding: 10px;
     border-radius: 5px;
     box-shadow: 0 0px 2px rgba(0, 0, 0, 0.2);
-    height: 260px;
+    height: 115px;
   }
 }
 
@@ -156,10 +156,6 @@
         td {
           padding: 3px 3px 3px 5px;
         }
-
-        &:hover{
-            background-color: #ccc;
-          }
       }
     }
 }
@@ -271,19 +267,19 @@
 }
 }
 
-.row-search {
+.row-search-qlsc {
   padding-right: 20px;
   padding-left: 10px;
-  border-bottom: 1px solid #26262624;
-  border-right: 1px solid #26262624;
-  width: 65%;
+  // border-bottom: 1px solid #26262624;
+  // border-right: 1px solid #26262624;
+  width: 100%;
 }
 
 .row-export {
   padding-left: 20px;
   padding-right: 20px;
-  border-right: 1px solid #26262624;
-  border-bottom: 1px solid #26262624;
+  // border-right: 1px solid #26262624;
+  // border-bottom: 1px solid #26262624;
   width: 25%;
 }
 
@@ -337,4 +333,92 @@
 
 .w-po {
   width: 30%;
+}
+
+
+.table-history-qlsc {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  .table-qlsc {
+    box-shadow: 0 0px 2px rgba(0, 0, 0, 0.2);
+    font-size: 12px;
+    height: 300px; /* Điều chỉnh chiều cao của bảng */
+    overflow-y: scroll;
+
+    .table-header-qlsc {
+      position: sticky;
+      top: -0.5px; /* Điều chỉnh giá trị này để tương ứng với chiều cao của phần tử .btn-sncheck */
+      background-color: white;
+      z-index: 1;
+      overflow: hidden;
+    }
+  }
+}
+
+.table-update-qlsc {
+  box-shadow: 0 0px 2px rgba(0, 0, 0, 0.2);
+  font-size: 12px;
+}
+
+.w-repair {
+  width: 100%
+}
+
+.no-border-input {
+  border: none;
+  outline: none;
+  padding: 0;
+  background-color: transparent;
+  width: 100%;
+}
+
+.col-button-qlsc {
+  width: 90px;
+}
+
+.table-repair {
+      font-size: 12px;
+    --bs-table-color-type: initial;
+    --bs-table-bg-type: initial;
+    --bs-table-color-state: initial;
+    --bs-table-bg-state: initial; 
+    --bs-table-border-color: #dee2e6;
+    --bs-table-accent-bg: transparent;
+    --bs-table-striped-color: #212529;
+    --bs-table-striped-bg: rgba(0, 0, 0, 0.05);
+    --bs-table-active-color: #212529;
+    --bs-table-active-bg: rgba(0, 0, 0, 0.1);
+    --bs-table-hover-color: #212529;
+    --bs-table-hover-bg: rgba(0, 0, 0, 0.075);
+    width: 100%;
+    margin-bottom: 1rem;
+    vertical-align: top;
+    border-color: var(--bs-table-border-color);
+
+    thead {
+      tr {
+        th {
+          padding: 5px;
+          background-color: #ffff;
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        td {
+          padding: 3px 3px 3px 5px;
+        }
+
+        &:hover{
+            background-color: #ccc;
+          }
+      }
+    }
+}
+
+.highlight-row {
+  background-color: #f8ffd1; /* Màu nền sáng nhẹ */
+  /* Các quy tắc CSS khác nếu cần */
 }
