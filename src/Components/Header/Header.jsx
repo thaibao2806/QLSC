@@ -89,26 +89,44 @@ export const Header = () => {
               window.location.pathname === "/barcode-check" ||
               window.location.pathname === "/quan-li-sua-chua") && (
               <>
-                <Nav className="me-auto nav-bar">
-                  <NavLink to="/" className="nav-link">
-                    Hợp đồng
-                  </NavLink>
-                  <NavLink to="/quanly" className="nav-link">
-                    QLPO
-                  </NavLink>
-                  {/* <NavLink to="/sn-check" className="nav-link">
-                    S/N Check
-                  </NavLink> 
-                   <NavLink to="/barcode-check" className="nav-link">
-                    Barcode Check
-                  </NavLink> */}
-                  <NavLink to="/quan-li-sua-chua" className="nav-link">
-                    QLSC
-                  </NavLink>
-                  <NavLink to="/sanpham" className="nav-link">
-                    QL Mã HH
-                  </NavLink>
-                </Nav>
+                {localStorage.getItem("role") === "ROLE_ADMIN" ? (
+                  <Nav className="me-auto nav-bar">
+                    <NavLink to="/" className="nav-link">
+                      Hợp đồng
+                    </NavLink>
+                    <NavLink to="/quanly" className="nav-link">
+                      QLPO
+                    </NavLink>
+                    <NavLink to="/quan-li-sua-chua" className="nav-link">
+                      QLSC
+                    </NavLink>
+                    <NavLink to="/sanpham" className="nav-link">
+                      QL Mã HH
+                    </NavLink>
+                  </Nav>
+                ) : null}
+
+                {localStorage.getItem("role") === "ROLE_REPAIRMAN" ? (
+                  <Nav className="me-auto nav-bar">
+                    <NavLink to="/quan-li-sua-chua" className="nav-link">
+                      QLSC
+                    </NavLink>
+                  </Nav>
+                ) : null}
+
+                {localStorage.getItem("role") === "ROLE_MANAGER" ? (
+                  <Nav className="me-auto nav-bar">
+                    <NavLink to="/" className="nav-link">
+                      Hợp đồng
+                    </NavLink>
+                    <NavLink to="/quanly" className="nav-link">
+                      QLPO
+                    </NavLink>
+                    <NavLink to="/sanpham" className="nav-link">
+                      QL Mã HH
+                    </NavLink>
+                  </Nav>
+                ) : null}
                 <Nav className="user-name ">
                   {user && user.email ? (
                     <span className="nav-link">{user.email}</span>

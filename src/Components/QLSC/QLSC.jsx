@@ -98,7 +98,7 @@ const QLSC = () => {
         searchByPO(0);
         setValue1(item);
       } else {
-        handleSearchHistoryRepair(0);
+        handleSearchHistoryRepair();
       }
     } else {
       getAllPO();
@@ -180,66 +180,71 @@ const QLSC = () => {
       person = repairPerson.trim() + "@daiduongtelecom.com"
     }
     let serial = serialNumber === null ? null : serialNumber.trim()
-    let nameProduct = productName === null ? null : productName.trim()
+    let nameProduct = productName === null ? null :productName === "" ? null : productName.trim()
     setIsLoading(true);
-    let res = await searchRepairHistory(
-      [nameProduct, serial, poItem, person, repairError],
-      "ALL",
-      0,
-      selectedOption
-    );
-    if (res && res.statusCode === 200) {
-      const resultList = [];
-      res.data.forEach((dataItem, dataIndex) => {
-        if (dataItem.repairHistories && dataItem.repairHistories.length > 0) {
-          dataItem.repairHistories.forEach((history, historyIndex) => {
-            const resultItem = {
-              dataIndex: dataIndex + 1,
-              historyIndex: historyIndex + 1,
-              id: dataItem.id,
-              po: {
-                poNumber: dataItem.po.poNumber,
-              },
-              poDetailId: dataItem.poDetailId,
-              product: {
-                productName: dataItem.product.productName,
-              },
-
-              amountInPo: dataItem.amountInPo,
-              remainingQuantity: dataItem.remainingQuantity,
-              serialNumber: dataItem.serialNumber,
-              repairHistories: {
-                id: history.id,
-                accessory: history.accessory,
-                creator: history.creator,
-                module: history.module,
-                repairDate: history.repairDate,
-                repairError: history.repairError,
-                repairResults: history.repairResults,
-              },
-            };
-
-            resultList.push(resultItem);
-          });
-          setIsLoading(false);
-        }else {
-          resultList.push(dataItem)
-        }
-          
-      });
-      setListPoDetail(resultList);
-      setTotalProducts(res.totalPages);
-      setTotalPages(res.data.number);
-      // setCurrentPageSearch(page);
-      setIsExportButtonEnabled(true);
-    }
-    if (res && res.statusCode === 204) {
-      setListPoDetail(res.data);
-      setTotalProducts(res.totalPages);
-      // setCurrentPageSearch(page);
-      setIsExportButtonEnabled(false);
-      toast.warning("Dữ liệu không tồn tại!!!");
+    if (nameProduct === null && serial === null && poItem === null) {
+      toast.error("Cần nhập tối thiểu một trường để tìm kiếm")
       setIsLoading(false);
+      return
+    } else {
+      let res = await searchRepairHistory(
+        [nameProduct, serial, poItem, person, repairError],
+        "ALL",
+        0,
+        selectedOption
+      );
+      if (res && res.statusCode === 200) {
+        setIsLoading(false);
+        const resultList = [];
+        res.data.forEach((dataItem, dataIndex) => {
+          if (dataItem.repairHistories && dataItem.repairHistories.length > 0) {
+            dataItem.repairHistories.forEach((history, historyIndex) => {
+              const resultItem = {
+                dataIndex: dataIndex + 1,
+                historyIndex: historyIndex + 1,
+                id: dataItem.id,
+                po: {
+                  poNumber: dataItem.po.poNumber,
+                },
+                poDetailId: dataItem.poDetailId,
+                product: {
+                  productName: dataItem.product.productName,
+                },
+
+                amountInPo: dataItem.amountInPo,
+                remainingQuantity: dataItem.remainingQuantity,
+                serialNumber: dataItem.serialNumber,
+                repairHistories: {
+                  id: history.id,
+                  accessory: history.accessory,
+                  creator: history.creator,
+                  module: history.module,
+                  repairDate: history.repairDate,
+                  repairError: history.repairError,
+                  repairResults: history.repairResults,
+                },
+              };
+
+              resultList.push(resultItem);
+            });
+          } else {
+            resultList.push(dataItem);
+          }
+        });
+        setListPoDetail(resultList);
+        setTotalProducts(res.totalPages);
+        setTotalPages(res.data.number);
+        // setCurrentPageSearch(page);
+        setIsExportButtonEnabled(true);
+      }
+      if (res && res.statusCode === 204) {
+        setListPoDetail(res.data);
+        setTotalProducts(res.totalPages);
+        // setCurrentPageSearch(page);
+        setIsExportButtonEnabled(false);
+        toast.warning("Dữ liệu không tồn tại!!!");
+        setIsLoading(false);
+      }
     }
   };
 
@@ -383,10 +388,10 @@ const QLSC = () => {
               return data
             }
             if (column === "Số lượng PO") {
-              return item.repairHistories.amountInPo;
+              return item.amountInPo;
             }
             if (column === "Số lượng còn lại") {
-              return item.repairHistories.remainingQuantity;
+              return item.remainingQuantity;
             }
             if (column === "Sản phẩm sửa chữa") {
               const formattedProductName = formatProductName(
@@ -621,7 +626,7 @@ const QLSC = () => {
                       required
                       ref={inputRef}
                       type="text"
-                      value={productName !== null ? productName : ""}
+                      value={productName !== null ? productName : null}
                       onChange={handleInputChangeName}
                       onKeyDown={(e) => handlePressEnter(e)}
                       placeholder="Tên thiết bị"
@@ -650,7 +655,7 @@ const QLSC = () => {
                     <Form.Control
                       required
                       type="text"
-                      value={serialNumber !== null ? serialNumber : ""}
+                      value={serialNumber !== null ? serialNumber : null}
                       onChange={(event) => {
                         const value = event.target.value;
                         setSerialNumber(value !== "" ? value : null);
