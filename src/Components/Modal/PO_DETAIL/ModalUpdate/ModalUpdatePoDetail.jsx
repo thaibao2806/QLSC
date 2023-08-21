@@ -77,14 +77,33 @@ const ModalUpdatePoDetail = (props) => {
       setPo(dateEditPoDetail.po.poNumber);
       setBbbg(dateEditPoDetail.bbbgNumber);
       setSelectedDateStart(dateEditPoDetail.importDate);
-      setRepairCategory(dateEditPoDetail.repairCategory);
-      setRepairStatus(dateEditPoDetail.repairStatus);
+      if (dateEditPoDetail.importDate === null) {
+        setRepairCategory(-1);
+      } else {
+        setRepairCategory(dateEditPoDetail.repairCategory);
+      }
+
+      if (dateEditPoDetail.repairStatus === null) {
+        setRepairStatus(-1)
+      }else {
+        setRepairStatus(dateEditPoDetail.repairStatus);
+      }
+
+      if (dateEditPoDetail.kcsVT === null) {
+        setKcsVT(-1);
+      } else {
+        setKcsVT(dateEditPoDetail.kcsVT);
+      }
+
+      if (dateEditPoDetail.priority === null) {
+        setPrioritize(-1);
+      } else {
+        setPrioritize(dateEditPoDetail.priority);
+      }
       setExportPartner(dateEditPoDetail.exportPartner);
       setSelectedDateExportPartner(dateEditPoDetail.exportPartner);
-      setKcsVT(dateEditPoDetail.kcsVT);
       setWarrantyPeriod(dataWarranty);
       setSelectedDateWarrity(dateEditPoDetail.warrantyPeriod);
-      setPrioritize(dateEditPoDetail.priority);
       setBbbgPartner(dateEditPoDetail.bbbgNumberExport);
       setNote(dateEditPoDetail.note);
 
@@ -210,8 +229,14 @@ const ModalUpdatePoDetail = (props) => {
         handleCloses();
         getProducts(page);
       } else {
-        toast.error("Xóa không thành công!!");
-        handleCloses();
+        if (res && res.statusCode === 501) {
+          toast.error("Xóa không thành công do đã tồn tại ở QLSC!!");
+          handleCloses();
+        } else {
+          toast.error("Xóa không thành công!!");
+          handleCloses();
+        }
+        
       }
     } catch (error) {
       console.error(error);
@@ -471,6 +496,10 @@ const ModalUpdatePoDetail = (props) => {
                           placeholder="Số BBXK"
                           value={bbbgPartner}
                           onChange={(e) => setBbbgPartner(e.target.value)}
+                          disabled={
+                            localStorage.getItem("role") !== "ROLE_ADMIN" &&
+                            localStorage.getItem("role") !== "ROLE_MANAGER"
+                          }
                         />
                       </Form.Group>
                     </Row>
@@ -520,10 +549,10 @@ const ModalUpdatePoDetail = (props) => {
                           value={kcsVT}
                           onChange={(event) => {
                             const value = event.target.value;
-                            setKcsVT(value === "Chưa cập nhật" ? null : value);
+                            setKcsVT(value === "Chưa cập nhật" ? "-1" : value);
                           }}
                         >
-                          <option value={null}>Chưa cập nhật</option>
+                          <option value="-1">Chưa cập nhật</option>
                           <option value="0">FAIL</option>
                           <option value="1">PASS</option>
                         </Form.Select>

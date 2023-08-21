@@ -404,7 +404,6 @@
         }
       }
     }
-
     tbody {
       tr {
         td {
@@ -421,4 +420,43 @@
 .highlight-row {
   background-color: #f8ffd1; /* Màu nền sáng nhẹ */
   /* Các quy tắc CSS khác nếu cần */
+}
+
+.col-action-repair {
+  width: 170px;
+}
+
+/* Định dạng cho ô input */
+.productid .form-control {
+  position: relative; /* Để giữ cho gợi ý nằm trên ô input */
+}
+
+/* Định dạng cho danh sách gợi ý */
+.suggestions-list {
+  position: absolute;
+  z-index: 2; /* Đảm bảo gợi ý hiển thị trên các phần tử khác */
+  background-color: white;
+  border: 1px solid #ccc;
+  width: 500px; /* Độ rộng bằng với ô input */
+  padding: 0;
+  margin-top: 2px; /* Khoảng cách giữa gợi ý và ô input */
+  list-style-type: none;
+  max-height: 500px; /* Giới hạn chiều cao của danh sách gợi ý */
+  overflow-y: auto; /* Cho phép cuộn nếu danh sách quá dài */
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Định dạng cho các mục gợi ý trong danh sách */
+.suggestions-list li {
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.suggestions-list li:hover {
+  background-color: #f0f0f0;
+}
+
+.input-group-text {
+  padding: 5px 2px;
 }

@@ -449,10 +449,11 @@ export const TableHH = () => {
       "Ngày nhập kho",
       "Hạng mục SC",
       "Ưu Tiên SC",
-      "Cập nhật SC",
+      "Tình trạng SC",
       "Số BBXK",
-      "Cập nhật KCS",
-      "Cập nhật BH",
+      "Ngày xuất kho",
+      "Tình trạng KCS",
+      "Thời hạn BH",
       "Ghi chú",
     ];
 
@@ -496,7 +497,7 @@ export const TableHH = () => {
                 return "Ưu tiên";
               }
             }
-            if (column === "Cập nhật SC") {
+            if (column === "Tình trạng SC") {
               if (item.repairStatus === 1) {
                 return "SC OK";
               } else if (item.repairStatus === 0) {
@@ -508,19 +509,19 @@ export const TableHH = () => {
             if (column === "Số BBXK") {
               return item.bbbgNumberExport;
             }
-            if (column === "Cập nhật XK") {
+            if (column === "Ngày XK") {
               if (item.exportPartner) {
                 return moment(item.exportPartner).format("DD/MM/YYYY");
               }
             }
-            if (column === "Cập nhật KCS") {
+            if (column === "Tình trạng KCS") {
               if (item.kcsVT === 0) {
                 return "FAIL";
               } else if (item.kcsVT === 1) {
                 return "PASS";
               }
             }
-            if (column === "Cập nhật BH") {
+            if (column === "Thời hạn BH") {
               if (item.warrantyPeriod) {
                 return moment(item.warrantyPeriod).format("DD/MM/YYYY");
               }
@@ -784,13 +785,11 @@ export const TableHH = () => {
       "Ngày nhập kho",
       "Hạng mục SC",
       "Ưu Tiên SC",
-      "Cập nhật SC",
-      "Nội dung SC",
+      "Tình trạng SC",
       "Số BBXK",
-      "Cập nhật XK",
-      "Cập nhật KCS",
-      "Nội dung KCS",
-      "Cập nhật BH",
+      "Ngày XK",
+      "Tình trạng KCS",
+      "Thời hạn BH",
       "Ghi chú",
     ];
 
@@ -834,7 +833,7 @@ export const TableHH = () => {
                 return "Ưu tiên";
               }
             }
-            if (column === "Cập nhật SC") {
+            if (column === "Tình trạng SC") {
               if (item.repairStatus === 1) {
                 return "SC OK";
               } else if (item.repairStatus === 0) {
@@ -846,19 +845,19 @@ export const TableHH = () => {
             if (column === "Số BBXK") {
               return item.bbbgNumberExport;
             }
-            if (column === "Cập nhật XK") {
+            if (column === "Ngày XK") {
               if (item.exportPartner) {
                 return moment(item.exportPartner).format("DD/MM/YYYY");
               }
             }
-            if (column === "Cập nhật KCS") {
+            if (column === "Tình trạng KCS") {
               if (item.kcsVT === 0) {
                 return "FAIL";
               } else if (item.kcsVT === 1) {
                 return "PASS";
               }
             }
-            if (column === "Cập nhật BH") {
+            if (column === "Thời hạn BH") {
               if (item.warrantyPeriod) {
                 return moment(item.warrantyPeriod).format("DD/MM/YYYY");
               }
@@ -889,13 +888,11 @@ export const TableHH = () => {
       "Ngày nhập kho",
       "Hạng mục SC",
       "Ưu Tiên SC",
-      "Cập nhật SC",
-      "Nội dung SC",
+      "Tình trạng SC",
       "Số BBXK",
-      "Cập nhật XK",
-      "Cập nhật KCS",
-      "Nội dung KCS",
-      "Cập nhật BH",
+      "Ngày XK",
+      "Tình trạng KCS",
+      "Thời hạn BH",
       "Ghi chú",
     ];
 
@@ -1038,7 +1035,6 @@ export const TableHH = () => {
   };
 
   const handleExportSearch = async () => {
-    console.log(flag)
     let selectedColumns = [
       "Tên thiết bị",
       "Mã hàng hóa (*)",
@@ -1047,13 +1043,11 @@ export const TableHH = () => {
       "Ngày nhập kho",
       "Hạng mục SC",
       "Ưu Tiên SC",
-      "Cập nhật SC",
-      "Nội dung SC",
+      "Tình trạng SC",
       "Số BBXK",
-      "Cập nhật XK",
-      "Cập nhật KCS",
-      "Nội dung KCS",
-      "Cập nhật BH",
+      "Ngày XK",
+      "Tình trạng KCS",
+      "Thời hạn BH",
       "Ghi chú",
     ];
 
@@ -1191,7 +1185,7 @@ export const TableHH = () => {
                 return "Ưu tiên SC";
               }
             }
-            if (column === "Cập nhật SC") {
+            if (column === "Tình trạng SC") {
               if (item.repairStatus === 1) {
                 return "SC OK";
               } else if (item.repairStatus === 0) {
@@ -1203,19 +1197,19 @@ export const TableHH = () => {
             if (column === "Số BBXK") {
               return item.bbbgNumberExport;
             }
-            if (column === "Cập nhật XK") {
+            if (column === "Ngày XK") {
               if (item.exportPartner) {
                 return moment(item.exportPartner).format("DD/MM/YYYY");
               }
             }
-            if (column === "Cập nhật KCS") {
+            if (column === "Tình trạng KCS") {
               if (item.kcsVT === 0) {
                 return "FAIL";
               } else if (item.kcsVT === 1) {
                 return "PASS";
               }
             }
-            if (column === "Cập nhật BH") {
+            if (column === "Thời hạn BH") {
               if (item.warrantyPeriod) {
                 return moment(item.warrantyPeriod).format("DD/MM/YYYY");
               }
@@ -1694,11 +1688,11 @@ export const TableHH = () => {
                   <th>Ngày nhập kho</th>
                   <th>Hạng mục SC</th>
                   <th>Ưu tiên SC</th>
-                  <th>Cập nhật SC</th>
+                  <th>Tình trạng SC</th>
                   <th>Số BBXK</th>
-                  <th>Cập nhật XK</th>
-                  <th>Cập nhật KCS</th>
-                  <th>Cập nhật BH</th>
+                  <th>Ngày XK</th>
+                  <th>Tình trạng KCS</th>
+                  <th>Thời hạn BH</th>
                   <th>Ghi chú</th>
                   {dataBarcode && dataBarcode.length > 0 && (
                     <th className="text-center">Action</th>
@@ -1721,15 +1715,15 @@ export const TableHH = () => {
                   const time = item.importDate;
                   const timeWarranty = item.warrantyPeriod;
                   let dataWarranty;
-                  if (timeWarranty !== null) {
+                  if (timeWarranty !== null && timeWarranty !== 0) {
                     dataWarranty = moment(timeWarranty).format("DD/MM/YYYY");
                   }
                   let data;
-                  if (time !== null) {
+                  if (time !== null && time !== 0) {
                     data = moment(time).format("DD/MM/YYYY");
                   }
                   let dataExportPartner;
-                  if (timeExport !== null) {
+                  if (timeExport !== null && timeExport !== 0) {
                     dataExportPartner = moment(timeExport).format("DD/MM/YYYY");
                   }
                   // check if priority === 1 then change color
@@ -1790,15 +1784,15 @@ export const TableHH = () => {
                   const time = item.importDate;
                   const timeWarranty = item.warrantyPeriod;
                   let dataWarranty;
-                  if (timeWarranty !== null) {
+                  if (timeWarranty !== null && timeWarranty !== 0) {
                     dataWarranty = moment(timeWarranty).format("DD/MM/YYYY");
                   }
                   let data;
-                  if (time !== null) {
+                  if (time !== null && time !== 0) {
                     data = moment(time).format("DD/MM/YYYY");
                   }
                   let dataExportPartner;
-                  if (timeExport !== null) {
+                  if (timeExport !== null && timeExport !== 0) {
                     dataExportPartner = moment(timeExport).format("DD/MM/YYYY");
                   }
                   // check if priority === 1 then change color
@@ -1860,15 +1854,15 @@ export const TableHH = () => {
                   const time = item.importDate;
                   const timeWarranty = item.warrantyPeriod;
                   let dataWarranty;
-                  if (timeWarranty !== null) {
+                  if (timeWarranty !== null && timeWarranty !== 0) {
                     dataWarranty = moment(timeWarranty).format("DD/MM/YYYY");
                   }
                   let data;
-                  if (time !== null) {
+                  if (time !== null && time !== 0) {
                     data = moment(time).format("DD/MM/YYYY");
                   }
                   let dataExportPartner;
-                  if (timeExport !== null) {
+                  if (timeExport !== null && timeExport !== 0) {
                     dataExportPartner = moment(timeExport).format("DD/MM/YYYY");
                   }
                   // check if priority === 1 then change color

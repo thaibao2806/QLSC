@@ -521,9 +521,9 @@ const searchRepairHistory = (keyword, property, pageIndex, pageSize) => {
   );
 };
 
-const relateRepairHistory = (poDetailId, repairHistoryId) => {
+const relateRepairHistory = (poDetailId, id) => {
   return axioss.get(
-    `/repair-history/get-related-data?poDetailId=${poDetailId}&repairHistoryId=${repairHistoryId}`,
+    `/repair-history/get-related-data?poDetailId=${poDetailId}&id=${id}`,
     {
       headers: {
         email: `${localStorage.getItem("email")}`,
@@ -531,6 +531,14 @@ const relateRepairHistory = (poDetailId, repairHistoryId) => {
     }
   );
 };
+
+const getProductName = () => {
+  return axioss.get("/product/get-all-product-name", {
+    headers: {
+      email: `${localStorage.getItem("email")}`,
+    },
+  });
+}
 
 export {
   fecthAll,
@@ -574,4 +582,5 @@ export {
   saveAllRepair,
   searchRepairHistory,
   relateRepairHistory,
+  getProductName,
 };

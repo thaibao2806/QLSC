@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import Table from "react-bootstrap/Table";
 import { AiOutlineDownload, AiOutlineSearch } from "react-icons/ai";
@@ -7,11 +7,12 @@ import "./qlsc.scss";
 import { toast } from "react-toastify";
 import _ from "lodash";
 import moment from "moment";
-import { Modal, Button, Row, InputGroup } from "react-bootstrap";
+import { Modal, Button, Row, InputGroup, Spinner } from "react-bootstrap";
 import {
   fecthAllPoDetail,
   getAllPoDetail,
   getPo,
+  getProductName,
   importPODetail,
   relateRepairHistory,
   saveAllRepair,
@@ -69,6 +70,11 @@ const QLSC = () => {
   const [showReceiveRow, setShowReceiveRow] = useState(false);
   const [showSaveAll, setShowSaveAll] = useState(false)
   const [showCancel, setShowCancel] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [listProductName, setListProductName] = useState([])
+  const [suggestionsName, setSuggestionsName] = useState([]);
+  const inputRef = useRef(null);
+   const [previousData, setPreviousData] = useState([]);
 
   // call api when load page
   useEffect(() => {
@@ -96,9 +102,23 @@ const QLSC = () => {
       }
     } else {
       getAllPO();
+      getNameProduct()
       // getProducts(0)
     }
   }, [selectedOption]);
+
+   useEffect(() => {
+     document.addEventListener("click", handleClickOutside);
+     return () => {
+       document.removeEventListener("click", handleClickOutside);
+     };
+   }, []);
+
+   const handleClickOutside = (event) => {
+     if (inputRef.current && !inputRef.current.contains(event.target)) {
+       setSuggestionsName([]); // Ẩn gợi ý khi click ra ngoài
+     }
+   };
 
 
   // call api get product by page
@@ -122,10 +142,18 @@ const QLSC = () => {
       setListPo(res.data);
     }
   };
+
+  const getNameProduct = async () => {
+    let res = await getProductName()
+    if(res && res.statusCode === 200) {
+      setListProductName(res.data)
+    }
+  }
   
   // Search
 
   const handleSearchHistoryRepair = async () => {
+    setSuggestionsName([])
     let time = selectedDateStart;
     let timeExport = exportPartner;
     if (selectedDateStart !== null) {
@@ -136,16 +164,26 @@ const QLSC = () => {
     }
     let poItem;
     if (item) {
-      poItem = item;
+      poItem = item.trim();
     } else {
       if (value1 === "") {
         poItem = null;
       } else {
-        poItem = value1;
+        poItem = value1.trim();
       }
     }
+
+    let person 
+    if(repairPerson === null) {
+      person = null
+    } else {
+      person = repairPerson.trim() + "@daiduongtelecom.com"
+    }
+    let serial = serialNumber === null ? null : serialNumber.trim()
+    let nameProduct = productName === null ? null : productName.trim()
+    setIsLoading(true);
     let res = await searchRepairHistory(
-      [productName, serialNumber, poItem, repairPerson, repairError],
+      [nameProduct, serial, poItem, person, repairError],
       "ALL",
       0,
       selectedOption
@@ -166,14 +204,15 @@ const QLSC = () => {
               product: {
                 productName: dataItem.product.productName,
               },
+
+              amountInPo: dataItem.amountInPo,
+              remainingQuantity: dataItem.remainingQuantity,
               serialNumber: dataItem.serialNumber,
               repairHistories: {
                 id: history.id,
                 accessory: history.accessory,
-                amountInPo: history.amountInPo,
                 creator: history.creator,
                 module: history.module,
-                remainingQuantity: history.remainingQuantity,
                 repairDate: history.repairDate,
                 repairError: history.repairError,
                 repairResults: history.repairResults,
@@ -182,6 +221,7 @@ const QLSC = () => {
 
             resultList.push(resultItem);
           });
+          setIsLoading(false);
         }else {
           resultList.push(dataItem)
         }
@@ -199,6 +239,7 @@ const QLSC = () => {
       // setCurrentPageSearch(page);
       setIsExportButtonEnabled(false);
       toast.warning("Dữ liệu không tồn tại!!!");
+      setIsLoading(false);
     }
   };
 
@@ -211,6 +252,26 @@ const QLSC = () => {
   const handleReset = () => {
     window.location.reload();
     window.location.href = `/quan-li-sua-chua`;
+  };
+
+  const handleInputChangeName = (event) => {
+    const value = event.target.value;
+    setProductName(value);
+
+    if (value === "") {
+      setSuggestionsName([]); // Ẩn gợi ý khi ô input trống
+    } else {
+      // Lọc và hiển thị gợi ý
+      const filteredSuggestions = listProductName.filter((name) =>
+        name.toLowerCase().includes(value.toLowerCase())
+      );
+      setSuggestionsName(filteredSuggestions);
+    }
+  };
+
+  const handleSuggestionClick = (suggestion) => {
+    setProductName(suggestion);
+    setSuggestionsName([]);
   };
 
   const onChange1 = (event, { newValue }) => {
@@ -398,10 +459,9 @@ const QLSC = () => {
       return name;
     }
   };
-
+  
   const handleReceive = async(item) => {
     setListRepair([])
-    console.log(item)
     setShowReceiveRow(true)
     let repairHistoryId; 
     if (item.repairHistories.id) {
@@ -425,6 +485,10 @@ const QLSC = () => {
          po: {
            poNumber: item.po.poNumber,
          },
+
+         amountInPo: item.amountInPo,
+         remainingQuantity: item.remainingQuantity,
+
          repairDate:
            repairItem.repairDate === null
              ? new Date().getTime()
@@ -480,8 +544,7 @@ const QLSC = () => {
       remainingQuantity: item.remainingQuantity,
       repairDate: new Date().getTime(),
       creator: localStorage
-        .getItem("email")
-        .replace("@daiduongtelecom.com", ""),
+        .getItem("email"),
       repairResults: "DANG_SC",
     };
 
@@ -500,6 +563,10 @@ const QLSC = () => {
     updatedList[index][field] = value;
 
     setListRepair(updatedList);
+
+    const updatedPreviousData = [...previousData];
+    updatedPreviousData[index] = value;
+    setPreviousData(updatedPreviousData);
   };
 
   const saveAll = () => {
@@ -519,7 +586,13 @@ const QLSC = () => {
       handleSearchHistoryRepair()
       handleClose()
     } else {
-      toast.error("Lưu không thành công!!!")
+      if(res && res.statusCode === 205) {
+        toast.error("Lưu không thành công do PO đã kết thúc!!!!")
+        handleClose()
+      } else {
+        toast.error("Lưu không thành công !!!!");
+        handleClose();
+      }
     }
   }
 
@@ -546,15 +619,25 @@ const QLSC = () => {
                   >
                     <Form.Control
                       required
+                      ref={inputRef}
                       type="text"
                       value={productName !== null ? productName : ""}
-                      onChange={(event) => {
-                        const value = event.target.value;
-                        setProductName(value !== "" ? value : null);
-                      }}
+                      onChange={handleInputChangeName}
                       onKeyDown={(e) => handlePressEnter(e)}
                       placeholder="Tên thiết bị"
                     />
+                    {suggestionsName.length > 0 && (
+                      <ul className="suggestions-list">
+                        {suggestionsName.map((suggestion, index) => (
+                          <li
+                            key={index}
+                            onClick={() => handleSuggestionClick(suggestion)}
+                          >
+                            {suggestion}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </Form.Group>
                 </div>
                 <div className="d-flex justify-content-center align-items-center w-product ">
@@ -625,8 +708,6 @@ const QLSC = () => {
               </div>
             </Row>
           </div>
-
-          {/* kcsanalyst permission to display the export button */}
         </div>
 
         {/* button */}
@@ -634,10 +715,10 @@ const QLSC = () => {
           <div className="col-3">
             <div className="d-flex justify-content-center align-items-center w-repair ">
               <Form.Label className="me-2 ms-2">Repairman</Form.Label>
-              <Form.Group
+              <InputGroup
                 as={Col}
                 controlId="validationCustom01"
-                className="poNumber"
+                className="poNumber d-flex"
               >
                 <Form.Control
                   required
@@ -650,7 +731,10 @@ const QLSC = () => {
                   onKeyDown={(e) => handlePressEnter(e)}
                   placeholder="Repairman"
                 />
-              </Form.Group>
+                <InputGroup.Text id="basic-addon2">
+                  @daiduongtelecom.com
+                </InputGroup.Text>
+              </InputGroup>
             </div>
           </div>
           <div className="group-btn d-flex">
@@ -736,8 +820,8 @@ const QLSC = () => {
                     return (
                       <tr key={`scc-${index}`}>
                         <td>{data}</td>
-                        <td>{item.repairHistories.amountInPo}</td>
-                        <td>{item.repairHistories.remainingQuantity}</td>
+                        <td>{item.amountInPo}</td>
+                        <td>{item.remainingQuantity}</td>
                         <td className="col-name-product">
                           {formattedProductName}
                         </td>
@@ -749,12 +833,15 @@ const QLSC = () => {
                         <td>{item.repairHistories.repairResults}</td>
                         <td>{nameRepair}</td>
                         <td className="col-button-qlsc">
+                           {localStorage.getItem("role") === "ROLE_ADMIN" ||
+                            localStorage.getItem("role") === "ROLE_REPAIRMAN" ?
                           <button
-                            className="btn btn-primary btn-sm"
+                            className="btn btn-primary btn-sm"  
                             onClick={() => handleReceive(item)}
                           >
                             Tiếp nhận
                           </button>
+                          : null }
                           {/* <button className="btn btn-warning btn-sm ms-2">
                             Edit
                           </button> */}
@@ -770,6 +857,9 @@ const QLSC = () => {
           <div className="d-flex justify-content-between mb-2 align-items-center">
             <h6>Cập nhật hoạt động SC</h6>
             <div>
+              {localStorage.getItem("role") === "ROLE_ADMIN" ||
+                localStorage.getItem("role") === "ROLE_REPAIRMAN" ?
+                <>
               <button className="btn btn-primary" onClick={saveAll}>
                 Save All
               </button>
@@ -779,6 +869,8 @@ const QLSC = () => {
               <button className="btn btn-warning ms-2" onClick={cancel}>
                 Cancel
               </button>
+              </>
+               : null}
             </div>
           </div>
           <div className="table-update-qlsc">
@@ -796,7 +888,7 @@ const QLSC = () => {
                   <th>Linh kiện SC</th>
                   <th>KQ SC</th>
                   <th>Repairman</th>
-                  <th className="text-center">Action</th>
+                  <th className="text-center col-action-repair">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -807,6 +899,15 @@ const QLSC = () => {
                     const time = item.repairDate;
                     const data = moment(time).format("DD/MM/YYYY HH:mm");
                     const isIndexZero = index === 0;
+                    let isUserAllowedToEdit =
+                      localStorage.getItem("email") === item.creator;
+                    if (item.creator === null || item.creator === "") {
+                      isUserAllowedToEdit = true;
+                    } else if (localStorage.getItem("email") === item.creator) {
+                      isUserAllowedToEdit = true;
+                    } else {
+                      isUserAllowedToEdit = false;
+                    }
                     return (
                       <tr
                         key={`scu-${index}`}
@@ -820,63 +921,91 @@ const QLSC = () => {
                         </td>
                         <td>{item.serialNumber}</td>
                         <td>{item.po.poNumber}</td>
-                        <td>
-                          <input
-                            type="text"
-                            className="no-border-input"
-                            value={item.repairError}
-                            onChange={(e) =>
-                              handleInputChange(
-                                index,
-                                "repairError",
-                                e.target.value
-                              )
-                            }
-                          />
-                        </td>
-                        <td>
-                          <input
-                            type="text"
-                            className="no-border-input"
-                            value={item.module}
-                            onChange={(e) =>
-                              handleInputChange(index, "module", e.target.value)
-                            }
-                          />
-                        </td>
-                        <td>
-                          <input
-                            type="text"
-                            className="no-border-input"
-                            value={item.accessory}
-                            onChange={(e) =>
-                              handleInputChange(
-                                index,
-                                "accessory",
-                                e.target.value
-                              )
-                            }
-                          />
-                        </td>
-                        <td>
-                          <select
-                            className="no-border-input"
-                            aria-label="Default select example"
-                            value={item.repairResults}
-                            onChange={(event) =>
-                              handleInputChange(
-                                index,
-                                "repairResults",
-                                event.target.value
-                              )
-                            }
-                          >
-                            <option value="DANG_SC">Đang SC</option>
-                            <option value="OK">SC OK</option>
-                            <option value="CHAY_NO">Cháy nổ</option>
-                            <option value="FAIL">FAIL</option>
-                          </select>
-                        </td>
+                        {isUserAllowedToEdit ? (
+                          <>
+                            <td>
+                              <input
+                                type="text"
+                                className="no-border-input"
+                                value={item.repairError}
+                                onChange={(e) =>
+                                  handleInputChange(
+                                    index,
+                                    "repairError",
+                                    e.target.value
+                                  )
+                                }
+                                list={`suggestions-${index}`} // Add a list attribute
+                              />
+                              {/* Add datalist for suggestions */}
+                              <datalist id={`suggestions-${index}`}>
+                                {previousData.map((data, idx) => (
+                                  <option
+                                    key={`suggestion-${idx}`}
+                                    value={data}
+                                  />
+                                ))}
+                              </datalist>
+                            </td>
+                            <td>
+                              <input
+                                type="text"
+                                className="no-border-input"
+                                value={item.module}
+                                onChange={(e) =>
+                                  handleInputChange(
+                                    index,
+                                    "module",
+                                    e.target.value
+                                  )
+                                }
+                                list={`suggestions-${index}`} // Add a list attribute
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="text"
+                                className="no-border-input"
+                                value={item.accessory}
+                                onChange={(e) =>
+                                  handleInputChange(
+                                    index,
+                                    "accessory",
+                                    e.target.value
+                                  )
+                                }
+                                list={`suggestions-${index}`}
+                              />
+                            </td>
+                            <td>
+                              <select
+                                className="no-border-input"
+                                aria-label="Default select example"
+                                value={item.repairResults}
+                                onChange={(event) =>
+                                  handleInputChange(
+                                    index,
+                                    "repairResults",
+                                    event.target.value
+                                  )
+                                }
+                              >
+                                <option value="DANG_SC">Đang SC</option>
+                                <option value="OK">SC OK</option>
+                                <option value="CHAY_NO">Cháy nổ</option>
+                                <option value="FAIL">FAIL</option>
+                              </select>
+                            </td>
+                          </>
+                        ) : (
+                          // Hiển thị các ô không thể chỉnh sửa
+                          <>
+                            <td>{item.repairError}</td>
+                            <td>{item.module}</td>
+                            <td>{item.accessory}</td>
+                            <td>{item.repairResults}</td>
+                          </>
+                        )}
                         <td>
                           {item.creator.replace("@daiduongtelecom.com", "")}
                         </td>
@@ -932,6 +1061,17 @@ const QLSC = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      {isLoading && (
+        <div className="loading-overlay">
+          <div className="loading-spinner">
+            <Spinner animation="border" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </Spinner>
+            <span className="loading">Đang tải...</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
