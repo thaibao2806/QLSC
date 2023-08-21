@@ -183,7 +183,7 @@ const QLSC = () => {
     let nameProduct = productName === null ? null :productName === "" ? null : productName.trim()
     setIsLoading(true);
     if (nameProduct === null && serial === null && poItem === null) {
-      toast.error("Cần nhập tối thiểu một trường để tìm kiếm")
+      toast.error("Cần nhập tối thiểu một trong 3 trường tên, số serial hoặc để tìm kiếm")
       setIsLoading(false);
       return
     } else {
