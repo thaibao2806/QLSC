@@ -443,7 +443,7 @@ const QLSC = () => {
 
   const handlePressEnter = (event) => {
     if (event && event.key === "Enter") {
-      handleSearchHistoryRepair(0);
+      handleSearchHistoryRepair();
     }
   };
 
